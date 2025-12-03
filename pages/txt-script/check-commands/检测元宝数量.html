@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>💎 检测元宝数量</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家当前拥有的元宝数量是否满足指定条件。元宝是游戏中的高级货币，通常通过充值或特殊活动获得，用于购买珍稀道具、VIP服务、高级功能等。此命令是元宝商城系统、VIP系统、高级功能解锁等核心玩法的基础。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测元宝数量</span> <span class="string">比较符</span> <span class="number">元宝数量</span><br>
+<span class="keyword">#ACT</span><br>
+执行相应的操作<br>
+<span class="keyword">#SAY</span><br>
+显示的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">比较符</div>
+            <div class="param-desc">用于比较元宝数量的运算符，支持以下选项：<br>
+            • <strong>==</strong>：等于指定元宝数量<br>
+            • <strong>&gt;</strong>：大于指定元宝数量<br>
+            • <strong>&lt;</strong>：小于指定元宝数量<br>
+            • <strong>&gt;=</strong>：大于等于指定元宝数量<br>
+            • <strong>&lt;=</strong>：小于等于指定元宝数量<br>
+            • <strong>!=</strong>：不等于指定元宝数量</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">元宝数量</div>
+            <div class="param-desc">要检测的元宝数量值。<br>
+            • 类型：无符号整数（uint）<br>
+            • 范围：0 - 4,294,967,295<br>
+            • 示例：检测玩家是否有至少100元宝，则填写 100</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家的元宝数量符合比较条件</td>
+                <td>执行#ACT中的操作命令，显示#SAY中的对话内容</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>玩家的元宝数量不符合比较条件</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">参数错误</span></td>
+                <td>比较符或元宝数量参数格式错误</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：VIP礼包购买</div>
+        <div class="code-block"><span class="comment">; 元宝商城 - VIP专属礼包</span><br>
+[@元宝商城]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 元宝商城 ═══════════&lt;BR&gt;当前元宝：&lt;$元宝数量/fcolor=255&gt;&lt;BR&gt;─────────────────────────&lt;BR&gt;&lt;VIP月卡礼包（298元宝）/@购买月卡礼包&gt;&lt;BR&gt;&lt;高级强化石礼包（500元宝）/@购买强化礼包&gt;&lt;BR&gt;&lt;极品装备宝箱（1000元宝）/@购买装备宝箱&gt;&lt;BR&gt;─────────────────────────&lt;BR&gt;&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<br>
+[@购买月卡礼包]<br>
+<span class="keyword">#IF</span><br>
+检测元宝数量 &gt;= 298<br>
+检测背包空间 &gt;= 5<br>
+检测任务标识 300 0<br>
+<span class="keyword">#ACT</span><br>
+调整元宝数量 - 298<br>
+任务标识 300 1<br>
+给予物品 "VIP月卡" 1<br>
+给予物品 "经验卷轴" 10<br>
+给予物品 "金币袋" 5<br>
+给予物品 "强化石" 3<br>
+给予物品 "祝福油" 2<br>
+<span class="keyword">#SAY</span><br>
+═══════════ 购买成功 ═══════════&lt;BR&gt;恭喜您成功购买 &lt;VIP月卡礼包/fcolor=255&gt;！&lt;BR&gt;─────────────────────────&lt;BR&gt;礼包内容：&lt;BR&gt;• VIP月卡 x1（30天有效期）&lt;BR&gt;• 经验卷轴 x10&lt;BR&gt;• 金币袋 x5&lt;BR&gt;• 强化石 x3&lt;BR&gt;• 祝福油 x2&lt;BR&gt;─────────────────────────&lt;BR&gt;剩余元宝：&lt;$元宝数量/fcolor=255&gt;&lt;BR&gt;&lt;继续购买/@元宝商城&gt;&lt;BR&gt;&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 购买失败 ═══════════&lt;BR&gt;购买条件不满足，请检查：&lt;BR&gt;• 元宝数量：需要 &lt;298元宝/fcolor=255&gt;&lt;BR&gt;• 背包空间：需要 &lt;5个空位/fcolor=255&gt;&lt;BR&gt;• 本月限购：&lt;1次/fcolor=255&gt;&lt;BR&gt;─────────────────────────&lt;BR&gt;当前元宝：&lt;$元宝数量&gt;&lt;BR&gt;&lt;返回/@元宝商城&gt;&lt;BR&gt;&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 元宝的特殊性</strong><br>
+        • 元宝是付费货币，消费前必须进行严格的检测和确认<br>
+        • 建议在重要消费前提供二次确认，避免玩家误操作<br>
+        • 元宝交易应有详细的日志记录，便于追溯和审计<br>
+        • 元宝相关的脚本应进行充分测试，避免BUG导致损失<br><br>
+        
+        <strong>2. 比较符的使用建议</strong><br>
+        • 购买元宝商品时，通常使用 &gt;= 确保玩家有足够的元宝<br>
+        • 避免使用 == 进行精确匹配，元宝数量可能随时变化<br>
+        • 使用 &lt; 或 &lt;= 可以实现"元宝不足"的提示功能<br><br>
+        
+        <strong>3. 常见应用场景</strong><br>
+        • <strong>元宝商城</strong>：购买珍稀道具、礼包、VIP卡等<br>
+        • <strong>VIP系统</strong>：开通VIP会员、升级VIP等级<br>
+        • <strong>高级功能</strong>：解锁特殊功能、购买便利服务<br>
+        • <strong>装备强化</strong>：使用元宝进行高级强化或保护<br>
+        • <strong>快速完成</strong>：使用元宝加速任务、副本冷却等<br>
+        • <strong>角色服务</strong>：改名、转职、洗点等特殊服务<br><br>
+        
+        <strong>4. 与调整元宝命令配合</strong><br>
+        • 检测元宝后，使用"调整元宝数量"命令进行扣除或增加<br>
+        • 格式：调整元宝数量 + 数量（增加）或 - 数量（减少）<br>
+        • 建议先扣除元宝，再发放物品，避免物品发放失败但元宝已扣除<br>
+        • 重要操作建议使用事务机制，确保原子性<br><br>
+        
+        <strong>5. 玩家体验优化</strong><br>
+        • 在#ELSESAY中使用变量 &lt;$元宝数量&gt; 显示玩家当前元宝<br>
+        • 明确提示需要的元宝数量和当前拥有的元宝数量<br>
+        • 提供元宝充值的引导链接或NPC位置<br>
+        • 对于大额消费，建议显示购买确认界面<br>
+        • 购买成功后显示剩余元宝，让玩家心中有数<br><br>
+        
+        <strong>6. 安全性考虑</strong><br>
+        • 元宝消费应有完善的日志记录系统<br>
+        • 设置单次消费和每日消费上限，防止恶意消费或BUG利用<br>
+        • 重要的元宝交易应进行服务器端验证<br>
+        • 定期审计元宝流向，发现异常及时处理<br><br>
+        
+        <strong>7. 防止欺诈和误操作</strong><br>
+        • 大额元宝消费前应有明确的确认提示<br>
+        • 避免使用模糊的提示语，明确告知消费金额<br>
+        • 提供消费记录查询功能，让玩家随时查看<br>
+        • 对于不可逆的操作（如改名），应多次确认<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 元宝消费前未进行充分检测<br>
+        • ❌ 没有二次确认导致玩家误操作<br>
+        • ❌ 元宝扣除后物品发放失败，未进行回滚<br>
+        • ❌ 未记录元宝消费日志，无法追溯<br>
+        • ❌ 元宝消费提示不明确，引起玩家投诉<br>
+        • ✅ 正确做法：严格检测元宝数量，提供清晰确认提示，完善的日志记录，失败时自动回滚
+    </div>
+
+</body>
+</html>

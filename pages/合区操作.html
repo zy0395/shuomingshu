@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>合区操作指南 - NwServer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            padding: 30px;
+            background: #0f1419;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+        h1 {
+            color: #63b3ed;
+            border-bottom: 3px solid #63b3ed;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+        h2 {
+            color: #f6ad55;
+            margin: 24px 0 12px;
+            border-left: 4px solid #f6ad55;
+            padding-left: 12px;
+            font-size: 1.3em;
+        }
+        h3 {
+            color: #90cdf4;
+            margin: 18px 0 8px;
+            font-size: 1.1em;
+        }
+        p { margin: 8px 0; color: #a0aec0; }
+        ul { margin: 8px 0 8px 24px; color: #a0aec0; }
+        li { margin: 4px 0; }
+        .warn {
+            background: rgba(245, 101, 101, 0.12);
+            border-left: 4px solid #fc8181;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+            color: #fed7d7;
+        }
+        .info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e2e8f0;
+            padding: 16px 18px;
+            margin: 16px 0;
+            border-radius: 8px;
+        }
+        .info strong { color: #fff; }
+        code {
+            font-family: Consolas, Menlo, Monaco, monospace;
+            background: #1a202c;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #f6e05e;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧩 合区操作指南</h1>
+
+    <div class="warn">
+        <strong>⚠️ 高危操作提示：</strong><br>
+        合区会直接修改 <code>User/Data.db</code> 以及（可选）账号网关的 <code>账号数据库.db</code>，过程不可撤销。<br>
+        在实际合区前，务必在<strong>测试环境</strong>完整演练一遍，并做好多重备份。
+    </div>
+
+    <h2>一、合区前准备</h2>
+    <h3>1. 停止所有相关服务器</h3>
+    <ul>
+        <li>关闭目标区（主区 A）对应的游戏服务器程序。</li>
+        <li>确认游戏主窗口右下角状态为“未运行”，<code>主程.已经启动 == false</code>。</li>
+        <li>账号网关无需停止，但合区过程中<strong>不要让玩家登录游戏区</strong>。</li>
+    </ul>
+
+    <h3>2. 必备备份</h3>
+    <ul>
+        <li>主区（A 区）游戏数据：
+            <ul>
+                <li>备份 <code>Database/User/Data.db</code>（或配置中指定的游戏数据目录下的 <code>User/Data.db</code>）。</li>
+                <li>建议同时保留整个 <code>Database/User</code> 目录的完整副本。</li>
+            </ul>
+        </li>
+        <li>从区（B 区）游戏数据：
+            <ul>
+                <li>备份 B 区的 <code>User/Data.db</code>。</li>
+            </ul>
+        </li>
+        <li>账号网关数据库（如使用 Nw 账号网关）：
+            <ul>
+                <li>备份账号网关目录下的 <code>账号数据库.db</code>。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="info">
+        <strong>🔁 建议：</strong><br>
+        在正式环境合区前，先把 A 区、B 区的备份复制到一台测试机上，
+        按下面步骤做一次完整演练，确认角色、行会、寄售等数据符合预期后再操作正式区。
+    </div>
+
+    <h2>二、合区工具入口说明</h2>
+    <p>
+        在游戏服务器主窗口中，打开<strong>合区工具</strong>（<code>窗口类/合区工具.cs</code> 对应的界面）。
+    </p>
+    <p>界面主要包含两个文件选择：</p>
+    <ul>
+        <li><strong>丛区数据库文件</strong>：选择从区（B 区）的 <code>Data.db</code> 文件。
+            <ul>
+                <li>通常路径类似：<code>…/B区/Database/User/Data.db</code>。</li>
+            </ul>
+        </li>
+        <li><strong>账号数据库文件</strong>：选择当前正在使用的账号网关数据库 <code>账号数据库.db</code>。
+            <ul>
+                <li>用于在账号冲突时，自动为从区角色创建新的账号（如 <code>123a</code>），并写入账号库。</li>
+                <li>如果此处留空，程序仍会合并 <code>Data.db</code>，但新账号不会写入账号库，玩家将无法用新账号登录，不推荐。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>三、推荐合区策略（一个账号网关，两个区）</h2>
+    <p>当前版本推荐的使用场景是：A、B 两个区<strong>共用同一套账号网关</strong>，账号库只有一份。</p>
+
+    <h3>1. 账号合并规则</h3>
+    <ul>
+        <li>如果账号名 <code>123</code> 只在 B 区有角色，A 区没有：
+            <ul>
+                <li>合区后继续使用账号 <code>123</code> 登录，能看到从 B 区合并过来的角色。</li>
+            </ul>
+        </li>
+        <li>如果账号名 <code>123</code> 在 A、B 两区都已有角色：
+            <ul>
+                <li>原账号 <code>123</code>：
+                    <ul>
+                        <li>保留 A 区的所有角色，不变更账号名。</li>
+                    </ul>
+                </li>
+                <li>从区（B 区）部分：
+                    <ul>
+                        <li>程序会为 B 区角色生成一个新账号名，例如 <code>123a</code>、<code>123b</code>（实际规则为在原名后追加/递增字母）。</li>
+                        <li>B 区所有属于 <code>123</code> 的角色会挂到新账号 <code>123a</code> 下。</li>
+                        <li>如果指定了账号数据库文件，新账号会自动插入 <code>账号数据库.db</code>，密码和密保信息从原账号复制。</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>2. 角色 / 行会重名规则</h3>
+    <ul>
+        <li><strong>角色名冲突：</strong>
+            <ul>
+                <li>如果 B 区角色名在 A 区已存在，则只给 B 区角色改名。</li>
+                <li>改名规则与账号类似，在原名后追加/递增字母，直到全服唯一。</li>
+                <li>如果该角色是某行会创建者，程序会同步更新从区行会数据中的“创建人名”。</li>
+            </ul>
+        </li>
+        <li><strong>行会名冲突：</strong>
+            <ul>
+                <li>如果 B 区行会名在 A 区已存在，则只给 B 区行会改名。</li>
+                <li>同样使用追加/递增字母的方式，确保行会名全服唯一。</li>
+            </ul>
+        </li>
+        <li><strong>系统数据：</strong>
+            <ul>
+                <li>当前版本只保留主区 A 的系统数据（封禁列表、排行榜等），不合并 B 区的系统配置。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>3. 寄售数据处理规则</h3>
+    <ul>
+        <li>为了安全与简化处理，合区时会对<strong>两个区所有寄售记录</strong>执行统一下架：</li>
+        <li>具体行为：
+            <ul>
+                <li>程序遍历寄售表中的所有订单，调用寄售系统自带的下架逻辑。</li>
+                <li>每件寄售物品会通过<strong>系统邮件</strong>退回给对应卖家角色。</li>
+                <li>合区完成后，玩家可以在邮箱中领取物品，并按新大区市场自行重新上架。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>四、实际操作步骤</h2>
+    <ol style="margin-left:24px; color:#a0aec0;">
+        <li>确认 A、B 区的游戏服务器都已停止运行。</li>
+        <li>对 A、B 区的 <code>User/Data.db</code> 和账号网关的 <code>账号数据库.db</code> 做完整备份。</li>
+        <li>在 A 区的游戏服务器中：
+            <ul>
+                <li>正常加载配置文件，点击“加载数据”按钮，让 A 区 <code>Data.db</code> 完整加载进内存。</li>
+            </ul>
+        </li>
+        <li>打开合区工具窗口：</li>
+        <li>在“丛区数据库文件”中选择 B 区的 <code>Data.db</code>。</li>
+        <li>在“账号数据库文件”中选择当前账号网关正在使用的 <code>账号数据库.db</code>。</li>
+        <li>确认服务器未运行且合区按钮已启用，点击“确认合区”。</li>
+        <li>等待进度条完成：
+            <ul>
+                <li>过程中会依次执行：从区数据加载 → 账号/角色/行会冲突处理 → 数据表合并 → 寄售全部下架 → 整理并保存。</li>
+            </ul>
+        </li>
+        <li>合区完成后，程序会弹出提示并自动退出（需要手动重新启动游戏服务器）。</li>
+    </ol>
+
+    <h2>五、合区完成后的检查建议</h2>
+    <ul>
+        <li>随机选取多个账号做登录测试：
+            <ul>
+                <li>验证原 A 区账号是否还能看到原角色。</li>
+                <li>验证 B 区账号是否正确拆分为新账号（如 <code>123a</code>），并能登录对应角色。</li>
+            </ul>
+        </li>
+        <li>检查角色列表：确保没有异常空角色、乱码角色名等。</li>
+        <li>检查行会列表：确认行会名称、会长、成员数量正常。</li>
+        <li>检查邮箱：随机抽查一些有寄售历史的玩家，确认寄售物品以邮件形式退回。</li>
+        <li>观察服务器日志，注意是否有大量异常或错误输出。</li>
+    </ul>
+
+    <p style="margin-top:20px; color:#718096;">
+        如果在合区过程中遇到异常，请立即停止在正式环境继续操作，
+        使用备份在测试环境中重现问题并排查，确认无误后再重新执行合区。
+    </p>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测队员变量 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测队员变量</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测队伍中所有成员的变量值是否都满足指定条件。此命令会遍历队伍中的每个在线成员，只有当所有成员的变量值都满足条件时，检测才会成功。常用于验证队伍任务进度、检测队伍状态标记、控制组队副本准入、判断队伍活动完成情况等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测队员变量</span> <span class="string">变量1</span> <span class="string">比较符</span> <span class="string">变量2</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 所有队员都满足条件时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：变量1</div>
+            <div class="param-desc">
+                第一个变量名。<br>
+                • 类型：字符串<br>
+                • 不需要带 % 符号，系统会自动添加<br>
+                • 支持个人变量、全局变量等<br>
+                • 示例：副本次数、任务进度、活动积分等
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数2：比较符</div>
+            <div class="param-desc">
+                用于比较两个变量的运算符。<br>
+                • <strong>==</strong> - 等于<br>
+                • <strong>&gt;</strong> - 大于<br>
+                • <strong>&lt;</strong> - 小于<br>
+                • <strong>&gt;=</strong> - 大于等于<br>
+                • <strong>&lt;=</strong> - 小于等于<br>
+                • <strong>!=</strong> - 不等于
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数3：变量2</div>
+            <div class="param-desc">
+                第二个变量名。<br>
+                • 类型：字符串<br>
+                • 不需要带 % 符号<br>
+                • 可以是变量名或直接的数值<br>
+                • 示例：副本上限、10、100等
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>所有队员都满足条件</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>任一队员不满足条件</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">没有队伍</span></td>
+                <td>玩家没有队伍</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">变量解析失败</span></td>
+                <td>任一队员变量值解析失败</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：组队副本准入验证</div>
+        <div class="code-block"><span class="comment">; 副本守卫 - 检测所有队员的挑战次数</span><br>
+[@副本守卫]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否队长</span><br>
+<span class="tag">检测队员变量</span> <span class="string">副本次数</span> &lt; <span class="string">副本上限</span><br>
+<span class="tag">检测组队人数</span> &gt;= <span class="number">3</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">组队传送</span> <span class="number">9</span> <span class="number">100</span> <span class="number">100</span><br>
+<span class="tag">队伍变量运算</span> <span class="string">副本次数</span> + <span class="number">1</span><br>
+<span class="keyword">#SAY</span><br>
+══════ 副本传送成功 ══════&lt;BR&gt;<br>
+队伍已传送至副本！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+今日剩余挑战次数：&lt;BR&gt;<br>
+&lt;&lt;S$副本上限&gt; - &lt;S$副本次数&gt; = &lt;S$剩余次数&gt;/fcolor=249&gt;&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+祝你们好运！&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测队员变量</span> <span class="string">副本次数</span> &gt;= <span class="string">副本上限</span><br>
+<span class="keyword">#ELSESAY</span><br>
+══════ 副本进入失败 ══════&lt;BR&gt;<br>
+抱歉，您的队伍中有成员今日挑战&lt;BR&gt;<br>
+次数已用尽！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+请确保所有队员都有剩余挑战次数。&lt;BR&gt;<br>
+每日0点重置次数。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：组队任务进度检测</div>
+        <div class="code-block"><span class="comment">; 任务NPC - 检测全队任务进度</span><br>
+[@组队任务官]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否队长</span><br>
+<span class="tag">检测队员变量</span> <span class="string">任务进度</span> &gt;= <span class="number">10</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">队伍变量设置</span> <span class="string">任务完成</span> <span class="number">1</span><br>
+<span class="tag">组队经验奖励</span> <span class="number">1000000</span><br>
+<span class="keyword">#SAY</span><br>
+【组队任务完成】&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+恭喜你们完成了组队任务！&lt;BR&gt;<br>
+全队获得经验奖励：1,000,000&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+还有队员任务进度未达到要求。&lt;BR&gt;<br>
+需要全员完成10个任务目标。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：活动准入检测</div>
+        <div class="code-block"><span class="comment">; 活动传送员 - 检测全队活动资格</span><br>
+[@活动传送员]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否队长</span><br>
+<span class="tag">检测队员变量</span> <span class="string">活动门票</span> &gt;= <span class="number">1</span><br>
+<span class="tag">检测组队人数</span> == <span class="number">5</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">队伍变量运算</span> <span class="string">活动门票</span> - <span class="number">1</span><br>
+<span class="tag">组队传送</span> <span class="number">50</span> <span class="number">150</span> <span class="number">150</span><br>
+<span class="keyword">#SAY</span><br>
+传送成功！&lt;BR&gt;<br>
+欢迎参加五人组队活动！<br>
+<span class="keyword">#ELSESAY</span><br>
+入场条件：&lt;BR&gt;<br>
+· 队伍人数：5人&lt;BR&gt;<br>
+· 所有队员都需要活动门票&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：组队等级要求</div>
+        <div class="code-block"><span class="comment">; 高级副本入口 - 检测全队等级</span><br>
+[@高级副本入口]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否队长</span><br>
+<span class="tag">检测队员变量</span> <span class="string">LEVEL</span> &gt;= <span class="number">80</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">组队传送</span> <span class="number">99</span> <span class="number">200</span> <span class="number">200</span><br>
+<span class="keyword">#SAY</span><br>
+进入高级副本！<br>
+<span class="keyword">#ELSESAY</span><br>
+高级副本要求全队等级≥80级。&lt;BR&gt;<br>
+请提升队员等级后再来。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 全员检测机制</strong><br>
+        • 此命令会检测队伍中<strong>所有在线成员</strong><br>
+        • 任何一个成员不满足条件都会导致检测失败<br>
+        • 离线队员不参与检测<br>
+        • 适合用于要求全队统一条件的场景<br><br>
+        
+        <strong>2. 变量格式</strong><br>
+        • 参数中的变量名<strong>不需要</strong>带 % 符号<br>
+        • 系统会自动添加 % 进行解析<br>
+        • 支持个人变量、全局变量等<br>
+        • 示例：写 <code>副本次数</code> 而不是 <code>%副本次数%</code><br><br>
+        
+        <strong>3. 队伍要求</strong><br>
+        • 玩家<strong>必须在队伍中</strong>，否则检测直接失败<br>
+        • 单人状态下此命令无法使用<br>
+        • 通常配合<code>检测是否队长</code>使用<br><br>
+        
+        <strong>4. 在线状态检测</strong><br>
+        • 只检测在线且角色绑定有效的队员<br>
+        • 离线队员会被跳过<br>
+        • 确保检测时所有必要成员都在线<br><br>
+        
+        <strong>5. 数值比较</strong><br>
+        • 变量值会被转换为整数进行比较<br>
+        • 非数值变量会导致解析失败<br>
+        • 检测失败会按条件不满足处理<br>
+        • 建议使用数值型变量<br><br>
+        
+        <strong>6. 配合命令使用</strong><br>
+        • 通常与<code>检测是否队长</code>配合（确保只有队长操作）<br>
+        • 与<code>检测组队人数</code>配合（控制人数要求）<br>
+        • 与<code>队伍变量运算</code>配合（修改全队变量）<br>
+        • 与<code>组队传送</code>配合（传送全队）
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 组队副本系统</strong><br>
+        • 检测全队挑战次数<br>
+        • 验证全队等级要求<br>
+        • 控制副本准入条件<br>
+        • 防止超次数进入<br><br>
+        
+        <strong>2. 组队任务系统</strong><br>
+        • 检测全队任务进度<br>
+        • 验证任务完成度<br>
+        • 控制任务奖励发放<br>
+        • 确保全员达标<br><br>
+        
+        <strong>3. 组队活动</strong><br>
+        • 检测全队活动资格<br>
+        • 验证门票或道具<br>
+        • 控制活动入场<br>
+        • 统一队伍状态<br><br>
+        
+        <strong>4. 等级限制</strong><br>
+        • 检测全队等级要求<br>
+        • 高级副本准入<br>
+        • 特殊地图传送<br>
+        • 维持游戏平衡<br><br>
+        
+        <strong>5. 进度同步</strong><br>
+        • 确保全队进度一致<br>
+        • 防止跳关或漏关<br>
+        • 维护游戏体验
+    </div>
+
+</body>
+</html>

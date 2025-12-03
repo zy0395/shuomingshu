@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>视频教程</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Microsoft YaHei", Arial, sans-serif; 
+            padding: 30px; 
+            background: #0f1419; 
+            line-height: 1.8; 
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 { 
+            color: #667eea; 
+            border-bottom: 3px solid #667eea; 
+            padding-bottom: 15px; 
+            margin-bottom: 25px; 
+            font-size: 2em; 
+            flex-shrink: 0;
+        }
+        p { 
+            margin: 10px 0; 
+            color: #a0aec0; 
+            flex-shrink: 0;
+        }
+        .layout {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            height: calc(100vh - 130px);
+            min-height: 300px;
+        }
+        .video-list {
+            width: 260px;
+            background: #111827;
+            border-radius: 12px;
+            border: 1px solid #2d3748;
+            padding: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .video-item {
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            background: #1f2937;
+            cursor: pointer;
+            font-size: 14px;
+            color: #e5e7eb;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .video-item:hover {
+            background: #111827;
+            border-color: #4b5563;
+        }
+        .video-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #4f46e5 100%);
+            border-color: #818cf8;
+            color: #f9fafb;
+            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+        }
+        
+        /* 右侧面板布局 */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .right-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .right-panel::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 3px;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2d3748;
+            background: #000;
+            flex-shrink: 0;
+        }
+        
+        .video-info-card {
+            background: #1f2937;
+            border-radius: 12px;
+            border: 1px solid #2d3748;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+        .video-info-card h2 {
+            color: #e2e8f0;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .video-info-card p {
+            color: #a0aec0;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #2d3748;
+            margin-top: auto;
+        }
+        .link-group h4 {
+            color: #e2e8f0;
+            margin-bottom: 12px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .link-group p {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+        .link-group span {
+            display: block;
+            color: #64748b;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        @media (max-width: 960px) {
+            .layout {
+                flex-direction: column;
+                height: auto;
+            }
+            .video-list {
+                width: 100%;
+                max-height: 200px;
+            }
+            .right-panel {
+                overflow: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>📺 视频教程</h1>
+    <p>这里汇集了 NwServer 的详细视频教程，左侧为视频列表，点击即可在右侧播放器中切换。</p>
+
+    <!--
+        视频教程页面说明：
+        1. 左侧为“视频列表”，右侧为“B站播放器”及相关信息。
+        2. 视频列表的数据统一写在页面底部的 videos 数组中。
+    -->
+
+    <div class="layout">
+        <!-- 左侧：视频列表 -->
+        <div class="video-list" id="videoList">
+            <!-- 列表项由下面的 videos 数组动态生成 -->
+        </div>
+
+        <!-- 右侧：播放器与信息 -->
+        <div class="right-panel">
+            <!-- 播放器 -->
+            <div class="video-container">
+                <iframe id="videoPlayer"
+                        src=""
+                        scrolling="no"
+                        border="0"
+                        frameborder="no"
+                        framespacing="0"
+                        allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 视频简介 -->
+            <div class="video-info-card">
+                <h2 id="videoTitle">📌 正在播放</h2>
+                <p id="videoDesc">请在左侧选择视频开始观看...</p>
+            </div>
+
+            <!-- 底部说明文字 -->
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>�️ 观看说明</h4>
+                    <p>建议使用 1080P 分辨率全屏观看以获得最佳体验。</p>
+                    <p>如果视频加载缓慢，请尝试刷新页面或检查网络连接。</p>
+                </div>
+                <div class="link-group">
+                    <h4>� 更新计划</h4>
+                    <p>我们会不定期更新更多进阶教程，包括脚本编写、数据库管理等。</p>
+                    <p>请关注官方 QQ 群公告获取最新视频通知。</p>
+                </div>
+                <div class="link-group">
+                    <h4>� 版权提示</h4>
+                    <p>所有视频教程仅供 NwServer 用户学习交流使用。</p>
+                    <p>未经允许请勿随意转载或用于商业用途。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // 视频教程配置说明（重点看这里）
+        // -----------------------------------------------------
+        // 1. 每个对象代表一个视频条目。
+        // 2. title : 在左侧列表中显示的名称。
+        // 3. desc  : 视频的详细简介。
+        // 4. url   : B站“嵌入代码”里的 src 地址。
+        // =====================================================
+        const videos = [
+            {
+                id: 'base',
+                title: 'NwServer 单机架设教程',
+                desc: '本期视频主要讲解如何从零开始搭建 NwServer 游戏服务器。包含环境安装（.NET 8.0）、数据库配置、服务端参数调整以及客户端连接测试。适合第一次接触本引擎的新手管理员观看。',
+                url: 'https://player.bilibili.com/player.html?isOutside=true&aid=115600386953613&bvid=BV1LWUuBBEpz&cid=34215953097&p=1'
+            }
+            // 在此处继续添加新的视频条目
+        ];
+
+        const videoList = document.getElementById('videoList');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoDesc = document.getElementById('videoDesc');
+
+        function renderVideoList() {
+            videoList.innerHTML = '';
+
+            videos.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'video-item' + (index === 0 ? ' active' : '');
+                div.textContent = item.title;
+                div.onclick = () => selectVideo(div, item);
+                videoList.appendChild(div);
+            });
+
+            // 默认选中第一个视频
+            if (videos.length > 0) {
+                updateVideoInfo(videos[0]);
+            }
+        }
+
+        function selectVideo(element, item) {
+            // 切换选中样式
+            const items = videoList.getElementsByClassName('video-item');
+            for (let i = 0; i < items.length; i++) {
+                items[i].classList.remove('active');
+            }
+            element.classList.add('active');
+
+            // 更新播放器和信息
+            updateVideoInfo(item);
+        }
+
+        function updateVideoInfo(item) {
+            if (videoPlayer.src !== item.url) {
+                videoPlayer.src = item.url;
+            }
+            videoTitle.textContent = item.title;
+            videoDesc.textContent = item.desc || '暂无简介';
+        }
+
+        // 初始化渲染视频列表
+        renderVideoList();
+    </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测地图怪物数量 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测地图怪物数量</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测指定地图中所有怪物的总数量。通过<code>&lt;$地图怪物数量(地图编号)&gt;</code>标签获取怪物数量后配合<code>检测变量</code>命令进行判断。常用于怪物刷新控制、活动触发、地图管理等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式 - 配合变量使用</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$地图怪物数量(地图编号)&gt;</span> <span class="string">比较符</span> <span class="number">数量值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 条件满足时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">&lt;$地图怪物数量()&gt; 标签参数</div>
+            <div class="param-desc">
+                <strong>地图编号</strong><br>
+                • 类型：整数<br>
+                • 范围：服务器配置的地图编号<br>
+                • 示例：3（盟重）、0（新手村）等<br>
+                • 返回该地图中所有存活怪物的总数
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">比较符</div>
+            <div class="param-desc">
+                用于比较怪物数量的运算符。<br>
+                • <strong>==</strong> - 等于<br>
+                • <strong>&gt;</strong> - 大于<br>
+                • <strong>&lt;</strong> - 小于<br>
+                • <strong>&gt;=</strong> - 大于等于<br>
+                • <strong>&lt;=</strong> - 小于等于<br>
+                • <strong>!=</strong> - 不等于
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">数量值</div>
+            <div class="param-desc">
+                要比较的怪物数量阈值。<br>
+                • 类型：整数<br>
+                • 用于判断地图怪物是否达到指定数量
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>地图怪物数量满足条件</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>地图怪物数量不满足条件</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">地图无效</span></td>
+                <td>指定地图编号不存在</td>
+                <td>返回0，按数量不足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：怪物刷新控制</div>
+        <div class="code-block"><span class="comment">; 地图管理员 - 自动补充怪物</span><br>
+[@地图管理员]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$地图怪物数量(3)&gt;</span> &lt; <span class="number">50</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">召唤怪物</span> <span class="number">3</span> <span class="string">鸡</span> <span class="number">10</span><br>
+<span class="keyword">#SAY</span><br>
+【怪物补充】&lt;BR&gt;&lt;BR&gt;当前地图怪物数量不足。&lt;BR&gt;当前数量：&lt;$地图怪物数量(3)&gt;&lt;BR&gt;已补充10只鸡。&lt;BR&gt;&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+当前地图怪物数量充足。&lt;BR&gt;怪物总数：&lt;$地图怪物数量(3)&gt;&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：活动进度监控</div>
+        <div class="code-block"><span class="comment">; 清怪活动 - 监控清理进度</span><br>
+[@活动进度查询]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$地图怪物数量(99)&gt;</span> == <span class="number">0</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">调整角色经验</span> <span class="number">10000000</span><br>
+<span class="tag">调整角色金币</span> <span class="number">1000000</span><br>
+<span class="keyword">#SAY</span><br>
+════ 活动完成 ════&lt;BR&gt;&lt;BR&gt;恭喜！清怪活动完成！&lt;BR&gt;&lt;BR&gt;获得奖励：&lt;BR&gt;· 经验：10,000,000&lt;BR&gt;· 金币：1,000,000&lt;BR&gt;&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+【活动进度】&lt;BR&gt;&lt;BR&gt;剩余怪物：&lt;$地图怪物数量(99)&gt; 只&lt;BR&gt;&lt;BR&gt;继续加油！&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：BOSS房准入检测</div>
+        <div class="code-block"><span class="comment">; BOSS房守卫 - 检测BOSS是否存活</span><br>
+[@BOSS房守卫]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$地图怪物数量(88)&gt;</span> &gt; <span class="number">0</span><br>
+<span class="keyword">#SAY</span><br>
+BOSS房内已有BOSS存在！&lt;BR&gt;&lt;BR&gt;当前BOSS房怪物数：&lt;$地图怪物数量(88)&gt;&lt;BR&gt;&lt;BR&gt;请等待其他玩家击败BOSS。&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+BOSS房当前空闲。&lt;BR&gt;&lt;BR&gt;是否进入挑战？&lt;BR&gt;&lt;进入BOSS房/@进入&gt;&lt;BR&gt;&lt;取消/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：地图状态显示</div>
+        <div class="code-block"><span class="comment">; 地图信息NPC - 显示各地图怪物情况</span><br>
+[@地图信息员]<br>
+<span class="keyword">#SAY</span><br>
+【地图怪物统计】&lt;BR&gt;&lt;BR&gt;各地图怪物数量：&lt;BR&gt;· 新手村：&lt;$地图怪物数量(0)&gt; 只&lt;BR&gt;· 盟重：&lt;$地图怪物数量(3)&gt; 只&lt;BR&gt;· 沙巴克：&lt;$地图怪物数量(10)&gt; 只&lt;BR&gt;· BOSS房：&lt;$地图怪物数量(88)&gt; 只&lt;BR&gt;&lt;BR&gt;<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$地图怪物数量(3)&gt;</span> &gt; <span class="number">100</span><br>
+<span class="keyword">#ELSESAY</span><br>
+⚠️ 盟重地图怪物过多！&lt;BR&gt;&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 使用方法</strong><br>
+        • 此命令需要配合<code>&lt;$地图怪物数量()&gt;</code>标签和<code>检测变量</code>命令使用<br>
+        • 格式：检测变量 &lt;$地图怪物数量(地图编号)&gt; 比较符 数量<br>
+        • 返回值为该地图中所有存活怪物的总数<br><br>
+        
+        <strong>2. 统计范围</strong><br>
+        • 统计的是<strong>所有类型</strong>的怪物总数<br>
+        • 包括普通怪物、BOSS、召唤怪物等<br>
+        • 如需检测特定怪物，请使用<code>检测怪物数量</code>命令<br><br>
+        
+        <strong>3. 实时性</strong><br>
+        • 返回的是当前时刻的<strong>实时数据</strong><br>
+        • 怪物死亡后数量会立即更新<br>
+        • 新刷新的怪物会立即计入<br><br>
+        
+        <strong>4. 地图编号</strong><br>
+        • 地图编号必须是服务器已配置的有效地图<br>
+        • 无效地图编号会返回0<br>
+        • 建议在配置文件中查询正确的地图编号<br><br>
+        
+        <strong>5. 性能考虑</strong><br>
+        • 此命令会<strong>遍历地图</strong>统计怪物，有一定性能开销<br>
+        • 避免在频繁触发的脚本中使用<br>
+        • 不建议在循环或定时器中频繁调用<br>
+        • 大型地图的统计会消耗更多资源<br><br>
+        
+        <strong>6. 与其他命令配合</strong><br>
+        • 配合<code>召唤怪物</code>实现自动刷怪<br>
+        • 配合<code>检测怪物数量</code>检测特定怪物<br>
+        • 配合<code>检测地图玩家数量</code>综合判断地图状态
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 怪物刷新控制</strong><br>
+        • 检测怪物数量不足时自动补充<br>
+        • 维持地图怪物密度<br>
+        • 动态调整刷新频率<br><br>
+        
+        <strong>2. 活动进度监控</strong><br>
+        • 清怪活动完成度检测<br>
+        • 活动阶段触发判断<br>
+        • 实时进度显示<br><br>
+        
+        <strong>3. BOSS房管理</strong><br>
+        • 检测BOSS是否存活<br>
+        • 控制玩家进入时机<br>
+        • 防止多组玩家冲突<br><br>
+        
+        <strong>4. 地图状态监控</strong><br>
+        • 显示各地图怪物数量<br>
+        • 预警怪物过多/过少<br>
+        • 地图健康度统计<br><br>
+        
+        <strong>5. 游戏平衡维护</strong><br>
+        • 防止怪物过度堆积<br>
+        • 避免地图空置<br>
+        • 优化游戏体验
+    </div>
+
+</body>
+</html>

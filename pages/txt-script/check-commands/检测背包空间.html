@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📦 检测背包空间</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家背包中剩余的空闲格子数量是否满足指定条件。此命令主要用于在发放物品奖励前检查玩家背包是否有足够的空位，避免因背包已满而导致物品无法发放或掉落的情况。在任务系统、商店购买、活动奖励等场景中经常使用。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测背包空间</span> <span class="string">比较符</span> <span class="number">空格数量</span><br>
+<span class="keyword">#ACT</span><br>
+给予物品或执行奖励命令<br>
+<span class="keyword">#SAY</span><br>
+提示消息<br>
+<span class="keyword">#ELSESAY</span><br>
+背包空间不足的提示</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">比较符</div>
+            <div class="param-desc">用于比较背包剩余空间的运算符，支持以下选项：<br>
+            • <strong>==</strong>：等于指定格子数<br>
+            • <strong>&gt;</strong>：大于指定格子数<br>
+            • <strong>&lt;</strong>：小于指定格子数<br>
+            • <strong>&gt;=</strong>：大于等于指定格子数<br>
+            • <strong>&lt;=</strong>：小于等于指定格子数<br>
+            • <strong>!=</strong>：不等于指定格子数</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">空格数量</div>
+            <div class="param-desc">要检测的背包空闲格子数量，必须为正整数。<br>
+            • 类型：整数（int）<br>
+            • 范围：0 - 背包最大容量（通常为46格）<br>
+            • 示例：检测背包是否有至少5个空位，则填写 5</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家背包剩余空间符合条件要求</td>
+                <td>执行#ACT中的操作命令，显示#SAY中的对话内容</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>玩家背包剩余空间不符合条件要求</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示（背包空间不足）</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">参数错误</span></td>
+                <td>比较符或空格数量参数格式错误</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：任务奖励发放</div>
+        <div class="code-block"><span class="comment">; 每日任务完成奖励（需要至少3个背包空位）</span><br>
+[@每日任务领取]<br>
+<span class="keyword">#IF</span><br>
+检测任务标识 200 1<br>
+检测任务标识 201 0<br>
+检测背包空间 &gt;= 3<br>
+<span class="keyword">#ACT</span><br>
+任务标识 201 1<br>
+给予物品 "经验卷轴" 1<br>
+给予物品 "金币袋" 1<br>
+给予物品 "强化石" 1<br>
+调整金币数量 + 100000<br>
+<span class="keyword">#SAY</span><br>
+恭喜您完成每日任务！&lt;BR&gt;<br>
+获得奖励：&lt;BR&gt;<br>
+• 经验卷轴 x1&lt;BR&gt;<br>
+• 金币袋 x1&lt;BR&gt;<br>
+• 强化石 x1&lt;BR&gt;<br>
+• 金币 100,000&lt;BR&gt;<br>
+&lt;#SO:1&gt;确定&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+您的背包空间不足！&lt;BR&gt;<br>
+需要至少 &lt;3个空位/fcolor=255&gt; 才能领取奖励。&lt;BR&gt;<br>
+请整理背包后再来领取！&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 检测时机</strong><br>
+        • 在发放物品奖励前，必须先检测背包空间是否充足<br>
+        • 建议检测的空格数量略大于实际发放的物品数量，以防堆叠物品占用额外空间<br>
+        • 对于可堆叠物品，一组只占用1格，但多组会占用多格<br><br>
+        
+        <strong>2. 空间计算</strong><br>
+        • 背包空间 = 背包总格子数 - 已占用格子数<br>
+        • 默认背包容量通常为46格，部分服务器可能有所不同<br>
+        • 仓库扩展、VIP特权可能增加背包容量<br>
+        • 相同物品会自动堆叠（如果该物品支持堆叠）<br><br>
+        
+        <strong>3. 常见应用场景</strong><br>
+        • <strong>任务奖励</strong>：发放任务奖励前检查背包空间<br>
+        • <strong>商店购买</strong>：购买物品前确认有足够空位<br>
+        • <strong>活动奖励</strong>：批量发放奖励前检测空间<br>
+        • <strong>BOSS掉落</strong>：分配BOSS奖励前检查背包<br>
+        • <strong>物品合成</strong>：合成新物品前确认有空位存放<br><br>
+        
+        <strong>4. 比较符选择</strong><br>
+        • 大多数情况使用 &gt;= 比较符，确保背包有"至少"指定数量的空位<br>
+        • 使用 == 时要确保恰好匹配，否则可能导致检测失败<br>
+        • 不建议使用 &lt; 或 &lt;= 作为奖励发放的检测条件<br><br>
+        
+        <strong>5. 玩家体验优化</strong><br>
+        • 在 #ELSESAY 中明确提示需要的空格数量<br>
+        • 建议提示玩家去仓库存放物品或整理背包<br>
+        • 对于重要奖励，可以提供"稍后领取"的选项<br>
+        • 避免因背包不足导致奖励丢失或无法领取<br><br>
+        
+        <strong>6. 与其他命令配合</strong><br>
+        • 通常与"给予物品"、"给予装备"等奖励命令配合使用<br>
+        • 可以结合任务标识，防止重复领取<br>
+        • 建议在复杂奖励系统中设置多重检测（任务进度+背包空间+其他条件）<br><br>
+        
+        <strong>7. 性能考虑</strong><br>
+        • 此检测命令性能开销很小，可以频繁使用<br>
+        • 无需担心实时查询背包空间造成的性能问题<br>
+        • 建议在脚本开始阶段就进行检测，避免无谓的后续计算<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 发放多个物品却只检测1个空格<br>
+        • ❌ 使用错误的比较符（如用 &lt; 代替 &gt;=）<br>
+        • ❌ 空格数量填写为0或负数<br>
+        • ❌ 没有给出明确的背包不足提示<br>
+        • ✅ 正确做法：根据发放物品数量设置合理的空格检测值，提供清晰的失败提示
+    </div>
+
+</body>
+</html>

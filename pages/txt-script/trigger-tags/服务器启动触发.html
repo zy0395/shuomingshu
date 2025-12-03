@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>🚀 服务器启动触发</h1>
+    
+    <div class="info">
+        <strong>📖 触发说明</strong><br>
+        服务器启动触发是一个特殊的系统触发标签，在游戏服务器启动完成后自动执行。<br>
+        主要用于初始化全局变量、设置游戏全局参数等服务器初始化操作。<br>
+        <strong>注意：此触发没有玩家上下文，只能执行全局性质的操作命令。</strong>
+    </div>
+
+    <h2>📋 标签格式</h2>
+    <div class="code-block"><span class="comment">; 服务器启动触发标签固定格式</span><br>
+[@_服务器启动触发]<br>
+<span class="keyword">#IF</span><br>
+<span class="comment">; 这里可以添加检测条件（可选）</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 这里执行初始化操作</span><br>
+<span class="tag">变量赋值</span> G0 <span class="number">100</span><br>
+<span class="tag">记录日志</span> <span class="string">"服务器初始化完成"</span></div>
+
+    <h2>🔧 可用操作</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>操作类型</th>
+                <th>说明</th>
+                <th>示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">全局变量赋值</span></td>
+                <td>初始化全局数字变量（G0-G9999）</td>
+                <td>变量赋值 G0 100</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">全局字符变量</span></td>
+                <td>初始化全局字符变量（A0-A9999）</td>
+                <td>变量赋值 A0 "服务器已启动"</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">记录日志</span></td>
+                <td>记录服务器启动日志信息</td>
+                <td>记录日志 "初始化完成"</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">系统公告</span></td>
+                <td>发送系统公告（启动时无玩家）</td>
+                <td>发送系统消息 "服务器启动" TRUE</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">变量运算</span></td>
+                <td>对全局变量进行计算</td>
+                <td>变量运算 G1 + 50</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：初始化全局变量</div>
+        <div class="code-block"><span class="comment">; 服务器启动时初始化游戏全局变量</span><br>
+[@_服务器启动触发]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 初始化活动状态标识</span><br>
+<span class="tag">变量赋值</span> G10 <span class="number">1</span>  <span class="comment">; 开启双倍经验活动</span><br>
+<span class="tag">变量赋值</span> G11 <span class="number">0</span>  <span class="comment">; 关闭特殊活动</span><br>
+<span class="tag">变量赋值</span> G12 <span class="number">100</span> <span class="comment">; 全局倍率参数</span><br>
+<br>
+<span class="comment">; 初始化全局字符串</span><br>
+<span class="tag">变量赋值</span> A0 <span class="string">"服务器运行中"</span><br>
+<span class="tag">变量赋值</span> A1 <span class="string">"欢迎来到游戏世界"</span><br>
+<br>
+<span class="comment">; 记录启动日志</span><br>
+<span class="tag">记录日志</span> <span class="string">"服务器启动触发脚本执行完成"</span><br>
+<span class="tag">Break</span></div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：设置游戏参数</div>
+        <div class="code-block"><span class="comment">; 根据开服天数设置不同的游戏参数</span><br>
+[@_服务器启动触发]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 设置经验倍率（可以后续根据开服天数调整）</span><br>
+<span class="tag">变量赋值</span> G100 <span class="number">2</span>   <span class="comment">; 经验倍率 x2</span><br>
+<span class="tag">变量赋值</span> G101 <span class="number">1</span>   <span class="comment">; 爆率倍率 x1</span><br>
+<span class="tag">变量赋值</span> G102 <span class="number">3</span>   <span class="comment">; 金币倍率 x3</span><br>
+<br>
+<span class="comment">; 设置活动开关</span><br>
+<span class="tag">变量赋值</span> G200 <span class="number">1</span>   <span class="comment">; 开启签到活动</span><br>
+<span class="tag">变量赋值</span> G201 <span class="number">1</span>   <span class="comment">; 开启在线奖励</span><br>
+<span class="tag">变量赋值</span> G202 <span class="number">0</span>   <span class="comment">; 关闭限时活动</span><br>
+<br>
+<span class="tag">记录日志</span> <span class="string">"游戏参数初始化完成"</span><br>
+<span class="tag">Break</span></div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：配合条件检测</div>
+        <div class="code-block"><span class="comment">; 使用检测命令控制初始化逻辑</span><br>
+[@_服务器启动触发]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测指定变量</span> [G999] = <span class="number">0</span>  <span class="comment">; 检测是否首次启动</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 首次启动时的初始化</span><br>
+<span class="tag">变量赋值</span> G999 <span class="number">1</span>  <span class="comment">; 标记已初始化</span><br>
+<span class="tag">变量赋值</span> G0 <span class="number">1000</span><br>
+<span class="tag">记录日志</span> <span class="string">"首次启动初始化"</span><br>
+<span class="keyword">#ELSEACT</span><br>
+<span class="comment">; 非首次启动</span><br>
+<span class="tag">记录日志</span> <span class="string">"服务器重启"</span><br>
+<span class="tag">Break</span></div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 执行上下文限制</strong><br>
+        • 服务器启动触发<strong>没有玩家上下文</strong>，无法使用任何与玩家相关的命令<br>
+        • 不能发放物品、传送地图、发送聊天消息等玩家操作<br>
+        • 只能执行全局性质的操作，如变量赋值、记录日志等<br><br>
+        
+        <strong>2. 执行时机</strong><br>
+        • 在服务器核心服务初始化完成后执行<br>
+        • 在脚本完整性检查之后立即执行<br>
+        • 此时尚未有任何玩家在线<br><br>
+        
+        <strong>3. 变量持久化</strong><br>
+        • 全局变量（G、A系列）在服务器重启后会<strong>丢失</strong><br>
+        • 如需持久化数据，应使用数据库或配置文件<br>
+        • 每次启动都会重新执行此触发脚本<br><br>
+        
+        <strong>4. 脚本位置</strong><br>
+        • 需要在 <code>00-QFunction.txt</code> 中添加触发入口<br>
+        • 实际脚本逻辑写在独立的脚本文件中<br>
+        • 推荐文件名：<code>服务器启动触发.txt</code><br><br>
+        
+        <strong>5. 错误处理</strong><br>
+        • 如果脚本执行出错，会记录警告日志但不会中断服务器启动<br>
+        • 建议在脚本中使用 Break 命令明确结束执行<br>
+        • 避免在此触发中执行耗时操作，以免延长服务器启动时间
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="success">
+        <div class="success-title">✅ 典型应用场景</div>
+        <strong>1. 全局变量初始化</strong><br>
+        • 设置游戏倍率（经验、爆率、金币等）<br>
+        • 初始化活动开关状态<br>
+        • 设置全局计数器或标识<br><br>
+        
+        <strong>2. 游戏参数配置</strong><br>
+        • 根据开服时间调整参数<br>
+        • 设置限时活动的开关<br>
+        • 配置服务器运行模式<br><br>
+        
+        <strong>3. 系统状态记录</strong><br>
+        • 记录服务器启动时间<br>
+        • 统计服务器重启次数<br>
+        • 保存服务器运行状态<br><br>
+        
+        <strong>4. 预加载数据</strong><br>
+        • 初始化某些需要预计算的数据<br>
+        • 设置缓存参数<br>
+        • 准备全局资源
+    </div>
+
+    <h2>📚 相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>命令名称</th>
+                <th>说明</th>
+                <th>链接</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>变量赋值</td>
+                <td>给变量赋值</td>
+                <td><a href="#">查看详情</a></td>
+            </tr>
+            <tr>
+                <td>变量运算</td>
+                <td>对变量进行运算</td>
+                <td><a href="#">查看详情</a></td>
+            </tr>
+            <tr>
+                <td>记录日志</td>
+                <td>记录系统日志</td>
+                <td><a href="#">查看详情</a></td>
+            </tr>
+            <tr>
+                <td>检测指定变量</td>
+                <td>检测变量值</td>
+                <td><a href="#">查看详情</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

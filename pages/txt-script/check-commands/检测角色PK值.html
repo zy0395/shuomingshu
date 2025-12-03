@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测角色PK值</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家角色的当前PK值是否满足指定条件。PK值是玩家击杀其他玩家后获得的惩罚值，用于判断玩家的善恶状态。该命令常用于限制红名玩家的行为、提供PK值相关的任务奖励、或在特定区域对PK值进行判断。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色PK值</span> <span class="string">比较符</span> <span class="number">PK值数量</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; PK值满足条件时执行的操作</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="comment">; PK值满足条件时显示的内容</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：比较符</div>
+            <div class="param-desc">
+                用于比较PK值的运算符，支持以下几种：<br>
+                • <strong>&gt;</strong> - 大于<br>
+                • <strong>&lt;</strong> - 小于<br>
+                • <strong>=</strong> - 等于<br>
+                • <strong>&gt;=</strong> - 大于等于<br>
+                • <strong>&lt;=</strong> - 小于等于<br>
+                • <strong>!=</strong> - 不等于
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数2：PK值数量</div>
+            <div class="param-desc">
+                要检测的PK值数值，取值范围：-2147483648 到 2147483647（整数类型）<br>
+                示例：0（无PK值）、100（中等PK值）、500（高PK值）<br>
+                <strong>说明：</strong>PK值通常为正整数，击杀玩家会增加PK值，随时间自然降低
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>PK值状态</th>
+                <th>说明</th>
+                <th>常见应用场景</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">PK值 = 0</span></td>
+                <td>善良玩家，未击杀过其他玩家</td>
+                <td>允许进入安全区域、接取正义任务</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">PK值 &gt; 0</span></td>
+                <td>有PK惩罚值，曾击杀过其他玩家</td>
+                <td>限制进入某些区域、无法使用特定功能</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">PK值 &gt;= 100</span></td>
+                <td>红名玩家，PK值较高</td>
+                <td>进入特殊地图、接受赎罪任务</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">条件满足</span></td>
+                <td>玩家PK值符合比较条件</td>
+                <td>✅ 通过检测，执行#ACT中的命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">条件不满足</span></td>
+                <td>玩家PK值不符合比较条件</td>
+                <td>❌ 不通过，跳过#ACT或执行#ELSESAY</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：PK值赎罪任务</div>
+        <div class="code-block"><span class="comment">; 根据PK值提供不同的赎罪任务</span><br>
+[@赎罪任务]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色PK值</span> <span class="string">=</span> <span class="number">0</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您当前没有PK值，无需赎罪。&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色PK值</span> <span class="string">&gt;=</span> <span class="number">1</span><br>
+<span class="tag">检测角色PK值</span> <span class="string">&lt;=</span> <span class="number">99</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您的PK值为：&lt;$PK值&gt;点（轻度）&lt;BR&gt;&lt;BR&gt;<br>
+完成以下任务可以降低10点PK值：&lt;BR&gt;<br>
+• 击败100只怪物&lt;BR&gt;<br>
+• 捐献1000金币&lt;BR&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;接受任务&lt;#SO/&gt; &lt;#SO:2&gt;返回&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色PK值</span> <span class="string">&gt;=</span> <span class="number">100</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您的PK值为：&lt;$PK值&gt;点（重度红名）&lt;BR&gt;&lt;BR&gt;<br>
+您的罪孽深重！需要完成特殊赎罪任务：&lt;BR&gt;<br>
+• 击败300只怪物&lt;BR&gt;<br>
+• 捐献5000金币&lt;BR&gt;<br>
+• 上交圣水3瓶&lt;BR&gt;&lt;BR&gt;<br>
+完成后可降低50点PK值。&lt;BR&gt;<br>
+&lt;#SO:1&gt;接受任务&lt;#SO/&gt; &lt;#SO:2&gt;返回&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. PK值机制理解</strong><br>
+        • PK值是玩家击杀其他玩家后获得的惩罚数值<br>
+        • PK值越高，玩家的"红名"程度越严重<br>
+        • PK值会随时间自然降低，或通过特定任务清除<br>
+        • PK值为0表示玩家没有击杀过其他玩家，属于善良状态<br><br>
+        
+        <strong>2. 比较符使用</strong><br>
+        • 检测"是否有PK值"使用：<code>检测角色PK值 &gt; 0</code><br>
+        • 检测"是否无PK值"使用：<code>检测角色PK值 = 0</code><br>
+        • 检测"红名玩家"使用：<code>检测角色PK值 &gt;= 100</code>（阈值根据游戏设定）<br>
+        • 运算符错误会导致检测失败<br><br>
+        
+        <strong>3. 数值范围</strong><br>
+        • PK值必须是有效的整数，范围：-2147483648 到 2147483647<br>
+        • 实际游戏中PK值通常为正整数（0或更大）<br>
+        • 填写无效数值会导致检测失败<br><br>
+        
+        <strong>4. 常见应用场景</strong><br>
+        • 安全区守卫：阻止红名玩家进入安全区域<br>
+        • 赎罪任务：根据PK值高低提供不同的赎罪方式<br>
+        • PK奖励：为高PK值玩家提供特殊称号或奖励<br>
+        • 地图限制：某些地图只允许特定PK值范围的玩家进入<br><br>
+        
+        <strong>5. 性能考虑</strong><br>
+        • 该检测命令性能开销极低，可以频繁使用<br>
+        • 建议在地图传送、任务接取等关键节点进行检测<br>
+        • 无需担心检测次数对服务器性能的影响<br><br>
+        
+        <strong>6. 脚本设计建议</strong><br>
+        • 使用 <code>&lt;$PK值&gt;</code> 常量在对话中显示玩家当前PK值<br>
+        • 可以结合等级检测、物品检测等命令实现复杂逻辑<br>
+        • 建议为不同PK值范围设计不同的处理方式<br>
+        • 可以使用 #ELSESAY 为条件不满足时提供提示信息<br><br>
+        
+        <strong>7. 游戏平衡性</strong><br>
+        • 合理设置PK值的惩罚和奖励机制<br>
+        • 避免过度惩罚导致玩家体验不佳<br>
+        • 为高PK值玩家提供洗白途径（赎罪任务等）<br>
+        • 可以设置PK值衰减速度，避免永久性惩罚
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测任务标识 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测任务标识</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测指定任务ID的标识值是否与目标值相符。任务标识是存储在角色数据中的布尔数组，索引范围为0-1999，用于记录玩家在任务流程中的各种状态标记。这是任务系统的核心命令，广泛应用于任务进度控制、防止重复领取、剧情分支判断等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">任务ID</span> <span class="number">标识值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 标识值匹配时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：任务ID</div>
+            <div class="param-desc">
+                任务标识的索引编号。<br>
+                • 类型：整数<br>
+                • 范围：0-1999（共2000个可用标识）<br>
+                • 超出范围会导致检测失败<br>
+                • 建议统一规划ID使用，避免冲突
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数2：标识值</div>
+            <div class="param-desc">
+                要检测的目标标识值。<br>
+                • 类型：整数（布尔值）<br>
+                • <strong>0</strong> - 表示 false（未标记/未完成）<br>
+                • <strong>1</strong> - 表示 true（已标记/已完成）<br>
+                • 其他值会被转换为布尔值
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>当前标识值与目标值匹配</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>当前标识值与目标值不匹配</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">参数错误</span></td>
+                <td>任务ID超出范围（>1999）</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：防止任务重复领取</div>
+        <div class="code-block"><span class="comment">; 主线任务NPC - 防止重复领取奖励</span><br>
+[@主线任务NPC]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">100</span> <span class="number">0</span><br>
+<span class="tag">检测角色等级</span> &gt;= <span class="number">20</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">设置任务标识</span> <span class="number">100</span> <span class="number">1</span><br>
+<span class="tag">发放指定物品</span> <span class="string">新手剑</span> <span class="number">1</span><br>
+<span class="tag">调整角色经验</span> <span class="number">5000</span><br>
+<span class="keyword">#SAY</span><br>
+恭喜你完成了第一阶段的试炼！&lt;BR&gt;这把新手剑是你的奖励。&lt;BR&gt;继续努力，下一阶段的任务等着你！&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+你已经完成过这个任务了！&lt;BR&gt;去寻找下一个挑战吧。&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：任务进度分支控制</div>
+        <div class="code-block"><span class="comment">; 根据任务进度显示不同对话</span><br>
+[@任务NPC]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">200</span> <span class="number">0</span><br>
+<span class="keyword">#SAY</span><br>
+勇士，我需要你的帮助！&lt;BR&gt;请帮我收集10个魔物之魂。&lt;BR&gt;&lt;接受任务/@接受任务200&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">200</span> <span class="number">1</span><br>
+<span class="tag">检测任务标识</span> <span class="number">201</span> <span class="number">0</span><br>
+<span class="keyword">#ELSESAY</span><br>
+任务进行中...&lt;BR&gt;你收集到魔物之魂了吗？&lt;BR&gt;&lt;提交任务/@提交任务200&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">201</span> <span class="number">1</span><br>
+<span class="keyword">#ELSESAY</span><br>
+感谢你的帮助！&lt;BR&gt;任务已经完成了。</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：多阶段任务系统</div>
+        <div class="code-block"><span class="comment">; 使用多个标识控制任务阶段</span><br>
+[@多阶段任务]<br>
+<span class="comment">; 第一阶段：击杀10只怪物</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">300</span> <span class="number">0</span><br>
+<span class="tag">检测怪物数量</span> <span class="string">僵尸</span> &gt;= <span class="number">10</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">设置任务标识</span> <span class="number">300</span> <span class="number">1</span><br>
+<span class="keyword">#SAY</span><br>
+第一阶段完成！<br>
+<br>
+<span class="comment">; 第二阶段：收集5个道具</span><br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">300</span> <span class="number">1</span><br>
+<span class="tag">检测任务标识</span> <span class="number">301</span> <span class="number">0</span><br>
+<span class="tag">检测背包物品</span> <span class="string">任务道具</span> <span class="number">5</span><br>
+<span class="keyword">#ELSEACT</span><br>
+<span class="tag">设置任务标识</span> <span class="number">301</span> <span class="number">1</span><br>
+<span class="tag">调整角色经验</span> <span class="number">50000</span><br>
+<span class="keyword">#ELSESAY</span><br>
+第二阶段完成！获得经验50000！</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 索引范围限制</strong><br>
+        • 任务ID必须在<strong>0-1999</strong>范围内（共2000个）<br>
+        • 超出范围会导致检测失败<br>
+        • 建议从小到大按系统划分使用（如0-99主线，100-199支线等）<br><br>
+        
+        <strong>2. 标识值使用</strong><br>
+        • 只能使用 <code>0</code>（false/未完成）或 <code>1</code>（true/已完成）<br>
+        • 其他值会被自动转换为布尔值<br>
+        • 默认所有标识初始值为0<br><br>
+        
+        <strong>3. 持久化特性</strong><br>
+        • 任务标识会<strong>永久保存</strong>到角色数据中<br>
+        • 下线再上线后依然有效<br>
+        • 除非手动清除或重置角色数据<br><br>
+        
+        <strong>4. 配合使用</strong><br>
+        • 通常与<code>设置任务标识</code>命令配合使用<br>
+        • 与<code>检测背包物品</code>配合，实现任务提交<br>
+        • 与<code>检测角色等级</code>配合，控制任务开放条件<br><br>
+        
+        <strong>5. ID规划建议</strong><br>
+        • 统一规划任务ID的使用范围<br>
+        • 不同任务系统使用不同的ID段<br>
+        • 避免不同任务使用相同ID导致冲突<br>
+        • 建议制作任务ID分配表进行管理<br><br>
+        
+        <strong>6. 防重复领取</strong><br>
+        • 所有可领取奖励的任务都应该设置标识<br>
+        • 领取前检测标识为0，领取后设置为1<br>
+        • 这是防止BUG和刷奖励的基础措施
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 主线任务系统</strong><br>
+        • 控制主线任务的完成进度<br>
+        • 防止任务重复领取<br>
+        • 实现任务链式触发<br><br>
+        
+        <strong>2. 支线任务系统</strong><br>
+        • 记录支线任务的完成状态<br>
+        • 控制支线任务的开放条件<br>
+        • 实现多分支任务流程<br><br>
+        
+        <strong>3. 每日任务系统</strong><br>
+        • 标记当日任务完成状态<br>
+        • 配合时间检测实现每日重置<br>
+        • 控制任务完成次数<br><br>
+        
+        <strong>4. 成就系统</strong><br>
+        • 记录成就的达成状态<br>
+        • 防止成就重复获得<br>
+        • 实现成就解锁奖励<br><br>
+        
+        <strong>5. 剧情系统</strong><br>
+        • 标记剧情触发节点<br>
+        • 控制剧情分支走向<br>
+        • 实现一次性剧情事件
+    </div>
+
+</body>
+</html>

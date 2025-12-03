@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 生成指定怪物</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        在指定地图的随机坐标位置生成指定数量的怪物，并设置存活时间。该命令常用于活动、副本、任务等场景，可以动态控制怪物的生成和消失。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">生成指定怪物</span> <span class="number">地图号</span> <span class="number">怪物编号</span> <span class="number">数量</span> <span class="number">存活时间</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">地图号</div>
+            <div class="param-desc">目标地图的编号，怪物将在该地图的随机坐标生成。</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">怪物编号</div>
+            <div class="param-desc">要生成的怪物模板编号，需要在怪物数据库中存在。</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">数量</div>
+            <div class="param-desc">要生成的怪物数量，可以一次性生成多只相同的怪物。</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">存活时间</div>
+            <div class="param-desc">怪物存活时间（秒），设置为0表示永久存在，到期后自动消失。</div>
+        </div>
+    </div>
+
+    <h2>✅ 功能特性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>特性</th>
+                <th>说明</th>
+                <th>备注</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">随机生成</span></td>
+                <td>怪物在指定地图的随机坐标生成</td>
+                <td>避免怪物堆叠</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">定时消失</span></td>
+                <td>可设置怪物的存活时间</td>
+                <td>0表示永久存在</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">批量生成</span></td>
+                <td>支持一次性生成多只怪物</td>
+                <td>提高效率</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">地图检测</span></td>
+                <td>会检测目标地图是否存在</td>
+                <td>地图不存在则失败</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：等级限制的怪物生成</div>
+        <div class="code-block"><span class="comment">; 玩家达到30级后才能生成挑战怪物</span><br>
+[@挑战BOSS]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色等级</span> &gt;= <span class="number">30</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">生成指定怪物</span> <span class="number">1</span> <span class="number">1001</span> <span class="number">5</span> <span class="number">300</span><br>
+<span class="tag">发送系统消息</span> <span class="string">"挑战已开始，5只怪物已生成，请在5分钟内击败！"</span><br>
+<span class="keyword">#ELSESAY</span><br>
+你的等级不足30级，无法开启挑战。</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：副本怪物波次生成</div>
+        <div class="code-block"><span class="comment">; 副本中根据进度生成不同波次的怪物</span><br>
+[@副本第一波]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">生成指定怪物</span> <span class="number">1000</span> <span class="number">2001</span> <span class="number">10</span> <span class="number">600</span><br>
+<span class="tag">发送系统消息</span> <span class="string">"第一波怪物来袭！"</span><br>
+<span class="tag">变量赋值</span> P0 <span class="number">1</span>  <span class="comment">; 标记第一波已生成</span><br>
+<span class="tag">Break</span><br>
+<br>
+[@副本第二波]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测指定变量</span> [P0] = <span class="number">1</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">生成指定怪物</span> <span class="number">1000</span> <span class="number">2002</span> <span class="number">15</span> <span class="number">600</span><br>
+<span class="tag">发送系统消息</span> <span class="string">"第二波怪物来袭！"</span><br>
+<span class="tag">变量赋值</span> P0 <span class="number">2</span><br>
+<span class="tag">Break</span></div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：限时活动怪物</div>
+        <div class="code-block"><span class="comment">; 每天固定时间生成世界BOSS</span><br>
+[@世界BOSS活动]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测当前小时</span> = <span class="number">20</span>  <span class="comment">; 晚上8点</span><br>
+<span class="tag">检测当前分钟</span> = <span class="number">0</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">生成指定怪物</span> <span class="number">1</span> <span class="number">9999</span> <span class="number">1</span> <span class="number">3600</span>  <span class="comment">; 1小时后消失</span><br>
+<span class="tag">发送全服公告</span> <span class="string">"世界BOSS已在主城刷新！"</span> <span class="number">10</span><br>
+<span class="tag">Break</span></div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 地图与坐标</strong><br>
+        • 怪物会在指定地图的<strong>随机可行走坐标</strong>生成<br>
+        • 如果地图不存在或无效，命令将失败<br>
+        • 生成位置会自动避开障碍物和安全区<br><br>
+        
+        <strong>2. 怪物编号</strong><br>
+        • 怪物编号必须在怪物数据库（Monster.DB）中存在<br>
+        • 使用不存在的编号会导致命令失败<br>
+        • 建议先确认怪物模板配置正确<br><br>
+        
+        <strong>3. 存活时间</strong><br>
+        • 存活时间单位为<strong>秒</strong><br>
+        • 设置为 <code>0</code> 表示怪物永久存在（直到被击杀）<br>
+        • 时间到期后怪物会自动消失，不会掉落物品<br>
+        • 建议根据活动类型合理设置存活时间<br><br>
+        
+        <strong>4. 性能考虑</strong><br>
+        • 一次性生成大量怪物可能影响服务器性能<br>
+        • 建议单次生成数量不超过100只<br>
+        • 对于大规模怪物生成，可以分批次执行<br><br>
+        
+        <strong>5. 数量限制</strong><br>
+        • 地图怪物总数有上限限制<br>
+        • 超过上限后新怪物无法生成<br>
+        • 可以通过清除怪物命令释放空间
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 副本系统</strong><br>
+        • 根据进度生成不同波次的怪物<br>
+        • 控制怪物数量和刷新时间<br>
+        • 实现多阶段战斗<br><br>
+        
+        <strong>2. 限时活动</strong><br>
+        • 定时生成世界BOSS<br>
+        • 活动期间刷新特殊怪物<br>
+        • 自动清理过期怪物<br><br>
+        
+        <strong>3. 任务系统</strong><br>
+        • 任务触发时生成目标怪物<br>
+        • 完成任务后清除怪物<br>
+        • 控制任务难度<br><br>
+        
+        <strong>4. 挑战系统</strong><br>
+        • 玩家触发挑战生成怪物<br>
+        • 限时击杀机制<br>
+        • 失败后自动清理
+    </div>
+
+</body>
+</html>

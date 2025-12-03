@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📍 检测坐标范围</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家当前坐标是否在指定坐标点的一定范围内，用于实现区域限制、NPC互动范围、活动区域判定等功能。此命令通过计算玩家与目标坐标的网格距离来判断是否在范围内，是实现位置相关功能的核心命令。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测坐标范围</span> <span class="number">X坐标</span> <span class="number">Y坐标</span> <span class="number">范围</span><br>
+<span class="keyword">#ACT</span><br>
+执行在范围内的操作<br>
+<span class="keyword">#SAY</span><br>
+显示的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">X坐标</div>
+            <div class="param-desc">目标点的X坐标值。<br>
+            • 类型：整数（int）<br>
+            • 范围：根据地图大小而定<br>
+            • 示例：100</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">Y坐标</div>
+            <div class="param-desc">目标点的Y坐标值。<br>
+            • 类型：整数（int）<br>
+            • 范围：根据地图大小而定<br>
+            • 示例：200</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">范围</div>
+            <div class="param-desc">允许的最大网格距离。<br>
+            • 类型：整数（int）<br>
+            • 单位：地图格子<br>
+            • 示例：5表示距离目标点5格以内<br>
+            • 距离计算使用网格距离（切比雪夫距离）</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家与目标坐标的网格距离 ≤ 指定范围</td>
+                <td>执行#ACT中的操作命令，显示#SAY中的对话内容</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>玩家与目标坐标的网格距离 &gt; 指定范围</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">参数错误</span></td>
+                <td>坐标或范围参数格式错误</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：NPC守卫范围检测</div>
+        <div class="code-block"><span class="comment">; 副本入口守卫（玩家必须靠近才能进入副本）</span><br>
+[@副本入口守卫]<br>
+<span class="keyword">#IF</span><br>
+检测坐标范围 150 200 5<br>
+检测角色等级 &gt;= 50<br>
+检测组队人数 &gt;= 3<br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 副本入口 ═══════════&lt;BR&gt;您已靠近副本入口！&lt;BR&gt;─────────────────────────&lt;BR&gt;副本名称：恶魔巢穴&lt;BR&gt;推荐等级：50级以上&lt;BR&gt;推荐人数：3-5人&lt;BR&gt;─────────────────────────&lt;BR&gt;您的队伍已满足进入条件。&lt;BR&gt;&lt;进入副本/@进入副本&gt;&lt;BR&gt;&lt;查看副本详情/@副本详情&gt;&lt;BR&gt;&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 副本入口 ═══════════&lt;BR&gt;进入副本需要满足以下条件：&lt;BR&gt;─────────────────────────&lt;BR&gt;✓ 靠近副本入口（坐标150,200附近5格内）&lt;BR&gt;✓ 等级达到 50级&lt;BR&gt;✓ 组队人数至少 3人&lt;BR&gt;─────────────────────────&lt;BR&gt;请满足条件后再来！&lt;BR&gt;&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br>
+<br>
+[@进入副本]<br>
+<span class="keyword">#IF</span><br>
+检测是否队长<br>
+检测金币数量 &gt;= 50000<br>
+<span class="keyword">#ACT</span><br>
+调整金币数量 - 50000<br>
+队伍传送 D001 100 100<br>
+<span class="keyword">#SAY</span><br>
+传送成功！祝您游戏愉快！<br>
+<span class="keyword">#ELSESAY</span><br>
+需要队长身份并支付50,000金币！&lt;BR&gt;&lt;#SO:1&gt;返回&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 距离计算方式</strong><br>
+        • 使用网格距离（切比雪夫距离）计算，即max(|x1-x2|, |y1-y2|)<br>
+        • 例如：玩家在(100,100)，目标(105,103)，距离=max(5,3)=5<br>
+        • 不是直线距离（欧几里得距离），而是地图格子距离<br>
+        • 范围为5表示可以在目标点周围5x5=25格范围内<br><br>
+        
+        <strong>2. 常见应用场景</strong><br>
+        • <strong>NPC互动范围</strong>：限制玩家必须靠近NPC才能对话<br>
+        • <strong>副本入口</strong>：检测玩家是否到达副本入口位置<br>
+        • <strong>活动区域</strong>：限制活动必须在特定区域内进行<br>
+        • <strong>安全区判定</strong>：检测玩家是否在安全区域内<br>
+        • <strong>任务目标点</strong>：检测玩家是否到达任务指定位置<br>
+        • <strong>传送点限制</strong>：只能在传送点附近传送<br><br>
+        
+        <strong>3. 范围值的选择</strong><br>
+        • 范围过小（如1-2格）可能导致玩家难以触发<br>
+        • 范围过大（如20-30格）失去了位置限制的意义<br>
+        • 推荐范围：NPC互动3-5格，副本入口5-10格<br>
+        • 根据实际游戏体验调整合适的范围值<br><br>
+        
+        <strong>4. 坐标的获取</strong><br>
+        • 可以在游戏中按特定快捷键查看当前坐标<br>
+        • 也可以通过GM命令或管理工具获取坐标<br>
+        • 建议在编写脚本时先确认准确的坐标位置<br>
+        • NPC守卫的坐标通常就是其站立位置<br><br>
+        
+        <strong>5. 与其他命令配合</strong><br>
+        • <strong>检测当前地图编号</strong>：确保在正确的地图上<br>
+        • <strong>检测角色等级</strong>：限制等级要求<br>
+        • <strong>检测组队人数</strong>：组队副本入口检测<br>
+        • 建议先检测地图，再检测坐标范围<br><br>
+        
+        <strong>6. 多点位检测</strong><br>
+        • 使用#OR段可以检测多个坐标点<br>
+        • 例如：副本有多个入口，任一入口附近都可以<br>
+        • 每个检测坐标范围命令独占一行<br>
+        • 满足任意一个位置条件即可执行<br><br>
+        
+        <strong>7. 玩家体验优化</strong><br>
+        • 在#ELSESAY中明确提示需要到达的坐标位置<br>
+        • 可以提供坐标导航或地图标记功能<br>
+        • 距离过远时提示玩家当前位置和目标位置<br>
+        • 范围边界处建议留有一定容差，避免卡边<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 坐标填写错误，与实际位置不符<br>
+        • ❌ 范围设置过小，玩家难以触发<br>
+        • ❌ 未检测地图编号，导致其他地图也能触发<br>
+        • ❌ 混淆网格距离和直线距离的概念<br>
+        • ✅ 正确做法：使用正确坐标，设置合理范围，配合地图检测，提供清晰提示
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 40px; background: #0f1419; line-height: 1.8; color: #e2e8f0; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px; font-size: 2.2em; }
+        h2 { color: #f6ad55; margin: 40px 0 20px; padding-left: 15px; border-left: 5px solid #f6ad55; font-size: 1.6em; }
+        h3 { color: #667eea; margin: 30px 0 15px; font-size: 1.3em; }
+        
+        .intro { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #e2e8f0; padding: 25px; margin: 25px 0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .intro p { color: #e2e8f0; margin: 8px 0; }
+        
+        .info-box { background: #1a1f2e; border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 4px; color: #a0aec0; }
+        .warning-box { background: #1a1f2e; border-left: 4px solid #f6ad55; padding: 20px; margin: 25px 0; border-radius: 4px; color: #a0aec0; }
+        .success-box { background: #1a1f2e; border-left: 4px solid #68d391; padding: 20px; margin: 25px 0; border-radius: 4px; color: #a0aec0; }
+        
+        .code-block { background: #1a1f2e; color: #abb2bf; padding: 20px; margin: 20px 0; border-radius: 8px; font-family: 'Consolas', monospace; line-height: 1.6; overflow-x: auto; border: 1px solid #2d3748; }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .tag { color: #fc8181; font-weight: bold; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #68d391; }
+        .code-block .number { color: #f6ad55; }
+        .code-block .operator { color: #667eea; }
+        
+        ul, ol { margin-left: 30px; margin-top: 10px; color: #a0aec0; }
+        li { margin: 8px 0; }
+        
+        .step-number { display: inline-block; background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; margin-right: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #2d3748; padding: 12px; text-align: left; }
+        th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        td { background: #1a1f2e; color: #a0aec0; }
+        tr:hover td { background: #1f2633; }
+        
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 25px 0; }
+        .feature-card { background: #1a1f2e; padding: 20px; border-radius: 8px; border: 1px solid #2d3748; transition: all 0.3s ease; }
+        .feature-card:hover { border-color: #667eea; background: #1f2633; }
+        .feature-card h4 { color: #667eea; margin-bottom: 10px; }
+        .feature-card p { color: #a0aec0; }
+        code { background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>📝 TXT脚本编辑教程</h1>
+    
+    <div class="intro">
+        <p><strong>🎯 什么是TXT脚本系统？</strong></p>
+        <p>TXT脚本系统是NwServer游戏服务器的核心功能，通过简单的文本文件就能实现复杂的游戏逻辑。</p>
+        <p>无需编程基础，只要掌握基本语法，就能创建NPC对话、任务系统、副本玩法等丰富内容。</p>
+    </div>
+
+    <h2>🌟 TXT脚本的独特优势</h2>
+    
+    <div class="info-box">
+        <strong>💡 为什么选择TXT脚本？</strong>
+        <p>NwServer 同时支持 TXT 脚本和 Lua 脚本，您可以根据需求选择最合适的工具。TXT 脚本特别适合：</p>
+        <ul style='margin-top:10px'>
+            <li>✅ <strong>简单线性任务</strong>：固定流程的对话、奖励发放</li>
+            <li>✅ <strong>快速开发</strong>：无需编程基础，5分钟上手</li>
+            <li>✅ <strong>即时生效</strong>：修改后立即生效，无需重启服务器</li>
+            <li>✅ <strong>团队协作</strong>：策划、运营人员可独立完成内容制作</li>
+        </ul>
+    </div>
+    
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h4>📄 零门槛</h4>
+            <p>无需编程基础，只要会写文档就能编写脚本</p>
+        </div>
+        <div class="feature-card">
+            <h4>🔄 热更新</h4>
+            <p>修改后无需重启服务器，测试效率极高</p>
+        </div>
+        <div class="feature-card">
+            <h4>🎮 功能完整</h4>
+            <p>300+命令涵盖传送、物品、战斗、副本等所有功能</p>
+        </div>
+        <div class="feature-card">
+            <h4>💡 所见即所得</h4>
+            <p>对话文本直接编写，NPC界面直观呈现</p>
+        </div>
+        <div class="feature-card">
+            <h4>📝 易于维护</h4>
+            <p>纯文本格式，任何编辑器都能打开和修改</p>
+        </div>
+        <div class="feature-card">
+            <h4>🤝 与Lua互补</h4>
+            <p>简单功能用TXT，复杂逻辑用Lua，灵活组合</p>
+        </div>
+    </div>
+
+    <h2>🆚 TXT脚本 vs Lua脚本</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:20%'>对比维度</th>
+                <th style='width:40%'>TXT脚本</th>
+                <th style='width:40%'>Lua脚本</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>学习难度</strong></td>
+                <td>⭐ 极简单<br>无需编程基础，5分钟上手</td>
+                <td>⭐⭐⭐ 中等<br>需要基础编程知识</td>
+            </tr>
+            <tr>
+                <td><strong>适用场景</strong></td>
+                <td>✅ 简单NPC对话<br>✅ 线性任务流程<br>✅ 固定奖励发放<br>✅ 传送功能</td>
+                <td>✅ 复杂任务系统<br>✅ 动态计算逻辑<br>✅ 全局事件处理<br>✅ 排行榜系统</td>
+            </tr>
+            <tr>
+                <td><strong>开发速度</strong></td>
+                <td>⭐⭐⭐⭐⭐ 极快<br>直接编写对话和命令</td>
+                <td>⭐⭐⭐ 较快<br>需要编写代码逻辑</td>
+            </tr>
+            <tr>
+                <td><strong>调试难度</strong></td>
+                <td>⭐ 简单<br>语法错误容易发现</td>
+                <td>⭐⭐⭐ 中等<br>需要查看日志排查</td>
+            </tr>
+            <tr>
+                <td><strong>逻辑能力</strong></td>
+                <td>⭐⭐ 有限<br>支持简单条件判断</td>
+                <td>⭐⭐⭐⭐⭐ 强大<br>支持任意复杂逻辑</td>
+            </tr>
+            <tr>
+                <td><strong>维护性</strong></td>
+                <td>⭐⭐⭐⭐⭐ 优秀<br>文本格式，直观易改</td>
+                <td>⭐⭐⭐ 良好<br>代码需要理解逻辑</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="success-box">
+        <strong>💡 最佳实践建议</strong>
+        <ul>
+            <li><strong>TXT脚本优先</strong>：对于简单功能，优先使用TXT脚本，开发快、维护易</li>
+            <li><strong>Lua处理复杂逻辑</strong>：需要复杂计算、循环、算法时，使用Lua脚本</li>
+            <li><strong>混合使用</strong>：TXT负责对话和UI，Lua负责复杂业务逻辑，发挥各自优势</li>
+            <li><strong>团队分工</strong>：策划用TXT制作内容，程序用Lua实现系统功能</li>
+        </ul>
+    </div>
+
+    <h2>📚 脚本文件结构</h2>
+    
+    <div class="warning-box">
+        <strong>⚠️ 重要！文件存放位置规则：</strong>
+        <ul>
+            <li><strong>NPC脚本</strong>：必须存放在 <code>Database/System/txt/NPCs/</code> 目录下</li>
+            <li><strong>系统触发脚本</strong>：由 <code>00-QFunction.txt</code> 调用的脚本可以存放在 <code>Database/System/txt/</code> 目录中</li>
+            <li>例如：<code>角色登陆触发.txt</code>、<code>每日零点触发.txt</code> 等</li>
+        </ul>
+    </div>
+    
+    <div class="info-box">
+        <strong>📝 NPC脚本命名规范：</strong>
+        <p>NPC脚本文件名格式：<code>数字-名称.txt</code></p>
+        <ul>
+            <li><strong>数字</strong>：通常是NPC的ID编号（四位数）</li>
+            <li><strong>名称</strong>：使用有意义的中文名称或拼音</li>
+        </ul>
+        <p><strong>命名示例：</strong></p>
+        <ul>
+            <li><code>6212-雷九道01.txt</code> - 魔塔NPC</li>
+            <li><code>6771-陈叔.txt</code> - 铭文匠</li>
+            <li><code>4748-新手引导员.txt</code> - 新手村NPC</li>
+            <li><code>7119-玩法通驿.txt</code> - 传送员</li>
+            <li><code>6254-阿诗.txt</code> - 任务NPC</li>
+        </ul>
+        
+        <strong>💾 文件编码：</strong>UTF-8 或 GB2312，建议使用 UTF-8<br>
+        <strong>📄 文件格式：</strong>纯文本文件 (.txt)
+    </div>
+
+    <h2>🔤 基本语法结构</h2>
+    
+    <p>TXT脚本由三个核心部分组成：</p>
+    
+    <h3>1. 触发标签 (@开头)</h3>
+    <p>定义脚本的入口点，指定何时触发这段脚本。</p>
+    <div class="code-block">
+<span class="tag">[@MAIN]</span>                <span class="comment">; NPC主对话入口</span><br>
+<span class="tag">[@登陆触发执行]</span>        <span class="comment">; 自定义段落名称</span><br>
+<span class="tag">[@_角色登录触发]</span>      <span class="comment">; 系统触发标签（以_开头）</span>
+    </div>
+
+    <h3>2. 检测命令 (#IF部分)</h3>
+    <p>检测玩家是否满足特定条件，所有条件都满足才会执行#ACT部分。</p>
+    <div class="code-block">
+<span class="keyword">#IF</span><br>
+<span class="operator">检测角色等级</span> <span class="operator">&gt;=</span> <span class="number">40</span><br>
+<span class="operator">检测金币数量</span> <span class="operator">&gt;</span> <span class="number">10000</span><br>
+<span class="operator">检测背包物品</span> <span class="string">屠龙</span> <span class="number">1</span>
+    </div>
+
+    <h3>3. 操作命令 (#ACT部分)</h3>
+    <p>当条件满足时执行的操作，可以是传送、发放物品、调整属性等。</p>
+    <div class="code-block">
+<span class="keyword">#ACT</span><br>
+<span class="operator">调整角色金币</span> <span class="operator">-</span> <span class="number">10000</span><br>
+<span class="operator">发放指定物品</span> <span class="string">勇者勋章</span> <span class="number">1</span><br>
+<span class="operator">传送指定地图</span> <span class="number">3</span> <span class="number">330</span> <span class="number">330</span> <span class="number">0</span><br>
+<span class="operator">Break</span>                             <span class="comment">; 中断脚本执行</span>
+    </div>
+
+    <h2>📖 完整示例：新手村NPC</h2>
+    
+    <p>以下是一个完整的NPC脚本示例，展示了如何创建一个传送NPC：</p>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 比奇城传送员 ====================</span><br>
+<span class="comment">; NPC名称: 传送员</span><br>
+<span class="comment">; 功能: 提供付费传送服务</span><br>
+<br>
+<span class="tag">[@MAIN]</span><br>
+<span class="keyword">#SAY</span><br>
+你好，勇士！<span class="operator">&lt;$角色名称&gt;</span><span class="operator">&lt;BR&gt;</span>我可以帮你传送到各大主城。<span class="operator">&lt;#SO:1&gt;</span>前往盟重（1000金币）<span class="operator">&lt;#SO/&gt;</span><span class="operator">&lt;#SO:2&gt;</span>前往沙巴克（2000金币）<span class="operator">&lt;#SO/&gt;</span><span class="operator">&lt;#SO:3&gt;</span>前往白日门（1500金币）<span class="operator">&lt;#SO/&gt;</span><br>
+<br>
+<span class="tag">[@1]</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测金币数量</span> <span class="operator">&lt;</span> <span class="number">1000</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+你的金币不足！需要1000金币。<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">调整角色金币</span> <span class="operator">-</span> <span class="number">1000</span><br>
+<span class="operator">传送指定地图</span> <span class="number">5</span> <span class="number">300</span> <span class="number">300</span> <span class="number">0</span><br>
+<span class="operator">发送系统消息</span> <span class="string">欢迎来到盟重省！</span><br>
+<br>
+<span class="tag">[@2]</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测金币数量</span> <span class="operator">&lt;</span> <span class="number">2000</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+你的金币不足！需要2000金币。<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测角色等级</span> <span class="operator">&lt;</span> <span class="number">30</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+等级不足！需要达到30级。<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">调整角色金币</span> <span class="operator">-</span> <span class="number">2000</span><br>
+<span class="operator">传送指定地图</span> <span class="number">10</span> <span class="number">650</span> <span class="number">320</span> <span class="number">0</span><br>
+<span class="operator">发送系统消息</span> <span class="string">欢迎来到沙巴克！</span>
+    </div>
+
+    <h2>📦 变量系统详解</h2>
+    
+    <div class="info-box">
+        <strong>💡 为什么需要变量？</strong>
+        <p>变量用于存储和追踪玩家的进度、状态、数据等信息。例如：</p>
+        <ul style='margin-top:10px'>
+            <li>✅ 记录玩家完成任务的次数</li>
+            <li>✅ 存储玩家的积分、声望等数值</li>
+            <li>✅ 标记玩家是否已经领取过奖励</li>
+            <li>✅ 实现全服排行榜、活动计数等功能</li>
+        </ul>
+    </div>
+    
+    <h3>📋 变量类型完整列表</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:15%'>变量类型</th>
+                <th style='width:20%'>格式</th>
+                <th style='width:30%'>作用域</th>
+                <th style='width:35%'>使用场景</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>个人变量</strong></td>
+                <td><code>%G0-%G999</code></td>
+                <td>每个玩家独立<br>永久保存（数据库）</td>
+                <td>任务进度、积分、声望<br>个人统计数据</td>
+            </tr>
+            <tr>
+                <td><strong>临时变量</strong></td>
+                <td><code>%U0-%U999</code></td>
+                <td>每个玩家独立<br>下线清空（内存）</td>
+                <td>临时计数、临时标记<br>当前对话状态</td>
+            </tr>
+            <tr>
+                <td><strong>全局变量</strong></td>
+                <td><code>%A0-%A999</code></td>
+                <td>全服共享<br>重启清空（内存）</td>
+                <td>在线人数统计<br>全服活动进度</td>
+            </tr>
+            <tr>
+                <td><strong>全局字符串</strong></td>
+                <td><code>%S0-%S999</code></td>
+                <td>全服共享<br>重启清空（内存）</td>
+                <td>存储文本信息<br>排行榜玩家名</td>
+            </tr>
+            <tr>
+                <td><strong>公会变量</strong></td>
+                <td><code>%J0-%J999</code></td>
+                <td>公会内共享<br>永久保存（数据库）</td>
+                <td>公会贡献度<br>公会活动进度</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>🔧 变量操作示例</h3>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 变量基本操作 ====================</span><br>
+<br>
+<span class="comment">; 1. 设置变量值（赋值）</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G10</span> <span class="operator">=</span> <span class="number">100</span>              <span class="comment">; 设置G10为100</span><br>
+<br>
+<span class="comment">; 2. 增加变量值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G10</span> <span class="operator">+</span> <span class="number">50</span>               <span class="comment">; G10增加50</span><br>
+<br>
+<span class="comment">; 3. 减少变量值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G10</span> <span class="operator">-</span> <span class="number">20</span>               <span class="comment">; G10减少20</span><br>
+<br>
+<span class="comment">; 4. 检测变量值</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%G10</span> <span class="operator">&gt;=</span> <span class="number">100</span>            <span class="comment">; 如果G10大于等于100</span><br>
+<br>
+<span class="comment">; 5. 在对话中显示变量</span><br>
+<span class="keyword">#SAY</span><br>
+您的积分：<span class="operator">&lt;$G10&gt;</span><span class="operator">&lt;BR&gt;</span>需要100积分才能兑换奖励。
+    </div>
+    
+    <h3>📝 实战案例：每日任务计数</h3>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 每日任务NPC ====================</span><br>
+<span class="tag">[@MAIN]</span><br>
+<span class="keyword">#SAY</span><br>
+欢迎！<span class="operator">&lt;BR&gt;</span>您今天已完成任务：<span class="operator">&lt;$U5&gt;</span>/10 次<span class="operator">&lt;BR&gt;</span><span class="operator">&lt;#SO:1&gt;</span>接受任务（消耗10积分）<span class="operator">&lt;#SO/&gt;</span><br>
+<br>
+<span class="tag">[@1]</span><br>
+<span class="comment">; 检测今日是否已达上限</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%U5</span> <span class="operator">&gt;=</span> <span class="number">10</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+今日任务次数已用完！<span class="operator">&lt;BR&gt;</span>明天再来吧。<br>
+<br>
+<span class="comment">; 检测积分是否足够</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%G10</span> <span class="operator">&lt;</span> <span class="number">10</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+积分不足！需要10积分。<span class="operator">&lt;BR&gt;</span>当前积分：<span class="operator">&lt;$G10&gt;</span><br>
+<br>
+<span class="comment">; 扣除积分，增加次数</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G10</span> <span class="operator">-</span> <span class="number">10</span>              <span class="comment">; 扣除10积分</span><br>
+<span class="operator">变量运算</span> <span class="operator">%U5</span> <span class="operator">+</span> <span class="number">1</span>               <span class="comment">; 增加今日次数</span><br>
+<span class="operator">传送指定地图</span> <span class="number">100</span> <span class="number">50</span> <span class="number">50</span> <span class="number">0</span>      <span class="comment">; 传送到任务地图</span><br>
+<span class="operator">发送系统消息</span> <span class="string">任务已开始，加油！</span>
+    </div>
+
+    <h2>🎯 常用命令速查表</h2>
+    
+    <h3>1️⃣ 传送类命令</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:35%'>命令</th>
+                <th style='width:65%'>说明和示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>传送指定地图</code></td>
+                <td><strong>传送到指定地图坐标</strong><br>
+                格式：<code>传送指定地图 地图编号 X坐标 Y坐标 方向</code><br>
+                示例：<code>传送指定地图 3 330 330 0</code></td>
+            </tr>
+            <tr>
+                <td><code>随机传送</code></td>
+                <td><strong>随机传送到指定地图</strong><br>
+                格式：<code>随机传送 地图编号</code><br>
+                示例：<code>随机传送 3</code></td>
+            </tr>
+            <tr>
+                <td><code>传送副本地图</code></td>
+                <td><strong>传送到副本地图</strong><br>
+                格式：<code>传送副本地图 地图编号 X坐标 Y坐标 方向</code><br>
+                示例：<code>传送副本地图 100 50 50 0</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>2️⃣ 物品类命令</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:35%'>命令</th>
+                <th style='width:65%'>说明和示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>发放指定物品</code></td>
+                <td><strong>给玩家发放物品</strong><br>
+                格式：<code>发放指定物品 物品名称 数量</code><br>
+                示例：<code>发放指定物品 屠龙 1</code></td>
+            </tr>
+            <tr>
+                <td><code>扣除背包物品</code></td>
+                <td><strong>扣除玩家背包物品</strong><br>
+                格式：<code>扣除背包物品 物品名称 数量</code><br>
+                示例：<code>扣除背包物品 金币 10000</code></td>
+            </tr>
+            <tr>
+                <td><code>检测背包物品</code></td>
+                <td><strong>检测玩家是否拥有物品</strong><br>
+                格式：<code>检测背包物品 物品名称 数量</code><br>
+                示例：<code>检测背包物品 屠龙 1</code></td>
+            </tr>
+            <tr>
+                <td><code>检测背包空格</code></td>
+                <td><strong>检测背包空格数量</strong><br>
+                格式：<code>检测背包空格 >= 数量</code><br>
+                示例：<code>检测背包空格 >= 5</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>3️⃣ 货币类命令</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:35%'>命令</th>
+                <th style='width:65%'>说明和示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>调整角色金币</code></td>
+                <td><strong>增加或减少金币</strong><br>
+                格式：<code>调整角色金币 +/- 数量</code><br>
+                示例：<code>调整角色金币 + 10000</code></td>
+            </tr>
+            <tr>
+                <td><code>调整角色元宝</code></td>
+                <td><strong>增加或减少元宝（绑定）</strong><br>
+                格式：<code>调整角色元宝 +/- 数量</code><br>
+                示例：<code>调整角色元宝 + 100</code></td>
+            </tr>
+            <tr>
+                <td><code>检测金币数量</code></td>
+                <td><strong>检测玩家金币</strong><br>
+                格式：<code>检测金币数量 >= 数量</code><br>
+                示例：<code>检测金币数量 >= 10000</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>4️⃣ 消息类命令</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:35%'>命令</th>
+                <th style='width:65%'>说明和示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>发送系统消息</code></td>
+                <td><strong>在聊天框显示系统消息</strong><br>
+                格式：<code>发送系统消息 消息内容</code><br>
+                示例：<code>发送系统消息 恭喜获得奖励！</code></td>
+            </tr>
+            <tr>
+                <td><code>发送对话消息</code></td>
+                <td><strong>在对话框上方显示消息</strong><br>
+                格式：<code>发送对话消息 消息内容</code><br>
+                示例：<code>发送对话消息 任务已完成</code></td>
+            </tr>
+            <tr>
+                <td><code>发送全服公告</code></td>
+                <td><strong>发送全服公告</strong><br>
+                格式：<code>发送全服公告 公告内容 是否滚动</code><br>
+                示例：<code>发送全服公告 活动开始！ false</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>5️⃣ 等级和经验命令</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:35%'>命令</th>
+                <th style='width:65%'>说明和示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>调整角色经验</code></td>
+                <td><strong>增加或减少经验值</strong><br>
+                格式：<code>调整角色经验 +/- 经验值</code><br>
+                示例：<code>调整角色经验 + 1000000</code></td>
+            </tr>
+            <tr>
+                <td><code>调整角色等级</code></td>
+                <td><strong>增加或减少等级</strong><br>
+                格式：<code>调整角色等级 +/- 等级数</code><br>
+                示例：<code>调整角色等级 + 1</code></td>
+            </tr>
+            <tr>
+                <td><code>检测角色等级</code></td>
+                <td><strong>检测玩家等级</strong><br>
+                格式：<code>检测角色等级 >= 等级</code><br>
+                示例：<code>检测角色等级 >= 50</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🏷️ 脚本常量系统</h2>
+    
+    <div class="info-box">
+        <strong>💡 什么是脚本常量？</strong>
+        <p>脚本常量是服务器自动计算的<strong>动态值</strong>，用 <code>&lt;$常量名&gt;</code> 格式表示。</p>
+        <p>与变量不同，常量是<strong>只读的</strong>，会实时反映游戏状态，无需手动维护。</p>
+    </div>
+    
+    <h3>📊 常用常量列表</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style='width:30%'>常量标签</th>
+                <th style='width:35%'>说明</th>
+                <th style='width:35%'>使用示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>&lt;$角色名称&gt;</code></td>
+                <td>当前玩家的角色名</td>
+                <td>欢迎 <code>&lt;$角色名称&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$角色等级&gt;</code></td>
+                <td>当前玩家的等级</td>
+                <td>您的等级：<code>&lt;$角色等级&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$角色职业&gt;</code></td>
+                <td>当前玩家的职业名称</td>
+                <td>职业：<code>&lt;$角色职业&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$角色金币&gt;</code></td>
+                <td>当前玩家的金币数量</td>
+                <td>金币：<code>&lt;$角色金币&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$当前地图&gt;</code></td>
+                <td>当前地图名称</td>
+                <td>位置：<code>&lt;$当前地图&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$玩家数量&gt;</code></td>
+                <td>当前在线人数</td>
+                <td>在线：<code>&lt;$玩家数量&gt;</code> 人</td>
+            </tr>
+            <tr>
+                <td><code>&lt;$当前时间&gt;</code></td>
+                <td>服务器当前时间</td>
+                <td>时间：<code>&lt;$当前时间&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$小时&gt;</code></td>
+                <td>当前小时（24小时制）</td>
+                <td>现在是 <code>&lt;$小时&gt;</code> 点</td>
+            </tr>
+            <tr>
+                <td><code>&lt;$G数字&gt;</code></td>
+                <td>显示个人变量的值</td>
+                <td>积分：<code>&lt;$G10&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;$U数字&gt;</code></td>
+                <td>显示临时变量的值</td>
+                <td>今日次数：<code>&lt;$U5&gt;</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>📝 常量使用示例</h3>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 使用常量的对话 ====================</span><br>
+<span class="tag">[@MAIN]</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="operator">&lt;font color='#FFD700'&gt;</span>欢迎，<span class="operator">&lt;$角色名称&gt;</span>！<span class="operator">&lt;/font&gt;</span><span class="operator">&lt;BR&gt;</span><span class="operator">&lt;BR&gt;</span>您的信息：<span class="operator">&lt;BR&gt;</span>等级：<span class="operator">&lt;$角色等级&gt;</span><span class="operator">&lt;BR&gt;</span>职业：<span class="operator">&lt;$角色职业&gt;</span><span class="operator">&lt;BR&gt;</span>金币：<span class="operator">&lt;$角色金币&gt;</span><span class="operator">&lt;BR&gt;</span>位置：<span class="operator">&lt;$当前地图&gt;</span><span class="operator">&lt;BR&gt;</span><span class="operator">&lt;BR&gt;</span>服务器状态：<span class="operator">&lt;BR&gt;</span>在线人数：<span class="operator">&lt;$玩家数量&gt;</span> 人<span class="operator">&lt;BR&gt;</span>当前时间：<span class="operator">&lt;$当前时间&gt;</span>
+    </div>
+
+    <h2>🎨 高级技巧与设计模式</h2>
+    
+    <h3>1️⃣ 逻辑分支处理（模拟IF-ELSE）</h3>
+    
+    <div class="warning-box">
+        <strong>⚠️ 重要：</strong>TXT脚本没有 <code>#ELSE</code> 关键字，但可以通过多个 <code>#IF</code> 块实现分支逻辑。
+    </div>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 分支逻辑示例 ====================</span><br>
+<span class="tag">[@领取奖励]</span><br>
+<br>
+<span class="comment">; 分支1：VIP玩家</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%G20</span> <span class="operator">=</span> <span class="number">1</span>              <span class="comment">; G20=1 表示VIP玩家</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">发放指定物品</span> <span class="string">超级礼包</span> <span class="number">1</span><br>
+<span class="operator">发送系统消息</span> <span class="string">VIP专属奖励已发放！</span><br>
+<span class="operator">Break</span>                            <span class="comment">; 执行完毕，中断脚本</span><br>
+<br>
+<span class="comment">; 分支2：普通玩家（如果上面Break了，这里不会执行）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">发放指定物品</span> <span class="string">普通礼包</span> <span class="number">1</span><br>
+<span class="operator">发送系统消息</span> <span class="string">普通奖励已发放！</span>
+    </div>
+    
+    <h3>2️⃣ 防止重复领取（标记模式）</h3>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 防止重复领取奖励 ====================</span><br>
+<span class="tag">[@每日签到]</span><br>
+<br>
+<span class="comment">; 检测今天是否已经签到</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%U10</span> <span class="operator">=</span> <span class="number">1</span>              <span class="comment">; U10=1 表示今天已签到</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+您今天已经签到过了！<span class="operator">&lt;BR&gt;</span>明天再来吧。<br>
+<br>
+<span class="comment">; 发放签到奖励并标记</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%U10</span> <span class="operator">=</span> <span class="number">1</span>             <span class="comment">; 标记为已签到</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G15</span> <span class="operator">+</span> <span class="number">1</span>             <span class="comment">; 累计签到天数</span><br>
+<span class="operator">发放指定物品</span> <span class="string">签到礼包</span> <span class="number">1</span><br>
+<span class="operator">发送系统消息</span> <span class="string">签到成功！累计签到 &lt;$G15&gt; 天</span>
+    </div>
+    
+    <h3>3️⃣ 多步骤流程（状态机模式）</h3>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 多步骤任务流程 ====================</span><br>
+<span class="comment">; 使用变量记录任务进度：0=未开始，1=第一步，2=第二步，3=已完成</span><br>
+<br>
+<span class="tag">[@任务NPC]</span><br>
+<br>
+<span class="comment">; 状态0：任务未开始</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%G30</span> <span class="operator">=</span> <span class="number">0</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+勇士，我需要你的帮助！<span class="operator">&lt;BR&gt;</span><span class="operator">&lt;#SO:1&gt;</span>接受任务<span class="operator">&lt;#SO/&gt;</span><br>
+<br>
+<span class="comment">; 状态1：第一步进行中</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%G30</span> <span class="operator">=</span> <span class="number">1</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+请帮我收集10个怪物材料。<span class="operator">&lt;BR&gt;</span><span class="operator">&lt;#SO:2&gt;</span>我已收集完成<span class="operator">&lt;#SO/&gt;</span><br>
+<br>
+<span class="comment">; 状态2：第二步进行中</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">%G30</span> <span class="operator">=</span> <span class="number">2</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+很好！现在去击败BOSS。<span class="operator">&lt;BR&gt;</span><span class="operator">&lt;#SO:3&gt;</span>我已击败BOSS<span class="operator">&lt;#SO/&gt;</span><br>
+<br>
+<span class="comment">; 状态3：任务已完成</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+任务已完成，感谢你的帮助！<br>
+<br>
+<span class="tag">[@1]</span>                                  <span class="comment">; 接受任务</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G30</span> <span class="operator">=</span> <span class="number">1</span>             <span class="comment">; 更新任务状态为第一步</span><br>
+<span class="operator">发送系统消息</span> <span class="string">任务已接受！</span><br>
+<br>
+<span class="tag">[@2]</span>                                  <span class="comment">; 完成第一步</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测背包物品</span> <span class="string">怪物材料</span> <span class="number">10</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">扣除背包物品</span> <span class="string">怪物材料</span> <span class="number">10</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G30</span> <span class="operator">=</span> <span class="number">2</span>             <span class="comment">; 更新任务状态为第二步</span><br>
+<span class="operator">发送系统消息</span> <span class="string">材料已提交！</span><br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+材料不足！需要10个怪物材料。<br>
+<br>
+<span class="tag">[@3]</span>                                  <span class="comment">; 完成第二步</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">%G30</span> <span class="operator">=</span> <span class="number">3</span>             <span class="comment">; 更新任务状态为已完成</span><br>
+<span class="operator">发放指定物品</span> <span class="string">任务奖励</span> <span class="number">1</span><br>
+<span class="operator">调整角色经验</span> <span class="operator">+</span> <span class="number">1000000</span><br>
+<span class="operator">发送系统消息</span> <span class="string">任务完成！获得丰厚奖励！</span>
+    </div>
+    
+    <h3>4️⃣ 时间检测（限时活动）</h3>
+    
+    <div class="code-block">
+<span class="comment">; ==================== 限时活动NPC ====================</span><br>
+<span class="tag">[@活动NPC]</span><br>
+<br>
+<span class="comment">; 检测时间是否在活动时段（晚上8点到10点）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">&lt;$小时&gt;</span> <span class="operator">&lt;</span> <span class="number">20</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+活动时间：每晚20:00-22:00<span class="operator">&lt;BR&gt;</span>现在还未到活动时间。<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">&lt;$小时&gt;</span> <span class="operator">&gt;=</span> <span class="number">22</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+活动已结束！<span class="operator">&lt;BR&gt;</span>明天再来吧。<br>
+<br>
+<span class="comment">; 活动进行中</span><br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="operator">&lt;font color='#FF0000'&gt;</span>活动进行中！<span class="operator">&lt;/font&gt;</span><span class="operator">&lt;BR&gt;</span><span class="operator">&lt;#SO:1&gt;</span>参加活动<span class="operator">&lt;#SO/&gt;</span>
+    </div>
+
+    <h2>💡 编写技巧与最佳实践</h2>
+
+    <div class="success-box">
+        <strong>✅ 推荐做法：</strong>
+        <ul>
+            <li>使用有意义的段落名称，如 [@领取任务]、[@完成任务]</li>
+            <li>添加注释说明脚本功能，以分号(;)开头</li>
+            <li>合理使用缩进，提高代码可读性</li>
+            <li>将复杂逻辑拆分成多个小段落</li>
+            <li>使用变量存储临时数据</li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ 常见错误：</strong>
+        <ul>
+            <li><strong>#SAY 分行错误</strong>：#SAY后的所有内容必须在一行，不能换行编写</li>
+            <li><strong>选项按钮换行</strong>：&lt;#SO:&gt; 按钮必须在同一行，不能分多行</li>
+            <li><strong>标签名称拼写错误</strong>：如 #lF 写成 #1F，#ACT 写成 #act</li>
+            <li>忘记添加 #ACT 或 #IF 关键字</li>
+            <li>条件检测顺序不当，导致逻辑错误</li>
+            <li>物品名称、地图编号等参数错误</li>
+            <li>缺少 Break 导致脚本继续执行</li>
+        </ul>
+    </div>
+
+    <h2>📐 特殊格式说明</h2>
+
+    <div class="info-box">
+        <strong>📌 选项按钮格式：</strong>
+        <ul>
+            <li><code>&lt;#SO:数字&gt;按钮文本&lt;#SO/&gt;</code> - 创建可点击选项，点击后跳转到[@数字]段落</li>
+            <li>示例：<code>&lt;#SO:1&gt;领取奖励&lt;#SO/&gt;</code> → 点击后跳转到[@1]</li>
+        </ul>
+        
+        <strong>🔤 变量格式：</strong>
+        <ul>
+            <li><code>&lt;$变量名&gt;</code> - 显示变量的值</li>
+            <li>示例：<code>&lt;$角色名称&gt;</code>、<code>&lt;$小时&gt;</code>、<code>&lt;$副本次数&gt;</code></li>
+        </ul>
+        
+        <strong>🎨 HTML标签支持：</strong>
+        <ul>
+            <li>对话文本中可以使用HTML标签美化显示</li>
+            <li><code>&lt;font color='#FF0000'&gt;红色文字&lt;/font&gt;</code> - 设置字体颜色</li>
+            <li><code>&lt;br&gt;</code> - 换行</li>
+        </ul>
+        
+        <strong>💬 #SAY 对话格式：</strong>
+        <ul>
+            <li><strong>所有内容必须在一行内</strong>，不能分多行编写</li>
+            <li>文本换行使用 <code>&lt;BR&gt;</code> 标签</li>
+            <li>选项按钮 <code>&lt;#SO:&gt;</code> 也必须在同一行，不能换行</li>
+            <li>正确格式：<code>#SAY<br>文本1&lt;BR&gt;文本2&lt;#SO:1&gt;选项1&lt;#SO/&gt;&lt;#SO:2&gt;选项2&lt;#SO/&gt;</code></li>
+        </ul>
+        
+        <strong>⚙️ 其他注意事项：</strong>
+        <ul>
+            <li>使用 <code>Break</code> 而不是 <code>BREAK</code></li>
+            <li>没有 <code>#ELSE</code>，使用多个 <code>#IF</code> 块来实现分支逻辑</li>
+        </ul>
+    </div>
+
+    <h2>🎯 常用脚本模板</h2>
+
+    <h3>模板1：简单NPC对话</h3>
+    <div class="code-block">
+<span class="tag">[@MAIN]</span><br>
+<span class="keyword">#SAY</span><br>
+你好！我是新手引导员。<span class="operator">&lt;BR&gt;</span>需要帮助吗？<span class="operator">&lt;#SO:1&gt;</span>查看新手攻略<span class="operator">&lt;#SO/&gt;</span><span class="operator">&lt;#SO:2&gt;</span>领取新手礼包<span class="operator">&lt;#SO/&gt;</span>
+    </div>
+
+    <h3>模板2：物品兑换</h3>
+    <div class="code-block">
+<span class="tag">[@兑换武器]</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测背包物品</span> <span class="string">兑换券</span> <span class="number">10</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">扣除背包物品</span> <span class="string">兑换券</span> <span class="number">10</span><br>
+<span class="operator">发放指定物品</span> <span class="string">屠龙</span> <span class="number">1</span><br>
+<span class="operator">发送系统消息</span> <span class="string">恭喜获得屠龙刀！</span><br>
+<span class="operator">Break</span><br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+兑换失败！需褁10张兑换券。
+    </div>
+
+    <h3>模板3：进入副本检测</h3>
+    <div class="code-block">
+<span class="tag">[@进入副本]</span><br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测角色等级</span> <span class="operator">&lt;</span> <span class="number">40</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+等级不足！需要达到40级。<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="operator">检测变量</span> <span class="operator">&lt;$副本次数&gt;</span> <span class="operator">&gt;=</span> <span class="number">3</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+今日副本次数已用完！<span class="operator">&lt;BR&gt;</span>当前次数：<span class="operator">&lt;$副本次数&gt;</span>/3<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="operator">取反</span> <span class="operator">检测是否队长</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">Break</span><br>
+<span class="keyword">#SAY</span><br>
+你不是队长，请等待队长操作！<br>
+<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="operator">变量运算</span> <span class="operator">&lt;$副本次数&gt;</span> <span class="operator">+</span> <span class="number">1</span><br>
+<span class="operator">创建副本地图</span> <span class="number">100</span> <span class="number">60</span> <span class="number">0</span> <span class="number">0</span><br>
+<span class="operator">传送副本地图</span> <span class="number">100</span> <span class="number">50</span> <span class="number">50</span> <span class="number">0</span>
+    </div>
+
+    <h2>🔧 调试与测试</h2>
+
+    <table>
+        <tr>
+            <th>调试方法</th>
+            <th>说明</th>
+        </tr>
+        <tr>
+            <td>使用 记录日志 命令</td>
+            <td>在关键位置记录日志，方便追踪脚本执行流程</td>
+        </tr>
+        <tr>
+            <td>分段测试</td>
+            <td>将复杂脚本拆分成多个部分，逐个测试验证</td>
+        </tr>
+        <tr>
+            <td>使用 发送系统消息</td>
+            <td>在测试时显示当前变量值或执行状态</td>
+        </tr>
+        <tr>
+            <td>GM命令辅助</td>
+            <td>使用GM命令调整等级、物品等，快速测试各种情况</td>
+        </tr>
+    </table>
+
+    <h2>📚 进阶学习</h2>
+
+    <div class="info-box">
+        <strong>🎓 学习路径：</strong>
+        <ol>
+            <li><strong>基础阶段</strong>：掌握基本语法，编写简单NPC对话</li>
+            <li><strong>进阶阶段</strong>：学习使用变量、条件判断，实现任务系统</li>
+            <li><strong>高级阶段</strong>：掌握定时器、副本系统、复杂逻辑控制</li>
+            <li><strong>专家阶段</strong>：结合Lua脚本，实现高级玩法</li>
+        </ol>
+    </div>
+
+    <h2>🔗 相关文档</h2>
+    <ul>
+        <li>📝 <a href="脚本常量.html">脚本常量</a> - 了解可用的常量值</li>
+        <li>🔢 <a href="脚本变量.html">脚本变量</a> - 学习变量的使用方法</li>
+        <li>🎯 <a href="脚本触发标签.html">脚本触发标签</a> - 掌握各种触发事件</li>
+        <li>✅ <a href="脚本检测命令.html">脚本检测命令</a> - 查看所有检测命令</li>
+        <li>⚙️ <a href="脚本操作命令.html">脚本操作命令</a> - 查看所有操作命令</li>
+    </ul>
+
+    <h2>📝 创建NPC步骤</h2>
+    
+    <div class="info-box">
+        <strong>✅ 快速上手指南：</strong>
+        <ol>
+            <li><strong>确定目录</strong>：在 <code>Database/System/txt/NPCs/</code> 目录下创建新文件</li>
+            <li><strong>命名文件</strong>：按照 <code>XXXX-NPC名称.txt</code> 格式命名（如 <code>8888-测试NPC.txt</code>）</li>
+            <li><strong>编写脚本</strong>：从 <code>[@MAIN]</code> 标签开始，编写NPC对话和功能</li>
+            <li><strong>保存文件</strong>：使用UTF-8编码保存</li>
+            <li><strong>游戏中测试</strong>：刷新脚本或重载服务器后测试</li>
+        </ol>
+    </div>
+    
+    <div class="success-box" style="margin-top: 40px;">
+        <strong>💪 开始创作吧！</strong>
+        <p>现在你已经掌握了TXT脚本的基础知识，可以开始创建自己的NPC和任务系统了。</p>
+        <p>记住：多练习、多测试、多参考现有脚本，你会越来越熟练！</p>
+        <p><strong>提示：</strong>可以参考 <code>NPCs</code> 目录下的现有脚本文件，学习他们的写法。</p>
+    </div>
+</body>
+</html>

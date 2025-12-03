@@ -1,0 +1,478 @@
+/* ==================== 基础样式 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* 主色调 - 现代蓝紫渐变 */
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --accent-color: #8b5cf6;
+    
+    /* 背景色 */
+    --bg-main: #0f172a;
+    --bg-sidebar: #1e293b;
+    --bg-hover: #334155;
+    --bg-active: #475569;
+    --bg-content: #f8fafc;
+    
+    /* 文本色 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    /* 状态色 */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    /* 圆角 */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* 过渡 */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    background: var(--bg-main);
+    overflow: hidden;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    display: flex;
+    max-width: 100%;
+    height: 100vh;
+    background: var(--bg-main);
+}
+
+/* ==================== 侧边栏样式 ==================== */
+.sidebar {
+    width: 280px;
+    background: var(--bg-sidebar);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    z-index: 10;
+}
+
+/* 侧边栏头部 */
+.sidebar-header {
+    padding: 2rem 1.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+
+.sidebar-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-header p {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 0.25rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+}
+
+/* 搜索框 */
+.search-box {
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-sidebar);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-left: 2.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background: var(--bg-hover);
+}
+
+.search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+/* 导航菜单 */
+.nav-menu {
+    list-style: none;
+    padding: 0.5rem 0;
+}
+
+.nav-item {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all var(--transition-base);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0.125rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+}
+
+.nav-item i {
+    font-style: normal;
+    font-size: 1.1rem;
+    width: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    transform: translateX(4px);
+    border-left-color: transparent;
+}
+
+.nav-item.active {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+    color: var(--primary-light);
+    border-left-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-item.has-submenu {
+    position: relative;
+    padding-right: 2.5rem;
+}
+
+.nav-item.has-submenu::after {
+    content: "❯";
+    position: absolute;
+    right: 1.25rem;
+    font-size: 0.75rem;
+    transition: transform var(--transition-base);
+    color: var(--text-muted);
+}
+
+.nav-item.has-submenu.active::after {
+    transform: rotate(90deg);
+    color: var(--primary-light);
+}
+
+/* 状态指示点 */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    position: relative;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.status-dot.implemented {
+    background: var(--success);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-dot.not-implemented {
+    background: var(--error);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* 子菜单 */
+.submenu,
+.sub-submenu {
+    list-style: none;
+    padding-left: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1),
+                opacity var(--transition-base) ease-in-out;
+}
+
+.submenu.active,
+.sub-submenu.active {
+    opacity: 1;
+    max-height: 5000px; /* 足够大的值以容纳所有子菜单项 */
+}
+
+.submenu .nav-item {
+    padding-left: 3rem;
+    font-size: 0.85rem;
+    margin: 0.0625rem 0.75rem;
+    transform: translateX(0);
+    transition: all var(--transition-base);
+}
+
+.submenu .nav-item.has-submenu {
+    padding-left: 3rem;
+    padding-right: 2.5rem;
+}
+
+/* 二级菜单中的has-submenu也显示箭头 */
+.submenu .nav-item.has-submenu::after {
+    content: "❯";
+    position: absolute;
+    right: 1.25rem;
+    font-size: 0.7rem;
+    transition: transform var(--transition-base);
+    color: var(--text-muted);
+}
+
+.submenu .nav-item.has-submenu.active::after {
+    transform: rotate(90deg);
+    color: var(--primary-light);
+}
+
+.sub-submenu .nav-item {
+    padding-left: 4.5rem;
+    font-size: 0.8rem;
+    margin: 0.0625rem 0.75rem;
+    transform: translateX(0);
+    transition: all var(--transition-base);
+    background: rgba(15, 23, 42, 0.3); /* 三级目录稍微深一点的背景 */
+    border-radius: var(--radius-sm);
+}
+
+.sub-submenu .nav-item:hover {
+    background: var(--bg-hover);
+}
+
+/* 子菜单展开时的淡入效果 */
+.submenu:not(.active) > .nav-item,
+.sub-submenu:not(.active) > .nav-item {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.submenu.active > .nav-item,
+.sub-submenu.active > .nav-item {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* 为子菜单项添加延迟淡入效果 - 支持最多50个项 */
+.submenu.active > .nav-item:nth-child(1) { transition-delay: 0.03s; }
+.submenu.active > .nav-item:nth-child(2) { transition-delay: 0.05s; }
+.submenu.active > .nav-item:nth-child(3) { transition-delay: 0.07s; }
+.submenu.active > .nav-item:nth-child(4) { transition-delay: 0.09s; }
+.submenu.active > .nav-item:nth-child(5) { transition-delay: 0.11s; }
+.submenu.active > .nav-item:nth-child(6) { transition-delay: 0.13s; }
+.submenu.active > .nav-item:nth-child(7) { transition-delay: 0.15s; }
+.submenu.active > .nav-item:nth-child(8) { transition-delay: 0.17s; }
+.submenu.active > .nav-item:nth-child(9) { transition-delay: 0.19s; }
+.submenu.active > .nav-item:nth-child(10) { transition-delay: 0.21s; }
+.submenu.active > .nav-item:nth-child(n+11) { transition-delay: 0.23s; }
+
+.sub-submenu.active > .nav-item:nth-child(1) { transition-delay: 0.03s; }
+.sub-submenu.active > .nav-item:nth-child(2) { transition-delay: 0.05s; }
+.sub-submenu.active > .nav-item:nth-child(3) { transition-delay: 0.07s; }
+.sub-submenu.active > .nav-item:nth-child(4) { transition-delay: 0.09s; }
+.sub-submenu.active > .nav-item:nth-child(5) { transition-delay: 0.11s; }
+.sub-submenu.active > .nav-item:nth-child(6) { transition-delay: 0.13s; }
+.sub-submenu.active > .nav-item:nth-child(7) { transition-delay: 0.15s; }
+.sub-submenu.active > .nav-item:nth-child(8) { transition-delay: 0.17s; }
+.sub-submenu.active > .nav-item:nth-child(9) { transition-delay: 0.19s; }
+.sub-submenu.active > .nav-item:nth-child(10) { transition-delay: 0.21s; }
+.sub-submenu.active > .nav-item:nth-child(11) { transition-delay: 0.23s; }
+.sub-submenu.active > .nav-item:nth-child(12) { transition-delay: 0.25s; }
+.sub-submenu.active > .nav-item:nth-child(13) { transition-delay: 0.27s; }
+.sub-submenu.active > .nav-item:nth-child(14) { transition-delay: 0.29s; }
+.sub-submenu.active > .nav-item:nth-child(15) { transition-delay: 0.31s; }
+.sub-submenu.active > .nav-item:nth-child(16) { transition-delay: 0.33s; }
+.sub-submenu.active > .nav-item:nth-child(17) { transition-delay: 0.35s; }
+.sub-submenu.active > .nav-item:nth-child(18) { transition-delay: 0.37s; }
+.sub-submenu.active > .nav-item:nth-child(19) { transition-delay: 0.39s; }
+.sub-submenu.active > .nav-item:nth-child(20) { transition-delay: 0.41s; }
+.sub-submenu.active > .nav-item:nth-child(n+21) { transition-delay: 0.43s; }
+
+/* ==================== 内容区域 ==================== */
+.content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-content);
+    position: relative;
+}
+
+#contentFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: var(--bg-content);
+}
+
+/* ==================== 滚动条样式 ==================== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--bg-main);
+    transition: all var(--transition-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--primary-light) 0%, var(--accent-color) 100%);
+    border-width: 1px;
+}
+
+/* ==================== 响应式设计 ==================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: fixed;
+        left: -100%;
+        transition: left var(--transition-base);
+        z-index: 1000;
+    }
+    
+    .sidebar.active {
+        left: 0;
+    }
+    
+    .container {
+        flex-direction: column;
+    }
+}
+
+/* ==================== 加载动画 ==================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 仅对一级菜单项应用加载动画 */
+.nav-menu > .nav-item {
+    animation: fadeIn 0.3s ease-out backwards;
+}
+
+.nav-menu > li.nav-item:nth-child(1) { animation-delay: 0.05s; }
+.nav-menu > li.nav-item:nth-child(2) { animation-delay: 0.1s; }
+.nav-menu > li.nav-item:nth-child(3) { animation-delay: 0.15s; }
+.nav-menu > li.nav-item:nth-child(4) { animation-delay: 0.2s; }
+.nav-menu > li.nav-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* 子菜单项不应用页面加载动画 */
+.submenu .nav-item,
+.sub-submenu .nav-item {
+    animation: none;
+}
+
+/* ==================== 高级视觉效果 ==================== */
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 60%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    transition: width var(--transition-base);
+}
+
+.nav-item:hover::before {
+    width: 4px;
+}
+
+.nav-item.active::before {
+    width: 4px;
+}
+
+/* 搜索框图标 */
+.search-box {
+    position: relative;
+}
+
+.search-box::before {
+    content: '🔍';
+    position: absolute;
+    left: 2.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 1;
+}

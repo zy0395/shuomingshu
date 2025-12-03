@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测是否安全区 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测是否安全区</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家当前所在位置是否处于安全区域内。安全区是地图中的特殊区域，通常禁止PK、攻击等敌对行为，为玩家提供安全的交易和休息环境。此命令广泛应用于仓库、交易、银行等需要安全保障的服务。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式（无需参数）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否安全区</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 在安全区时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">无需参数</div>
+            <div class="param-desc">
+                此命令不需要任何参数。<br>
+                • 自动检测玩家当前所在位置<br>
+                • 根据地图配置判断是否在安全区<br>
+                • 实时检测，随玩家移动而变化
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家当前在安全区内</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>玩家当前不在安全区内</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">玩家不在地图上</span></td>
+                <td>玩家状态异常（不在任何地图上）</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">地图实例不存在</span></td>
+                <td>地图未加载或已卸载</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：仓库管理员</div>
+        <div class="code-block"><span class="comment">; 仓库管理员 - 只在安全区提供仓库服务</span><br>
+[@仓库管理员]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否安全区</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">打开仓库界面</span><br>
+<span class="keyword">#SAY</span><br>
+════════ 仓库服务 ════════&lt;BR&gt;<br>
+欢迎使用仓库服务！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+您的仓库已打开，请妥善保管物品。&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;存入物品/@存入&gt;&lt;BR&gt;<br>
+&lt;取出物品/@取出&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+════════ 仓库服务 ════════&lt;BR&gt;<br>
+抱歉，您当前不在安全区内！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+为了您的财产安全，仓库服务只能在&lt;BR&gt;<br>
+安全区域内使用。&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+请前往城镇或安全区域再使用此服务。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：交易商人</div>
+        <div class="code-block"><span class="comment">; 交易商人 - 安全区内才能交易</span><br>
+[@交易商人]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否安全区</span><br>
+<span class="keyword">#SAY</span><br>
+欢迎光临！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;购买物品/@购买&gt;&lt;BR&gt;<br>
+&lt;出售物品/@出售&gt;&lt;BR&gt;<br>
+&lt;查看商品/@查看&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+抱歉，这里不安全！&lt;BR&gt;<br>
+交易服务只在安全区域提供。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：银行服务</div>
+        <div class="code-block"><span class="comment">; 银行职员 - 金融服务需要安全保障</span><br>
+[@银行职员]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否安全区</span><br>
+<span class="keyword">#SAY</span><br>
+══════ 银行服务 ══════&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+可用服务：&lt;BR&gt;<br>
+· 货币兑换&lt;BR&gt;<br>
+· 元宝充值&lt;BR&gt;<br>
+· 金币转账&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;货币兑换/@兑换&gt;&lt;BR&gt;<br>
+&lt;元宝充值/@充值&gt;&lt;BR&gt;<br>
+&lt;金币转账/@转账&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+【安全警告】&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+金融服务只能在安全区使用！&lt;BR&gt;<br>
+请移步至城镇安全区域。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：安全区提示NPC</div>
+        <div class="code-block"><span class="comment">; 区域守卫 - 提示玩家当前区域状态</span><br>
+[@区域守卫]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否安全区</span><br>
+<span class="keyword">#SAY</span><br>
+【安全区域】&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+您当前位于安全区域。&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+安全区特性：&lt;BR&gt;<br>
+✓ 禁止PK&lt;BR&gt;<br>
+✓ 禁止攻击&lt;BR&gt;<br>
+✓ 可以安全交易&lt;BR&gt;<br>
+✓ 可以使用仓库&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;查看地图/@地图&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+【危险区域】&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+您当前不在安全区域！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+请注意：&lt;BR&gt;<br>
+⚠ 可能遭遇PK&lt;BR&gt;<br>
+⚠ 怪物可能攻击&lt;BR&gt;<br>
+⚠ 建议组队行动&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;传送到安全区/@传送安全区&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 实时检测特性</strong><br>
+        • 此命令检测的是玩家<strong>当前瞬时位置</strong><br>
+        • 玩家移动后，安全区状态可能改变<br>
+        • 建议在关键操作前再次检测<br><br>
+        
+        <strong>2. 地图配置</strong><br>
+        • 安全区范围在地图配置文件中定义<br>
+        • 不同地图的安全区范围可能不同<br>
+        • 主城通常大部分区域都是安全区<br>
+        • 野外地图一般只有特定位置是安全区<br><br>
+        
+        <strong>3. 无参数设计</strong><br>
+        • 此命令不需要任何参数<br>
+        • 自动检测玩家当前位置<br>
+        • 无需指定地图或坐标<br><br>
+        
+        <strong>4. 典型应用场景</strong><br>
+        • 仓库服务 - 防止玩家被偷袭时丢失物品<br>
+        • 交易系统 - 确保交易环境安全<br>
+        • 银行服务 - 金融操作需要安全保障<br>
+        • PK限制 - 控制PK功能的使用范围<br><br>
+        
+        <strong>5. 城镇与野外</strong><br>
+        • 城镇区域：通常整个城镇都是安全区<br>
+        • 野外地图：一般没有安全区或只有NPC周围<br>
+        • 副本地图：根据设计可能有或没有安全区<br>
+        • 特殊地图：如竞技场可能全部非安全区<br><br>
+        
+        <strong>6. 安全区效果</strong><br>
+        • 禁止玩家之间的PK行为<br>
+        • 禁止攻击其他玩家<br>
+        • 可能禁止技能释放<br>
+        • 提供安全的交易和休息环境
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 仓库系统</strong><br>
+        • 只在安全区开放仓库服务<br>
+        • 防止玩家在危险区域被偷袭<br>
+        • 确保物品存取的安全性<br><br>
+        
+        <strong>2. 交易系统</strong><br>
+        • 限制交易必须在安全区进行<br>
+        • 防止交易过程中遭遇攻击<br>
+        • 提供安全的交易环境<br><br>
+        
+        <strong>3. 银行服务</strong><br>
+        • 货币兑换只在安全区提供<br>
+        • 金币转账需要安全保障<br>
+        • 元宝操作要求在安全区<br><br>
+        
+        <strong>4. 传送服务</strong><br>
+        • 某些传送点只在安全区开放<br>
+        • 防止玩家利用传送逃避战斗<br>
+        • 控制传送功能的使用范围<br><br>
+        
+        <strong>5. 特殊功能限制</strong><br>
+        • PK模式切换需要在安全区<br>
+        • 行会功能部分要求在安全区<br>
+        • 某些道具使用限制在安全区
+    </div>
+
+</body>
+</html>

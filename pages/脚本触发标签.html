@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 40px; background: #0f1419; line-height: 1.8; color: #e2e8f0; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px; font-size: 2.2em; }
+        h2 { color: #f6ad55; margin: 40px 0 20px; padding-left: 15px; border-left: 5px solid #f6ad55; font-size: 1.6em; }
+        p { color: #a0aec0; }
+        
+        .intro { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #e2e8f0; padding: 25px; margin: 25px 0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .intro p { color: #e2e8f0; margin: 8px 0; }
+        .intro strong { color: #fff; }
+        .intro code { background: rgba(255,255,255,0.2); color: #fff; padding: 3px 8px; border-radius: 4px; font-family: 'Consolas', monospace; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px; text-align: left; font-weight: 600; border: 1px solid #2d3748; }
+        td { padding: 12px 15px; border: 1px solid #2d3748; background: #1a1f2e; color: #a0aec0; }
+        tbody tr:hover td { background: #1f2633; }
+        tbody tr:last-child td { border-bottom: none; }
+        
+        .status-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.85em; font-weight: bold; }
+        .status-done { background: #22543d; color: #68d391; border: 1px solid #38a169; }
+        .status-todo { background: #7c2d12; color: #f6ad55; border: 1px solid #c05621; }
+    .status-warn { background: #744210; color: #fbd38d; border: 1px solid #c05621; }
+        
+        .trigger-name { font-family: 'Consolas', monospace; color: #fc8181; font-weight: 600; }
+        
+        .category { background: #1a1f2e; border-left: 4px solid #667eea; padding: 15px; margin: 25px 0; border-radius: 5px; border: 1px solid #2d3748; }
+        .category h3 { color: #667eea; margin-bottom: 15px; }
+        .category p { color: #a0aec0; }
+        .category code { background: #0f1419; color: #667eea; padding: 3px 8px; border-radius: 3px; }
+        
+        .tip { background: #1a1f2e; border-left: 4px solid #667eea; padding: 15px; margin: 15px 0; border-radius: 4px; border: 1px solid #2d3748; }
+        .tip-title { font-weight: bold; color: #667eea; margin-bottom: 8px; }
+        .tip strong { color: #667eea; }
+        .tip code { background: #0f1419; color: #667eea; padding: 3px 8px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🎯 脚本触发标签</h1>
+    
+    <div class="intro">
+        <p><strong>📖 什么是脚本触发标签？</strong></p>
+        <p>脚本触发标签用于定义脚本在什么时机自动执行。</p>
+        <p>通过在<strong>00-QFunction.txt</strong>文件中定义触发标签，可以让脚本在特定事件发生时自动触发执行。</p>
+        <p><strong>⚠️ 重要：</strong>所有触发标签必须在 <code>00-QFunction.txt</code> 文件中定义后才能生效！</p>
+    </div>
+
+    <h2>📊 触发标签总览</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">触发标签</th>
+                <th style="width: 70%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_服务器启动触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    服务器逻辑线程在 <code>主程.服务循环Async</code> 中直接调用默认NPC脚本，完成一次性全局初始化。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>无玩家上下文</strong>，只能操作全局变量/命令<br>
+                    • 用途：初始化常量、写入版本信息、派发周期任务、记录启动日志
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_角色登录触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    玩家初始化流程结尾在 <code>实例类/玩家实例.cs</code> 内同步调用（delay=false），逻辑执行完才会显示人物。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>有玩家上下文</strong>：允许使用全部玩家命令<br>
+                    • 建议：发放登录奖励、校验封禁、拉起定时器；耗时操作请转为定时器避免拖慢进线速度
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_角色升级触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>实例类/玩家实例模块/玩家实例_经验升级系统.cs</code> 在等级提升后立刻触发，可读取当前等级。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 常用于分段奖励、解锁功能、广播升级公告<br>
+                    • 可配合 <code>检测角色等级</code> / <code>检测职业</code> 命令判定奖励层级
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_角色零点触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    日期变化时由 <code>地图处理网关.处理在线玩家天数变更()</code> 遍历在线玩家触发，离线角色不会执行。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 适合重置 J 变量、更新日程、刷新活跃度<br>
+                    • 若要兼顾离线玩家，请改为登录触发+日期校验
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_角色死亡触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    统一死亡入口 <code>玩家实例_生命复活系统.自身死亡处理</code> 中最先执行，原因不限。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 随后才会根据击杀者触发被怪/被人/击杀玩家标签<br>
+                    • 可做通用死亡惩罚、统计、邮件、提示等逻辑
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_被怪杀死触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    仅当最后一击来自怪物或守卫时触发，位于 <code>玩家实例_生命复活系统.cs</code>。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 脚本不会收到参数，请用 <code>&lt;$最后杀死的怪物编号&gt;</code> 常量获取怪物模板编号<br>
+                    • 顺序：角色死亡 → 被怪杀死 → Lua 玩家死亡
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_被人杀死触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    被玩家、宠物或陷阱击杀时触发，位于同一死亡模块。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 无参数，可通过 <code>&lt;$最后杀死自己的玩家名字&gt;</code> 以及 <code>&lt;$最后杀死的玩家名字&gt;</code> 获取双方信息<br>
+                    • 在 PK 公告与仇恨逻辑之后执行
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_击杀玩家触发]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    击杀方（玩家或其宠物主人）触发，同样无参数。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 使用 <code>&lt;$最后杀死的玩家名字&gt;</code> / <code>&lt;$最后杀死自己的玩家名字&gt;</code> 做后续逻辑<br>
+                    • 常用于荣誉、战功、任务计数
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_怪物死亡触发(怪物编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    怪物死亡并且 <code>执行脚本=true</code>、<code>触发lua=false</code> 时，由归属玩家触发，参数为怪物模板编号。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 实现：<code>实例类/怪物实例.cs</code><br>
+                    • 适合做击杀任务、掉落额外奖励、剧情推进
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_攻击怪物触发(怪物编号,伤害值)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>实例类/地图对象.cs</code> 在计算伤害后触发，仅限执行脚本且未启用 Lua 的怪物。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 参数：怪物模板编号、当前命中的伤害值<br>
+                    • 频率极高（每次命中），脚本内务必做轻量判断
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_使用物品触发(物品编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    当 <code>玩家实例_物品使用.cs</code> 的 <code>物品使用处理</code> 返回 false 时触发，参数为物品模板编号。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 建议配置：<code>触发Lua=false</code> 且 <code>物品使用属性=未知分类</code>，避免客户端内置逻辑<br>
+                    • 典型：礼包、传送符、功能开关
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_进入指定地图触发(地图编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    在 <code>玩家实例_地图传送系统.cs</code> 中切换地图成功后触发，仅触发一次（不会在同图传送时执行）。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 用于入场校验、欢迎提示、地图任务、限制条件
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_指定地图坐标触发(地图编号,X,Y)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>地图对象.自身移动时处理</code> 每次移动都会推送当前地图编号与坐标，频率最高。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 适合做区域机关、触发剧情、踩点传送<br>
+                    • 建议脚本先判断地图与坐标再执行，避免性能压力
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_尝试开启宝箱触发(道具编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>道具实例.Open()</code> 刚开始开箱时触发，可在脚本中设置 <code>停止宝箱探索</code>、<code>设置宝箱机率</code> 等命令控制流程。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 参数是宝箱道具编号<br>
+                    • 若脚本把 <code>探索道具.ScriptOp</code> 设为 true，原逻辑会立即退出
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_成功开启宝箱触发(道具编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    宝箱掉落生成后触发，可追加奖励或公告。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 適合统计开箱次数、补偿奖励、触发成就
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_停止开启宝箱触发(道具编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    开箱过程被移动/攻击/脚本命令打断时触发，用于清理状态。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 可提示玩家中断原因、返还道具等
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_添加Buff触发(Buff编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>地图对象.添加Buff时处理</code> 在 Buff 入场时触发，需在 Buff 模板勾选 “添加触发LUA”。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 可附加提示、额外属性、连锁效果
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_移除Buff触发(Buff编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    Buff 自然到期或被 <code>移除Buff时处理</code> 删除时触发，对应模板需开启 “移除触发LUA”。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 适合恢复状态、补偿冷却、关闭光效等
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_执行Buff触发(Buff编号)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    Buff 轮询逻辑（<code>地图对象.轮询Buff时处理</code>）中，只要模板勾选 “执行触发LUA”，每次 tick 都会触发。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 可用于持续伤害、周期恢复、计时提示等
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_定时器触发(定时器ID)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>玩家实例.处理对象数据()</code> 轮询玩家私有定时器列表，时间到即触发。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 通过脚本命令 <code>添加定时器</code> / <code>关闭定时器</code> 管理<br>
+                    • 适合延迟奖励、倒计时、循环检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_装备重铸触发(装备部位)]</span><br>
+                    <span class="status-tag status-done">已实现</span>
+                </td>
+                <td>
+                    <code>玩家实例_装备升级.cs</code> 中，当配置项 <code>触发装备重铸=true</code> 时，所有重铸会交给脚本处理，参数为装备槽位。<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 脚本需负责扣除材料、生成结果，并调用内置命令更新装备
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_触发器(名称)]</span><br>
+                    <span class="status-tag status-todo">未实现</span>
+                </td>
+                <td>
+                    目前没有任何服务器代码调用该标签，属于保留枚举；即便在 QFunction 中定义也不会被触发。
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_自定义命令(命令名)]</span><br>
+                    <span class="status-tag status-todo">未实现</span>
+                </td>
+                <td>
+                    设计用于客户端自定义命令，但尚无调用点；请勿在脚本中依赖。
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_任务接受触发(任务编号)]</span><br>
+                    <span class="status-tag status-todo">未实现</span>
+                </td>
+                <td>
+                    虽在枚举中声明，但任务系统尚未调用；接受任务时不会执行脚本。
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_任务完成触发(任务编号)]</span><br>
+                    <span class="status-tag status-todo">未实现</span>
+                </td>
+                <td>
+                    同上，当前完成任务无触发回调，需等待服务端补全或自行扩展。
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="trigger-name">[@_客户端事件触发(事件名)]</span><br>
+                    <span class="status-tag status-todo">未实现</span>
+                </td>
+                <td>
+                    枚举存在但没有任何客户端事件上传逻辑，定义后不会触发。
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip">
+        <div class="tip-title">📊 状态标记说明</div>
+        <p>
+            <span class="status-tag status-done">已实现</span>：当前服务器代码中已有明确调用点，可以放心使用。<br>
+            <span class="status-tag status-todo">未实现</span>：目前没有任何调用，定义后不会被执行。
+        </p>
+        <p style="color: #a0aec0; margin-top: 10px;">
+            👉 原 <code>[@_删除Buff触发]</code> 已与 <code>[@_移除Buff触发]</code> 合并，请统一使用“移除”版本。
+        </p>
+    </div>
+
+    <div class="tip">
+        <div class="tip-title">🎯 击杀信息获取方式</div>
+        <p>
+            被杀死/击杀类触发不会附带参数，可使用脚本常量 <code>&lt;$最后杀死的怪物编号&gt;</code>、<code>&lt;$最后杀死的玩家名字&gt;</code>、<code>&lt;$最后杀死自己的玩家名字&gt;</code> 获取最新一次击杀的对象信息，相关字段会在触发前由服务器写入玩家实例。
+        </p>
+    </div>
+
+    <h2>📝 如何使用触发标签</h2>
+    
+    <div class="tip">
+        <div class="tip-title">📂 定义位置</div>
+        <strong>所有触发标签必须在以下文件中定义：</strong><br>
+        <code style="background: #f8f9fa; padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0;">Database\System\txt\00-QFunction.txt</code><br><br>
+        
+        <strong>定义格式：</strong>触发标签名称前需要加下划线 <code>_</code><br>
+        例如：<code>[@_角色登录触发]</code>
+    </div>
+    
+    <div class="category">
+        <h3>💡 定义示例</h3>
+        <p>在 <code>00-QFunction.txt</code> 文件中这样定义触发标签：</p>
+        <div style="background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', monospace; overflow-x: auto; line-height: 1.8;">
+<span style="color: #5c6370; font-style: italic;">; 角色登录时触发</span><br>
+<span style="color: #e06c75;">[@_角色登录触发]</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #e06c75;">#CALL</span> <span style="color: #98c379;">角色登陆触发.txt</span> <span style="color: #e06c75;">@登陆触发执行</span><br>
+<br>
+<span style="color: #5c6370; font-style: italic;">; 角色升级时触发</span><br>
+<span style="color: #e06c75;">[@_角色升级触发]</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #e06c75;">#CALL</span> <span style="color: #98c379;">角色升级触发.txt</span> <span style="color: #e06c75;">@升级触发执行</span><br>
+<br>
+<span style="color: #5c6370; font-style: italic;">; 每天0点触发</span><br>
+<span style="color: #e06c75;">[@_角色零点触发]</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #e06c75;">#CALL</span> <span style="color: #98c379;">每日零点触发.txt</span> <span style="color: #e06c75;">@零点触发执行</span>
+        </div>
+    </div>
+    
+    <div class="tip">
+        <div class="tip-title">⚙️ 工作原理</div>
+        1. 当游戏事件发生时（如玩家登录），系统会查找 <code>00-QFunction.txt</code> 中对应的触发标签<br>
+        2. 执行触发标签下的脚本代码或通过 <code>#CALL</code> 调用其他脚本文件<br>
+        3. 触发标签名称必须以下划线 <code>_</code> 开头，如：<code>[@_角色登录触发]</code><br>
+        4. 可以使用 <code>#CALL</code> 命令调用其他脚本文件，实现模块化管理
+    </div>
+    
+    <div class="category">
+        <h3>🔤 触发标签语法总览</h3>
+        <p>服务器内部会根据不同事件自动拼出对应的触发段名称，然后在 <code>00-QFunction.txt</code> 中查找完全相同的段落。例如：</p>
+        <p>
+            • 无参数触发：<code>[@_角色登录触发]</code>、<code>[@_角色升级触发]</code>、<code>[@_角色零点触发]</code><br>
+            • 有参数触发：<code>[@_使用物品触发(物品编号)]</code>、<code>[@_怪物死亡触发(怪物编号)]</code>、<code>[@_进入指定地图触发(地图编号)]</code> 等，括号里的内容由服务器传入。
+        </p>
+        <p>你只需要在 <code>00-QFunction.txt</code> 中写出和下方示例<b>完全一致</b>的段落名，事件发生时就会自动跳转到对应脚本。</p>
+
+        <div class="tip" style="margin-top: 10px;">
+            <div class="tip-title">📌 常用写法示例</div>
+            <p>
+                • 角色登录触发：<code>[@_角色登录触发]</code><br>
+                • 角色升级触发：<code>[@_角色升级触发]</code><br>
+                • 角色零点触发：<code>[@_角色零点触发]</code><br>
+                • 角色死亡触发：<code>[@_角色死亡触发]</code><br>
+                • 被怪杀死触发：<code>[@_被怪杀死触发]</code><br>
+                • 被人杀死触发：<code>[@_被人杀死触发]</code><br>
+                • 击杀玩家触发：<code>[@_击杀玩家触发]</code>
+            </p>
+            <p>
+                • 怪物死亡触发：<code>[@_怪物死亡触发(怪物编号)]</code>，怪物编号 = 怪物模板表中的“怪物编号”<br>
+                • 攻击怪物触发：<code>[@_攻击怪物触发(怪物编号,伤害值)]</code><br>
+                • 使用物品触发：<code>[@_使用物品触发(物品编号)]</code>，物品编号 = 物品模板表中的“物品编号”<br>
+                • 进入指定地图触发：<code>[@_进入指定地图触发(地图编号)]</code>，地图编号 = 地图模板表中的“地图编号”<br>
+                • 指定地图坐标触发：<code>[@_指定地图坐标触发(地图编号,X,Y)]</code>，X、Y 为小地图坐标
+            </p>
+            <p>
+                • 尝试开启宝箱触发：<code>[@_尝试开启宝箱触发(道具编号)]</code><br>
+                • 成功开启宝箱触发：<code>[@_成功开启宝箱触发(道具编号)]</code><br>
+                • 停止开启宝箱触发：<code>[@_停止开启宝箱触发(道具编号)]</code>，道具编号 = 宝箱道具的“物品编号”
+            </p>
+            <p>
+                • 添加Buff触发：<code>[@_添加Buff触发(Buff编号)]</code><br>
+                • 移除Buff触发：<code>[@_移除Buff触发(Buff编号)]</code><br>
+                • 执行Buff触发：<code>[@_执行Buff触发(Buff编号)]</code>，Buff编号 = Buff 表中的“编号”
+            </p>
+            <p>
+                • 定时器触发：<code>[@_定时器触发(定时器ID)]</code>，定时器ID = 通过“添加定时器”脚本命令创建时的 ID<br>
+                • 装备重铸触发：<code>[@_装备重铸触发(装备部位)]</code>，装备部位由系统传入
+            </p>
+        </div>
+
+        <div class="tip" style="margin-top: 15px;">
+            <div class="tip-title">🔁 使用步骤小结</div>
+            1. 确定要响应的事件类型（如“使用物品触发”或“怪物死亡触发”）<br>
+            2. 在 <code>00-QFunction.txt</code> 中按上面的格式添加对应的段落名<br>
+            3. 在该段落下编写 <code>#IF</code> / <code>#ACT</code> 或使用 <code>#CALL</code> 跳转到其它脚本<br>
+            4. 对于需要配置的数据（怪物表、物品表、Buff表等），按本页上方“触发标签总览”里的说明勾选字段<br>
+            5. 重启服务器或重新加载脚本，实际操作验证触发是否生效
+        </div>
+    </div>
+    
+    <div style="background: #2d3561; border-left: 4px solid #7a8ec4; padding: 15px; margin: 15px 0; border-radius: 4px; border: 1px solid #404968;">
+        <div style="font-weight: bold; color: #f5d681; margin-bottom: 8px;">⚠️ 注意事项</div>
+        <span style="color: #b8c1ec;">
+        • 触发标签名称必须以 <code style="background: #1f2544; color: #8e9ff5; padding: 2px 6px; border-radius: 3px;">_</code> 开头，例如：<code style="background: #1f2544; color: #8e9ff5; padding: 2px 6px; border-radius: 3px;">[@_角色登录触发]</code><br>
+        • 所有触发标签都必须在 <code style="background: #1f2544; color: #8e9ff5; padding: 2px 6px; border-radius: 3px;">00-QFunction.txt</code> 文件中定义<br>
+        • 标记为"未实现"的触发标签暂时无法使用<br>
+        • 修改 <code style="background: #1f2544; color: #8e9ff5; padding: 2px 6px; border-radius: 3px;">00-QFunction.txt</code> 后需要重启服务器或重新加载脚本才能生效
+        </span>
+    </div>
+</body>
+</html>

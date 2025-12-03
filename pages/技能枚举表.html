@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技能枚举表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 1.4em;
+            color: #7d8fd0;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #404968;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .enum-name {
+            color: #ff8b8b;
+            font-weight: 600;
+        }
+        
+        .enum-value {
+            color: #6dd881;
+            font-weight: 500;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .category {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚔️ 技能枚举表</h1>
+    
+    <div class="category">🎯 技能锁定类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">锁定自身</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">锁定目标</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">锁定自身坐标</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">锁定目标坐标</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">锁定锚点坐标</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">放空锁定自身</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">宠物锁定主人</span></td>
+                <td><span class="enum-value">6</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">锁定所有宠物</span></td>
+                <td><span class="enum-value">7</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">💨 技能闪避类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">技能无法闪避</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">可被物理闪避</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">可被魔法闪避</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">可被中毒闪避</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">非怪物可闪避</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">⚡ 技能触发方式</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">原点位置绝对触发</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">锚点位置绝对触发</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">刺杀位置绝对触发</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">目标命中绝对触发</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">怪物死亡绝对触发</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">怪物死亡换位触发</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">怪物命中绝对触发</span></td>
+                <td><span class="enum-value">6</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">怪物命中概率触发</span></td>
+                <td><span class="enum-value">7</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">无目标锚点位触发</span></td>
+                <td><span class="enum-value">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">目标位置绝对触发</span></td>
+                <td><span class="enum-value">9</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">正手反手随机触发</span></td>
+                <td><span class="enum-value">10</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">目标死亡绝对触发</span></td>
+                <td><span class="enum-value">11</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">目标闪避绝对触发</span></td>
+                <td><span class="enum-value">12</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🔗 技能对应类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">主体技能</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">子类技能</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">💥 技能命中反馈</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">正常</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">喷血</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">格挡</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">闪避</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">招架</span></td>
+                <td><span class="enum-value">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">丢失</span></td>
+                <td><span class="enum-value">16</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">后仰</span></td>
+                <td><span class="enum-value">32</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">免疫</span></td>
+                <td><span class="enum-value">64</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">死亡</span></td>
+                <td><span class="enum-value">128</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">特效</span></td>
+                <td><span class="enum-value">256</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">护盾</span></td>
+                <td><span class="enum-value">512</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">暴击</span></td>
+                <td><span class="enum-value">1024</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">⚔️ 技能伤害类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">攻击</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">魔法</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">道术</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">刺术</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">弓术</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">毒性</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">神圣</span></td>
+                <td><span class="enum-value">6</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">灼烧</span></td>
+                <td><span class="enum-value">7</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">撕裂</span></td>
+                <td><span class="enum-value">8</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>授权价格表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #0c1015 0%, #1a1f2e 50%, #0f1419 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 页头 */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .header .subtitle {
+            color: #718096;
+            font-size: 1.1em;
+            letter-spacing: 2px;
+        }
+
+        /* 价格卡片网格 */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .price-card {
+            background: linear-gradient(145deg, #1e2433 0%, #171c28 100%);
+            border: 1px solid #2d3748;
+            border-radius: 20px;
+            padding: 30px 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .price-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .price-card:hover {
+            transform: translateY(-8px);
+            border-color: #667eea;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .price-card:hover::before {
+            opacity: 1;
+        }
+
+        /* 推荐卡片 */
+        .price-card.recommended {
+            border: 2px solid #667eea;
+            background: linear-gradient(145deg, #1e2840 0%, #171c2d 100%);
+        }
+
+        .price-card.recommended::before {
+            opacity: 1;
+            background: linear-gradient(90deg, #667eea, #f093fb, #667eea);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 活动卡片 */
+        .price-card.sale {
+            border: 2px solid #ff6b6b;
+            background: linear-gradient(145deg, #2a1f20 0%, #1f1818 100%);
+        }
+
+        .price-card.sale::before {
+            opacity: 1;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #ff6b6b);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        .badge.sale {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .price-card.best-value {
+            border: 2px solid #f6ad55;
+            background: linear-gradient(145deg, #2a2520 0%, #1f1c18 100%);
+        }
+
+        .price-card.best-value::before {
+            opacity: 1;
+            background: linear-gradient(90deg, #f6ad55, #f093fb, #f6ad55);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        /* 标签 */
+        .badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 40px;
+            font-size: 0.75em;
+            font-weight: 600;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .badge.hot {
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            box-shadow: 0 4px 15px rgba(246, 173, 85, 0.4);
+        }
+
+        .card-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .card-duration {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+        }
+
+        .card-price {
+            margin-bottom: 20px;
+        }
+
+        .original-price {
+            color: #4a5568;
+            text-decoration: line-through;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        .current-price {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fc8181 0%, #f687b3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .current-price .unit {
+            font-size: 0.4em;
+            -webkit-text-fill-color: #a0aec0;
+        }
+
+        .discount-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(104, 211, 145, 0.2) 0%, rgba(72, 187, 120, 0.2) 100%);
+            color: #68d391;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid rgba(104, 211, 145, 0.3);
+            margin-top: 10px;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #2d3748;
+        }
+
+        .card-features li {
+            padding: 8px 0;
+            color: #a0aec0;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-features li::before {
+            content: '✓';
+            color: #68d391;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        /* 信息区块 */
+        .info-section {
+            background: linear-gradient(145deg, #1e2433 0%, #171c28 100%);
+            border: 1px solid #2d3748;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+        }
+
+        .info-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-section h2 .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            background: linear-gradient(145deg, #252d3a 0%, #1a2030 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .info-item:hover {
+            transform: translateX(5px);
+            border-left-color: #f093fb;
+        }
+
+        .info-item strong {
+            color: #667eea;
+            font-size: 1em;
+        }
+
+        .info-item p {
+            color: #a0aec0;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        /* 提示框 */
+        .note-box {
+            background: linear-gradient(145deg, #2a2520 0%, #1f1c18 100%);
+            border: 1px solid rgba(246, 173, 85, 0.3);
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-top: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .note-box .note-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .note-box .note-content {
+            color: #e2e8f0;
+            font-size: 0.95em;
+        }
+
+        .note-box .note-content strong {
+            color: #f6ad55;
+        }
+
+        /* 政策区块特殊样式 */
+        .policy-item {
+            background: linear-gradient(145deg, #252d3a 0%, #1a2030 100%);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .policy-item:hover {
+            transform: translateX(5px);
+            background: linear-gradient(145deg, #2a3342 0%, #1e2535 100%);
+        }
+
+        .policy-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            flex-shrink: 0;
+        }
+
+        .policy-content strong {
+            color: #e2e8f0;
+            font-size: 1.05em;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .policy-content span {
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-section {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页头 -->
+        <header class="header">
+            <h1>NwServer 授权价格</h1>
+            <p class="subtitle">选择适合您的授权方案，开启游戏服务器之旅</p>
+            <div style="margin-top: 20px; padding: 15px 30px; background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); border-radius: 30px; display: inline-block; animation: pulse 2s infinite;">
+                <span style="color: white; font-size: 1.3em; font-weight: bold;">🎉 限时活动：部分授权半价优惠中！</span>
+            </div>
+            <div style="margin-top: 15px; color: #feca57; font-size: 0.95em;">
+                ⚡ <strong>仅此一次，错过不再</strong> · 活动结束后恢复原价
+            </div>
+        </header>
+
+        <!-- 促销横幅 -->
+        <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(254, 202, 87, 0.15) 100%); border: 2px solid rgba(255, 107, 107, 0.3); border-radius: 16px; padding: 25px 30px; margin-bottom: 30px; text-align: center;">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5em; margin-bottom: 5px;">💰</div>
+                    <div style="color: #ff6b6b; font-size: 1.8em; font-weight: bold;">50%</div>
+                    <div style="color: #a0aec0; font-size: 0.9em;">最高优惠</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5em; margin-bottom: 5px;">🎁</div>
+                    <div style="color: #feca57; font-size: 1.8em; font-weight: bold;">5种卡</div>
+                    <div style="color: #a0aec0; font-size: 0.9em;">参与活动</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5em; margin-bottom: 5px;">🔥</div>
+                    <div style="color: #68d391; font-size: 1.8em; font-weight: bold;">省万元</div>
+                    <div style="color: #a0aec0; font-size: 0.9em;">永久卡省近4,900</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5em; margin-bottom: 5px;">⚡</div>
+                    <div style="color: #f687b3; font-size: 1.8em; font-weight: bold;">仅此一次</div>
+                    <div style="color: #a0aec0; font-size: 0.9em;">错过不再</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 价格卡片 -->
+        <div class="pricing-grid">
+            <!-- 日卡 -->
+            <div class="price-card">
+                <div class="card-name">日卡</div>
+                <div class="card-duration">体验时长 1 天</div>
+                <div class="card-price">
+                    <span class="current-price">15<span class="unit">元</span></span>
+                </div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>技术支持服务</li>
+                    <li>无人数限制</li>
+                </ul>
+            </div>
+
+            <!-- 周卡 -->
+            <div class="price-card">
+                <div class="card-name">周卡</div>
+                <div class="card-duration">有效期 7 天</div>
+                <div class="card-price">
+                    <span class="original-price">¥105</span>
+                    <span class="current-price">100<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">95折优惠</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>技术支持服务</li>
+                    <li>无人数限制</li>
+                </ul>
+            </div>
+
+            <!-- 月卡 推荐 + 活动 -->
+            <div class="price-card sale">
+                <div class="badge sale">半价</div>
+                <div class="card-name">⭐ 月卡</div>
+                <div class="card-duration">有效期 30 天</div>
+                <div class="card-price">
+                    <span class="original-price">¥420</span>
+                    <span class="current-price">210<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">🔥 活动半价</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>优先技术支持</li>
+                    <li>无人数限制</li>
+                    <li>免费更新升级</li>
+                </ul>
+            </div>
+
+            <!-- 季度卡 活动 -->
+            <div class="price-card sale">
+                <div class="badge sale">半价</div>
+                <div class="card-name">季度卡</div>
+                <div class="card-duration">有效期 90 天</div>
+                <div class="card-price">
+                    <span class="original-price">¥1,200</span>
+                    <span class="current-price">600<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">🔥 活动半价</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>优先技术支持</li>
+                    <li>无人数限制</li>
+                    <li>免费更新升级</li>
+                </ul>
+            </div>
+
+            <!-- 半年卡 活动 -->
+            <div class="price-card sale">
+                <div class="badge sale">半价</div>
+                <div class="card-name">半年卡</div>
+                <div class="card-duration">有效期 180 天</div>
+                <div class="card-price">
+                    <span class="original-price">¥2,160</span>
+                    <span class="current-price">1,080<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">🔥 活动半价</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>优先技术支持</li>
+                    <li>无人数限制</li>
+                    <li>免费更新升级</li>
+                </ul>
+            </div>
+
+            <!-- 年卡 活动 -->
+            <div class="price-card sale">
+                <div class="badge sale">半价</div>
+                <div class="card-name">🔥 年卡</div>
+                <div class="card-duration">有效期 365 天</div>
+                <div class="card-price">
+                    <span class="original-price">¥4,100</span>
+                    <span class="current-price">2,050<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">🔥 活动半价 · 省2,050元</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>VIP技术支持</li>
+                    <li>无人数限制</li>
+                    <li>免费更新升级</li>
+                    <li>优先新功能体验</li>
+                </ul>
+            </div>
+
+            <!-- 永久卡 活动 -->
+            <div class="price-card sale">
+                <div class="badge sale">半价</div>
+                <div class="card-name">永久卡</div>
+                <div class="card-duration">永久有效</div>
+                <div class="card-price">
+                    <span class="original-price">¥9,800</span>
+                    <span class="current-price">4,900<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">🔥 活动半价 · 省4,900元</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>VIP技术支持</li>
+                    <li>无人数限制</li>
+                    <li>终身免费更新</li>
+                    <li>每年2次免费换绑</li>
+                </ul>
+            </div>
+
+            <!-- 10人卡 -->
+            <div class="price-card">
+                <div class="card-name">10人卡</div>
+                <div class="card-duration">永久有效 · 限10人同时在线</div>
+                <div class="card-price">
+                    <span class="original-price">¥200</span>
+                    <span class="current-price">100<span class="unit">元</span></span>
+                </div>
+                <div class="discount-tag">5折特惠</div>
+                <ul class="card-features">
+                    <li>完整功能体验</li>
+                    <li>技术支持服务</li>
+                    <li>永久有效期</li>
+                    <li>适合小型服务器</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 说明信息 -->
+        <div class="note-box">
+            <div class="note-icon">💡</div>
+            <div class="note-content">
+                <strong>🎉 活动说明：</strong>月卡、季度卡、半年卡、年卡、永久卡享受<strong style="color: #ff6b6b;">半价优惠</strong>！日卡、周卡、10人卡不参与本次活动。所有周期卡类均无人数限制，包含技术支持和免费更新。
+            </div>
+        </div>
+
+        <!-- 重要提示 -->
+        <div style="background: linear-gradient(135deg, rgba(246, 173, 85, 0.15) 0%, rgba(237, 137, 54, 0.15) 100%); border: 2px dashed #f6ad55; border-radius: 16px; padding: 20px 25px; margin-top: 20px; display: flex; align-items: center; gap: 20px;">
+            <div style="font-size: 3em;">⚠️</div>
+            <div>
+                <div style="color: #f6ad55; font-size: 1.2em; font-weight: bold; margin-bottom: 8px;">🚨 重要提醒：本次活动仅此一次！</div>
+                <div style="color: #e2e8f0; font-size: 0.95em; line-height: 1.6;">
+                    这是 NwServer 首次也是<strong style="color: #ff6b6b;">唯一一次</strong>半价促销活动！活动结束后将<strong style="color: #feca57;">立即恢复原价</strong>，不再设置同等优惠。建议有需要的用户把握机会，错过不再！
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备更换政策 -->
+        <div class="info-section" style="margin-top: 40px;">
+            <h2>
+                <span class="icon">🔄</span>
+                设备更换政策
+            </h2>
+            
+            <div class="policy-item">
+                <div class="policy-icon">📅</div>
+                <div class="policy-content">
+                    <strong>时间卡</strong>
+                    <span>授权有效期内免费换绑1次，超出100元/次</span>
+                </div>
+            </div>
+            
+            <div class="policy-item">
+                <div class="policy-icon">♾️</div>
+                <div class="policy-content">
+                    <strong>永久卡</strong>
+                    <span>每年2次免费换绑，超出200元/次</span>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <div class="note-icon">⚠️</div>
+                <div class="note-content">
+                    <strong>特殊说明：</strong>所有授权均绑定服务器硬件特征码，更换设备需重新授权。请在购买前确认服务器环境。
+                </div>
+            </div>
+        </div>
+
+        <!-- 优惠汇总 -->
+        <div class="info-section">
+            <h2>
+                <span class="icon">🎁</span>
+                🔥 半价活动优惠汇总
+            </h2>
+            <div style="background: rgba(255, 107, 107, 0.1); border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255, 107, 107, 0.2);">
+                <span style="color: #ff6b6b; font-weight: bold;">🚨 活动仅此一次，结束后恢复原价，请把握机会！</span>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>月卡 🔥</strong>
+                    <p>活动半价：210元，立省210元</p>
+                </div>
+                <div class="info-item">
+                    <strong>季度卡 🔥</strong>
+                    <p>活动半价：600元，立省600元</p>
+                </div>
+                <div class="info-item">
+                    <strong>半年卡 🔥</strong>
+                    <p>活动半价：1,080元，立省1,080元</p>
+                </div>
+                <div class="info-item">
+                    <strong>年卡 🔥</strong>
+                    <p>活动半价：2,050元，立省2,050元</p>
+                </div>
+                <div class="info-item">
+                    <strong>永久卡 🔥</strong>
+                    <p>活动半价：4,900元，立省4,900元</p>
+                </div>
+                <div class="info-item" style="border-left-color: #718096;">
+                    <strong>日卡/周卡/10人卡</strong>
+                    <p>不参与本次活动</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部促销横幅 -->
+        <div style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); border-radius: 20px; padding: 30px 40px; margin-top: 40px; text-align: center; box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);">
+            <div style="font-size: 1.8em; font-weight: bold; color: white; margin-bottom: 10px;">
+                🌟 机会难得，不容错过！
+            </div>
+            <div style="color: rgba(255,255,255,0.9); font-size: 1.1em; margin-bottom: 20px;">
+                本次半价活动仅此一次，活动结束后立即恢复原价
+            </div>
+            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 20px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 12px;">
+                    <div style="color: white; font-size: 0.9em;">月卡原价</div>
+                    <div style="color: white; font-size: 1.5em; font-weight: bold; text-decoration: line-through; opacity: 0.7;">¥420</div>
+                    <div style="color: #1a1a2e; background: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 5px;">现价 ¥210</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 12px;">
+                    <div style="color: white; font-size: 0.9em;">年卡原价</div>
+                    <div style="color: white; font-size: 1.5em; font-weight: bold; text-decoration: line-through; opacity: 0.7;">¥4,100</div>
+                    <div style="color: #1a1a2e; background: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 5px;">现价 ¥2,050</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 12px;">
+                    <div style="color: white; font-size: 0.9em;">永久卡原价</div>
+                    <div style="color: white; font-size: 1.5em; font-weight: bold; text-decoration: line-through; opacity: 0.7;">¥9,800</div>
+                    <div style="color: #1a1a2e; background: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 5px;">现价 ¥4,900</div>
+                </div>
+            </div>
+            <div style="margin-top: 25px; color: rgba(255,255,255,0.8); font-size: 0.95em;">
+                💬 联系客服获取授权 · 支持多种支付方式
+            </div>
+        </div>
+    </div>
+</body>
+</html>

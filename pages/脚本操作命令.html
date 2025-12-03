@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 40px; background: #0f1419; line-height: 1.8; color: #e2e8f0; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px; font-size: 2.2em; }
+        h2 { color: #f6ad55; margin: 40px 0 20px; padding-left: 15px; border-left: 5px solid #f6ad55; font-size: 1.6em; }
+        
+        .intro { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #e2e8f0; padding: 25px; margin: 25px 0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .intro p { color: #e2e8f0; margin: 8px 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px; text-align: left; font-weight: 600; }
+        td { padding: 12px 15px; border-bottom: 1px solid #2d3748; background: #1a1f2e; color: #a0aec0; }
+        tbody tr:hover td { background: #1f2633; }
+        tbody tr:last-child td { border-bottom: none; }
+        
+        .cmd-name { font-family: 'Consolas', monospace; color: #fc8181; font-weight: 600; }
+        .cmd-params { font-family: 'Consolas', monospace; color: #68d391; font-size: 0.9em; }
+        .optional { color: #fc8181; font-weight: bold; }
+        
+        .category { background: #1a1f2e; border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 5px; border: 1px solid #2d3748; }
+        .category h3 { color: #667eea; margin-bottom: 15px; font-size: 1.3em; }
+    </style>
+</head>
+<body>
+    <h1>⚙️ 脚本操作命令</h1>
+    
+    <div class="intro">
+        <p><strong>📖 什么是脚本操作命令？</strong></p>
+        <p>脚本操作命令用于在 <code>#ACT</code> 部分执行各种游戏操作，如传送玩家、调整属性、发放物品等。</p>
+        <p>操作命令在满足 <code>#IF</code> 条件后执行，实现具体的游戏逻辑功能。</p>
+        <p>共计 <strong>200+</strong> 个操作命令，涵盖游戏的方方面面。</p>
+    </div>
+
+    <h2>🔥 核心框架命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">GOTO</span></td>
+                <td>
+                    跳转到指定脚本段落<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：GOTO @段落名称<br>
+                    • 作用：跳转到当前脚本文件的指定段落继续执行<br>
+                    • 应用场景：分支逻辑、条件跳转
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">BREAK</span></td>
+                <td>
+                    停止脚本执行<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：BREAK<br>
+                    • 作用：立即终止当前脚本的执行<br>
+                    • 应用场景：条件不满足时提前退出
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">CALL</span></td>
+                <td>
+                    调用其他脚本文件（运行时命令）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：CALL 脚本文件名（可写为 "子目录/脚本名"，无需 .txt 后缀）<br>
+                    • 作用：解析阶段会预加载脚本并记录 ScriptID，执行阶段把其 MAIN 段加入玩家的延迟动作队列<br>
+                    • 注意：若需要跳转到其他脚本的指定段落，请继续使用预处理命令 #CALL 文件名.txt @段落名称，它会在解析期展开为 sysgoto 逻辑<br>
+                    • 应用场景：模块化脚本管理、公共逻辑复用
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">记录日志</span></td>
+                <td>
+                    记录日志信息到服务器日志文件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：记录日志 日志内容（可使用引号包裹包含空格的文本）<br>
+                    • 作用：将指定内容写入服务器日志，玩家/怪物上下文会自动附带对象名称，便于定位<br>
+                    • 应用场景：脚本调试、数据追踪、输出临时变量值
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">变量赋值</span></td>
+                <td>
+                    给脚本变量赋值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：变量赋值 变量名 值（值可为常量、<$标签>，或使用引号包裹的字符串）<br>
+                    • 作用：设置目标变量的值，支持玩家(U/T/J)、公会(Q)、全局(A/G)、地图(M/B)等变量前缀<br>
+                    • 支持变量类型：个人变量、公会变量、全局变量等
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">变量运算</span></td>
+                <td>
+                    对变量进行数学运算<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：变量运算 变量名 运算符 数值/变量<br>
+                    • 运算符：+ 增加、- 减少、* 乘以、/ 除以、= 赋值<br>
+                    • 第三个参数既可为常量，也可直接填写另一变量代号（如 J1、U2），执行时会自动取值<br>
+                    • 应用场景：计数、积分计算、数值累加
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🗺️ 地图传送命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">传送指定地图</span></td>
+                <td>
+                    将玩家传送到指定地图和坐标<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：传送指定地图 地图编号 X坐标 Y坐标 区域类型<br>
+                    • 参数1：地图编号<br>
+                    • 参数2：X坐标（区域类型为0时生效）<br>
+                    • 参数3：Y坐标（区域类型为0时生效）<br>
+                    • 参数4：区域类型（0=指定坐标 1=复活区域 2=红名区域 3=传送区域 4=随机区域）<br>
+                    • 应用场景：NPC传送、任务传送、活动传送
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">传送所有玩家</span></td>
+                <td>
+                    将源地图的所有玩家传送到目标地图<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：传送所有玩家 源地图编号 目标地图编号 区域类型(可选)<br>
+                    • 参数1：源地图编号<br>
+                    • 参数2：目标地图编号<br>
+                    • 参数3：区域类型（可选，0=地图默认/指定入口 1=复活区域 2=红名区域 3=传送区域 4=随机区域，默认值为0）<br>
+                    • 应用场景：活动结束传送、地图清场
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">创建副本地图</span></td>
+                <td>
+                    为玩家创建一个副本地图实例<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：创建副本地图 地图编号 持续时间(分钟) 是否脚本创建(可选) 副本类型(可选)<br>
+                    • 参数1：地图编号<br>
+                    • 参数2：持续时间（分钟）<br>
+                    • 参数3：是否脚本创建（可选，0=否 1=是，默认0）<br>
+                    • 参数4：副本类型（可选，0=单人 1=组队，默认0）<br>
+                    • 应用场景：副本系统、个人地图、组队副本
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">传送副本地图</span></td>
+                <td>
+                    将玩家传送到自己的副本地图<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：传送副本地图 地图编号 X坐标 Y坐标 区域类型<br>
+                    • 参数1：副本地图编号<br>
+                    • 参数2：X坐标（区域类型为0时生效）<br>
+                    • 参数3：Y坐标（区域类型为0时生效）<br>
+                    • 参数4：区域类型（0=指定坐标 1=复活区域 2=红名区域 3=传送区域 4=随机区域）<br>
+                    • 说明：传送到玩家自己创建的副本实例<br>
+                    • 应用场景：副本入口、副本传送点
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">关闭副本地图</span></td>
+                <td>
+                    关闭指定编号的副本实例<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：关闭副本地图 地图编号<br>
+                    • 作用：查找对应副本实例并调用关闭逻辑（仅对副本地图生效）<br>
+                    • 说明：对于已关闭或不存在的副本会静默返回；如目标不是副本会记录警告
+                    • 应用场景：活动结束、异常清场、脚本强制回收副本
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">允许进入地图</span></td>
+                <td>
+                    • 写法：允许进入地图<br>
+                    • 作用：配合地图进入检测，允许玩家进入当前地图（通过地图进入限制判定后调用）<br>
+                    • 说明：命令本身不做条件校验，需搭配脚本条件控制进入资格<br>
+                    • 应用场景：地图准入验证、VIP地图、活动地图
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">角色随机移动</span></td>
+                <td>
+                    • 写法：角色随机移动 变量名 下限 [上限]<br>
+                    • 作用：生成一个随机整数并赋值给指定变量；仅当输入单个范围值时，随机范围为 [0, 下限)，输入上下限时为 [下限, 上限)<br>
+                    • 说明：不会真正移动角色位置，仅用于脚本中的随机数/概率判定<br>
+                    • 应用场景：随机奖励、概率判断、分支控制
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">皇宫随机传送</span></td>
+                <td>
+                    • 写法：皇宫随机传送<br>
+                    • 作用：将玩家传送到沙巴克皇宫随机区域内的一个坐标<br>
+                    • 前置条件：服务器已正确配置沙城地图与“沙巴克-皇宫随机区域”地图区域<br>
+                    • 应用场景：攻城战中快速回皇宫、活动传送
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💰 货币调整命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">调整角色金币</span></td>
+                <td>
+                    调整当前角色的金币数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色金币 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 示例：调整角色金币 + 10000（增加1万金币）<br>
+                    • 应用场景：任务奖励、商店购买、活动奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色元宝</span></td>
+                <td>
+                    调整当前角色的元宝数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色元宝 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 应用场景：充值发放、商城消费、VIP奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色银币</span></td>
+                <td>
+                    调整当前角色的银币数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色银币 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 示例：调整角色银币 + 5000（增加5000银币）<br>
+                    • 应用场景：副本奖励、活动奖励、任务奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整行会贡献</span></td>
+                <td>
+                    调整当前角色的行会贡献值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整行会贡献 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 应用场景：行会任务、行会捐献、行会活动
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整勇者金币</span></td>
+                <td>
+                    调整当前角色的勇者金币数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整勇者金币 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 应用场景：特殊活动货币、勇者商店货币
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整公会资金</span></td>
+                <td>
+                    调整当前角色所属公会的资金<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整公会资金 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 应用场景：公会捐献、公会活动、公会建设
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色珍珠</span></td>
+                <td>
+                    ⚠ 当前版本尚未实现，调用不会生效（执行器中仍为 TODO）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 计划写法：调整角色珍珠 运算符 数值<br>
+                    • 预期作用：修改玩家珍珠数量，用于珍珠货币玩法<br>
+                    • 状态：仅保留脚本命令占位，服务器端暂未提供实际逻辑，建议避免使用
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整指定角色金币</span></td>
+                <td>
+                    调整指定角色的金币数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整指定角色金币 运算符 数量 角色名<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 参数：角色名称<br>
+                    • 应用场景：GM命令、跨角色奖励、管理操作
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整指定角色银币</span></td>
+                <td>
+                    调整指定角色的银币数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整指定角色银币 运算符 数量 角色名<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 参数：角色名称<br>
+                    • 应用场景：GM命令、补偿发放
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整指定角色元宝</span></td>
+                <td>
+                    调整指定角色的元宝数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整指定角色元宝 运算符 数量 角色名<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 参数：角色名称<br>
+                    • 应用场景：GM命令、充值补单、活动补偿
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>� 攻城战相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">打开指定城门</span></td>
+                <td>
+                    打开指定地图上的城门（按城门编号定位）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：打开指定城门 地图编号 城门编号<br>
+                    • 行为：在指定地图中查找对应城门怪物实例，并调用死亡处理逻辑使其打开<br>
+                    • 注意：需要保证地图编号、城门编号配置正确，否则不会有任何效果<br>
+                    • 应用场景：手动开门、活动流程控制
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">关闭指定城门</span></td>
+                <td>
+                    关闭指定地图上的城门（重新生成城门实例）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：关闭指定城门 地图编号 城门编号<br>
+                    • 行为：在指定地图中查找已死亡的城门怪物，删除旧实例并在原坐标重新生成一个新的城门<br>
+                    • 应用场景：攻城前重置城门、GM维护
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修理攻城设施</span></td>
+                <td>
+                    重置沙巴克主城门和宫门等核心设施到满血状态<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修理攻城设施<br>
+                    • 行为：检查沙城地图上的主城门与四个宫门；若对象存在且已死亡，则删除旧实例并基于原模板、原坐标重新生成一个禁止复活、存活时间无限的新门（默认满血）<br>
+                    • 限制：仅对当前进程内缓存的门对象生效；若门实例为 null 或模板缺失则跳过；不会恢复其它设施（炮台/陷阱）<br>
+                    • 应用场景：攻城结束后重置、活动前维护、GM 快速修复城门
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">开启沙巴克攻城</span></td>
+                <td>
+                    立即开启沙巴克攻城战（跳过正常时间轴）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：开启沙巴克攻城<br>
+                    • 行为：调用 <code>地图处理网关.沙巴克攻城战立即开始()</code>，根据当前报名名单生成攻城行会并设置攻城持续时间<br>
+                    • 限制：无额外权限或条件校验，重复执行会反复重置攻城数据<br>
+                    • 应用场景：GM 手动开启攻城、测试攻城流程（正式环境慎用）
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">开启沙巴克城门</span></td>
+                <td>
+                    强制打开沙巴克主城门（快速放玩家入城）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：开启沙巴克城门<br>
+                    • 行为：调用 <code>地图处理网关.沙巴克城门开启()</code>，对当前沙城城门执行打开逻辑<br>
+                    • 应用场景：攻城中途放行、测试城门逻辑
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">结束沙巴克攻城</span></td>
+                <td>
+                    提前结束当前沙巴克攻城战<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：结束沙巴克攻城<br>
+                    • 行为：将 <code>地图处理网关.攻城战结束时间</code> 设置为当前时间+2秒，并通过 <code>网络服务网关</code> 广播“沙巴克攻城战结束”公告；实际收尾逻辑由定时器驱动
+                    • 应用场景：GM 手动终止攻城、异常情况处理、测试结束流程
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">申请行会攻沙</span></td>
+                <td>
+                    为当前角色所在行会提交攻城战报名申请<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：申请行会攻沙<br>
+                    • 行为：将玩家所在行会写入系统报名列表 <code>系统数据.数据.申请行会</code>，并向全体行会成员发送报名成功邮件，同时推送 <code>行会攻城登记</code> 封包<br>
+                    • 限制：仅检查玩家是否有行会，不校验职位（会长/副会长）等高级条件<br>
+                    • 应用场景：攻城战报名 NPC、活动脚本
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">查看攻城名单</span></td>
+                <td>
+                    打开攻城战报名名单界面<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：查看攻城名单<br>
+                    • 行为：发送 <code>查看攻城名单</code> 封包，携带 <code>系统数据.数据.沙城申请描述()</code> 的序列化结果，由客户端负责渲染界面<br>
+                    • 限制：服务器端不做权限、冷却或分页处理；脚本调用者需在 NPC/按钮中自行控制显示条件
+                    • 应用场景：报名名单查询、攻城战准备、GM 辅助工具
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置攻城守卫</span></td>
+                <td>
+                    ⚠ 当前版本仅在脚本枚举中占位，服务器端未提供实现逻辑<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 预期用法：设置攻城战中各类守卫的模板与参数<br>
+                    • 现状：通用/玩家执行器中没有对应分支，调用不会产生任何效果<br>
+                    • 建议：如需部署攻城守卫，请通过配置或后台工具处理，或自行补充服务端逻辑后再开放脚本命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置攻城城门 / 城墙 / 器械 / 税率 / 时间 / 提取攻城金币</span></td>
+                <td>
+                    ⚠ 以上命令当前均为占位命令，尚未实现任何实际效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 包含命令：设置攻城城门、设置攻城城墙、设置攻城器械、提取攻城金币、设置攻城税率、设置攻城时间<br>
+                    • 状态：在脚本枚举与解析层中存在，但执行器中未提供实现体；调用不会改变任何攻城参数或资金
+                    • 预期：未来可用于批量配置攻城参数（门、墙、器械、税率、战斗时间、资金提取等）
+                    • 现状建议：通过后台工具或直接修改配置文件/数据库管理攻城参数；如需脚本化控制需先实现对应服务端逻辑
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>�🎒 物品操作命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">发放指定物品</span></td>
+                <td>
+                    发放物品到玩家背包（支持绑定、幸运值、日志参数）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：发放指定物品 物品名称/编号 [数量] [是否绑定] [幸运值] [日志文本]<br>
+                    • 数量默认1，是否绑定写1/0，幸运值仅对装备生效；可附带日志文本便于追踪<br>
+                    • 背包空间不足时会自动通过邮件补发<br>
+                    • 应用场景：任务奖励、活动发放、NPC商店
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">扣除背包物品</span></td>
+                <td>
+                    扣除玩家背包中的物品（不足时直接返回失败）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：扣除背包物品 物品名称/编号 [数量] [日志文本]<br>
+                    • 数量默认1，可额外记录日志文本方便定位来源<br>
+                    • 会自动匹配物品模板，递交失败时脚本需自行处理后续逻辑<br>
+                    • 应用场景：任务消耗、商店购买、物品兑换
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">获取物品数量</span></td>
+                <td>
+                    查询物品数量并赋值给变量（支持名称或编号）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：获取物品数量 变量名 物品名称/编号<br>
+                    • 参数1：结果变量名（自动写入脚本变量表）<br>
+                    • 参数2：物品名称或编号，将统计背包内的总数<br>
+                    • 应用场景：物品统计、条件判断
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">替换背包装备</span></td>
+                <td>
+                    用新装备模板替换背包中指定旧装备，并完整继承属性<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：替换背包装备 旧装备名称/编号 新装备名称/编号<br>
+                    • 将按模板查找背包中的旧装备，删除后创建新装备并拷贝随机属性、幸运、强化、灵石等<br>
+                    • 应用场景：装备升级、装备转换
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整背包大小</span></td>
+                <td>
+                    调整玩家背包容量（自动限制在 0-64 格）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整背包大小 运算符 数值<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 执行后会下发 `背包容量改变` 封包同步客户端<br>
+                    • 应用场景：背包扩展、VIP特权、背包升级
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">自动穿戴装备</span></td>
+                <td>
+                    将背包中的装备自动穿戴到指定部位<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：自动穿戴装备 装备部位 背包位置<br>
+                    • 参数1：装备部位（可用“衣服”“武器”或部位编号）<br>
+                    • 参数2：背包位置（0-背包格）<br>
+                    • 应用场景：自动穿装、装备发放后自动穿戴
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">扣除幸运物品</span></td>
+                <td>
+                    扣除指定幸运值的装备（仅移除首件匹配物品）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：扣除幸运物品 物品编号 幸运值<br>
+                    • 必须填写物品编号与期望的幸运等级，只会扣除一件符合条件的装备<br>
+                    • 当前实现不支持数量参数，若需要多次扣除需循环执行命令<br>
+                    • 应用场景：特殊物品兑换、幸运装备消耗
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">丢弃指定物品</span></td>
+                <td>
+                    在指定地图坐标生成掉落物（由通用命令执行处理器处理）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：丢弃指定物品 地图名 X坐标 Y坐标 范围 物品名称 数量 归属秒数 [全服公告] [全员可拾取] [堆叠掉落]<br>
+                    • 会在地图的随机可走坐标生成物品实例，可配置归属和公告行为，与玩家背包无关<br>
+                    • 应用场景：世界掉落、活动奖励雨、场景造物<br>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置装备升级次数</span></td>
+                <td>
+                    调整玩家身上指定部位装备的升级次数，并自动刷新属性和战力<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：设置装备升级次数 装备部位 运算符 数量<br>
+                    • 装备部位：byte 型部位编号，对应 `角色装备` 中的键（如武器、衣服等栏位）<br>
+                    • 运算符：+ 增加、- 减少、= 直接设置为指定次数（内部通过 NPCSegment.Calculate 实现）<br>
+                    • 数量：int，要增加/减少/设置的升级次数，最终会被限制在 0~255 范围内<br>
+                    • 行为：读取当前装备的 `升级次数`，按运算符计算新值后写回，并调用更新属性/战力/物品详情封包，同步给客户端<br>
+                    • 应用场景：装备强化、等级迁移、活动奖励直接提升升级次数
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📊 角色属性命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">调整角色经验</span></td>
+                <td>
+                    调整当前角色的经验值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色经验 运算符 经验值<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 执行逻辑：增加时走 `玩家增加经验` 流程，可触发升级；减少时会自动限制经验值不低于0<br>
+                    • 示例：调整角色经验 + 100000（增加10万经验）<br>
+                    • 应用场景：任务奖励、活动奖励、经验加成
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色等级</span></td>
+                <td>
+                    调整当前角色的等级<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色等级 运算符 等级值<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 等级值会被限制在 0-255 之间，执行后清空当前经验并调用升级处理（刷新属性/技能）<br>
+                    • 示例：调整角色等级 = 50（直接设置为50级）<br>
+                    • 应用场景：GM命令、等级调整、活动奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色PK值</span></td>
+                <td>
+                    调整当前角色的PK值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色PK值 运算符 PK值<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 实际修改 `_玩家.PK值惩罚`，不会自动触发清零或冷却，请自行搭配脚本逻辑<br>
+                    • 示例：调整角色PK值 - 100（减少100点PK值）<br>
+                    • 应用场景：PK惩罚、洗红名、GM命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色属性</span></td>
+                <td>
+                    调整当前角色的指定属性值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色属性 属性枚举名 运算符 属性值<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 属性枚举需与 `枚举类/游戏对象属性.cs` 一致（如 攻击上限、魔法躲避 等）<br>
+                    • 执行后立即刷新对象属性，适合与BUFF或装备效果联动<br>
+                    • 应用场景：属性调整、BUFF效果、装备特效
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色性别</span></td>
+                <td>
+                    修改当前角色的性别<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色性别 性别枚举名<br>
+                    • 参数：必须与 `游戏对象性别` 枚举完全一致（不限、男性、女性），区分大小写<br>
+                    • 应用场景：性别转换道具、GM命令、特殊活动
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整角色职业</span></td>
+                <td>
+                    修改当前角色的职业<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色职业 职业枚举名<br>
+                    • 参数：取自 `游戏对象职业` 枚举（战士、法师、刺客、弓手、道士、龙枪、通用、电脑），不区分大小写<br>
+                    • 应用场景：转职系统、GM命令、特殊活动
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💬 消息发送命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">发送系统消息</span></td>
+                <td>
+                    发送聊天框的系统消息给玩家，可选是否广播全服<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：发送系统消息 消息内容 [是否全服]<br>
+                    • 消息会经过变量替换；是否全服仅接受 True/False（不填则只发送给当前玩家）<br>
+                    • 显示位置：玩家聊天框；当开启全服时调用广播接口
+                    • 应用场景：任务提示、操作反馈、系统通知
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">发送滚动公告</span></td>
+                <td>
+                    发送屏幕顶部滚动公告，所有在线玩家都会看到<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：发送滚动公告 公告内容<br>
+                    • 文本同样支持变量替换；内部调用 `网络服务网关.发送公告(..., 滚动播报:true)`<br>
+                    • 显示位置：游戏屏幕顶部滚动显示
+                    • 应用场景：全服通知、活动公告、重要消息
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">发送全服公告</span></td>
+                <td>
+                    发送非滚动的全服公告（大字屏幕居中提示）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：发送全服公告 公告内容<br>
+                    • 内部调用 `网络服务网关.发送公告(…, 滚动播报:false)`，不会滚动播报<br>
+                    • 显示位置：所有玩家屏幕中央大字显示
+                    • 应用场景：BOSS刷新、世界BOSS、重大活动
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>👥 组队相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">调整队员金币</span></td>
+                <td>
+                    调整队伍所有成员的金币数量（仅对当前存在的队伍生效）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整队员金币 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 在线玩家走 `修改货币`，离线成员直接写入角色数据<br>
+                    • 应用场景：组队任务奖励、组队活动奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整队员银币</span></td>
+                <td>
+                    调整队伍所有成员的银币数量（需先组队）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整队员银币 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为<br>
+                    • 与金币相同，在线/离线分别调用实时修改或直接写数据<br>
+                    • 应用场景：组队副本奖励、组队活动奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整队员元宝</span></td>
+                <td>
+                    调整队伍所有成员的元宝数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整队员元宝 运算符 数量<br>
+                    • 运算符：+ 增加、- 减少、= 设置为（在线玩家直接走 `修改货币`）<br>
+                    • 离线成员使用 NPCSegment 结果写入角色数据<br>
+                    • 应用场景：组队活动奖励、组队福利
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整队员经验</span></td>
+                <td>
+                    调整队伍所有成员的经验值（自动处理正负变化）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整队员经验 运算符 经验值<br>
+                    • 运算符：+ 增加、- 减少、= 设置为；在线成员调用 `玩家增加经验`，扣除时不低于0<br>
+                    • 作用范围：当前队伍所有成员（未组队调用会直接返回）<br>
+                    • 应用场景：组队经验奖励、组队任务奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">队员发放物品</span></td>
+                <td>
+                    给队伍所有在线成员发放物品（复用“发放指定物品”逻辑）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：队员发放物品 物品名称/编号 [数量] [是否绑定] [幸运值] [日志文本]<br>
+                    • 每个在线队员都会独立执行一次发放命令（背包满同样会走邮件补发）<br>
+                    • 作用范围：当前队伍所有成员<br>
+                    • 应用场景：组队任务奖励、组队副本奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">队员扣除物品</span></td>
+                <td>
+                    扣除队伍所有在线成员的物品（复用“扣除背包物品”逻辑）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：队员扣除物品 物品名称/编号 [数量] [日志文本]<br>
+                    • 仅当队伍存在且成员在线时执行；若扣除失败需脚本自行处理
+                    • 作用范围：当前队伍所有成员<br>
+                    • 应用场景：组队任务消耗、组队副本进入
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">组队变量运算</span></td>
+                <td>
+                    对队伍所有成员进行变量运算<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：组队变量运算 值1 运算符 值2 结果变量名<br>
+                    • 当值1/值2都是数字时使用 NPCSegment 计算，否则按字符串拼接后写入变量<br>
+                    • 结果变量会写入每个在线队员的脚本变量表
+                    • 应用场景：组队任务进度、组队活动计数
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">组队传送地图</span></td>
+                <td>
+                    将整个队伍传送到指定地图（创建或分配地图实例后逐个传送）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：组队传送地图 地图编号 X坐标 Y坐标 区域类型<br>
+                    • 参数：地图编号 / X / Y / 区域类型（0=指定坐标 1=复活区域 2=红名区域 3=传送区域 4=随机区域）<br>
+                    • 仅当所有队员在线时才会生效，不会自动拉起离线成员
+                    • 应用场景：组队副本入口、组队活动传送
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">组队传送副本</span></td>
+                <td>
+                    将整个队伍传送到队长已有的副本实例<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：组队传送副本 地图编号 X坐标 Y坐标 区域类型<br>
+                    • 队长必须已经创建该副本（`查找我的副本`），否则命令直接失败
+                    • 作用范围：当前队伍所有成员（在线）
+                    • 应用场景：组队副本系统
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">队长召回队员</span></td>
+                <td>
+                    将队伍成员召回到队长当前位置（脚本名：队员传送队长）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：队长召回队员（无参数）<br>
+                    • 仅对在线队员生效，逐个调用 `玩家切换地图` 到队长所在地图/坐标<br>
+                    • 应用场景：队长召集、组队集合
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>⚔️ 技能相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">角色添加技能</span></td>
+                <td>
+                    给玩家添加指定技能<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：角色添加技能 技能基础编号 技能等级<br>
+                    • 参数1：技能基础编号（命令会自动 ×10 转换为技能模板编号，必须存在于铭文技能表）<br>
+                    • 参数2：技能等级（byte，超过 255 会被截断）<br>
+                    • 注意：命令只接受数字 ID，不支持技能名称；模板不存在时命令直接失败<br>
+                    • 应用场景：任务奖励、职业技能、特殊技能学习
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">移除角色技能</span></td>
+                <td>
+                    移除玩家的指定技能<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：移除角色技能 技能编号 或 移除角色技能 *<br>
+                    • 参数：技能编号（需要传完整技能编号 = 技能基础编号 ×10）<br>
+                    • 特殊：使用“*”会直接清空主体技能表，移除所有技能<br>
+                    • 应用场景：技能重置、转职系统、GM命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">角色技能升级</span></td>
+                <td>
+                    升级玩家指定技能等级+1<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：角色技能升级 技能基础编号<br>
+                    • 行为：根据技能基础编号 ×10 查找模板，读取当前等级（未学习视为 0），然后重新学习为等级+1<br>
+                    • 注意：命令未做上限/条件判断，需在脚本侧自行控制<br>
+                    • 应用场景：技能升级道具、任务奖励、GM命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">获取技能等级</span></td>
+                <td>
+                    重置技能等级到指定数值（命名与行为不符）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：获取技能等级 技能基础编号 新技能等级<br>
+                    • 参数1：技能基础编号（命令内部 ×10 查找技能模板）<br>
+                    • 参数2：新技能等级（int，会被转换为 byte）<br>
+                    • 实际行为：先移除旧技能，再以指定等级重新学习；不会返回或写入任何变量<br>
+                    • ⚠️ 提示：当前实现无法通过此命令读取技能等级，如需查询需另行扩展<br>
+                    • 应用场景：技能等级强制校正、GM调整
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💫 BUFF相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">添加角色BUFF</span></td>
+                <td>
+                    给玩家添加BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加角色BUFF Buff编号<br>
+                    • 参数：Buff编号（只接受数字 ID，持续时间由 Buff 配置决定）<br>
+                    • 应用场景：BUFF道具、技能效果、活动加成
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">移除角色BUFF</span></td>
+                <td>
+                    移除玩家的BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：移除角色BUFF Buff编号<br>
+                    • 参数：Buff编号（只作用于当前玩家）<br>
+                    • 应用场景：驱散BUFF、清除效果、GM命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">队伍添加BUFF</span></td>
+                <td>
+                    给队伍所有成员添加BUFF<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：队伍添加BUFF Buff编号<br>
+                    • 参数：Buff编号（不支持额外时长参数）<br>
+                    • 前置：玩家必须在队伍中，且仅对在线队员生效<br>
+                    • 应用场景：组队BUFF、组队加成、组队活动
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">队伍删除BUFF</span></td>
+                <td>
+                    删除队伍所有成员的BUFF<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：队伍删除BUFF Buff编号<br>
+                    • 参数：Buff编号<br>
+                    • 前置：玩家必须在队伍中；仅移除在线成员的 Buff<br>
+                    • 应用场景：组队BUFF清除、活动结束清理
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">刷新角色BUFF</span></td>
+                <td>
+                    刷新玩家的BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：刷新角色BUFF<br>
+                    • 行为：遍历当前 Buff 列表并重新发送状态添加封包（不会延长持续时间）<br>
+                    • 应用场景：BUFF异常修复、属性刷新、客户端不同步时强制重传
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">添加NPCBUFF</span></td>
+                <td>
+                    给当前NPC添加BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加NPCBUFF Buff编号 [持续时间毫秒]<br>
+                    • 参数1：Buff编号<br>
+                    • 参数2：可选持续时间（毫秒，缺省为 0 使用 Buff 默认时长）<br>
+                    • 前置：需要在与 NPC/守卫对话的上下文中执行才能找到目标<br>
+                    • 应用场景：守卫强化、NPC特殊状态
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除NPCBUFF</span></td>
+                <td>
+                    删除守卫的BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除NPCBUFF Buff编号<br>
+                    • 参数：Buff编号（目标为当前对话守卫）<br>
+                    • 应用场景：守卫状态清除、活动结束
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">添加邻居NPCBUFF</span></td>
+                <td>
+                    给邻居NPC添加BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加邻居NPCBUFF 守卫编号 Buff编号 [持续时间毫秒]<br>
+                    • 参数1：守卫编号（邻居守卫的模板编号）<br>
+                    • 参数2：Buff编号<br>
+                    • 参数3：可选持续时间（毫秒）<br>
+                    • 作用范围：当前对话守卫的邻居列表中匹配模板编号的守卫<br>
+                    • 应用场景：范围增强、区域BUFF
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除邻居NPCBUFF</span></td>
+                <td>
+                    删除邻居守卫的BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除邻居NPCBUFF 守卫编号 Buff编号<br>
+                    • 参数1：守卫编号（邻居守卫的模板编号）<br>
+                    • 参数2：Buff编号<br>
+                    • 作用范围：当前对话守卫的邻居列表中匹配模板编号的守卫<br>
+                    • 应用场景：范围驱散、区域清理
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除地图守卫BUFF</span></td>
+                <td>
+                    删除当前地图附近指定守卫的BUFF（以当前对话守卫为中心）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除地图守卫BUFF 地图编号 守卫编号 Buff编号 [最大距离]<br>
+                    • 参数1：地图编号（用于验证任务所处地图）<br>
+                    • 参数2：守卫编号（模板编号）<br>
+                    • 参数3：Buff编号<br>
+                    • 参数4：可选最大距离（格，默认 50，使用棋盘距离）<br>
+                    • 行为：遍历当前地图对象列表，移除符合条件守卫的 Buff<br>
+                    • 应用场景：区域 Buff 清理、活动结束清场
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">添加宠物BUFF</span></td>
+                <td>
+                    给宠物添加BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加宠物BUFF 宠物编号 Buff编号 [持续时间毫秒]<br>
+                    • 参数1：宠物编号（模板编号，0 表示对所有宠物生效）<br>
+                    • 参数2：Buff编号<br>
+                    • 参数3：可选持续时间（毫秒）<br>
+                    • 应用场景：宠物强化、宠物技能效果
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除宠物BUFF</span></td>
+                <td>
+                    移除宠物的BUFF效果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除宠物BUFF 宠物编号 Buff编号<br>
+                    • 参数1：宠物编号（0 表示对所有宠物生效）<br>
+                    • 参数2：Buff编号<br>
+                    • 应用场景：宠物状态清除、宠物驱散
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>👹 怪物与NPC命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">生成随机怪物</span></td>
+                <td>
+                    在指定地图的随机坐标生成怪物<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：生成随机怪物 地图编号 怪物编号 数量 存活时间(秒)<br>
+                    • 参数1：地图编号（byte，仅支持已分配的普通地图，且需要配置“随机区域”）<br>
+                    • 参数2：怪物编号（模板ID，只接受数字，不支持名称检索）<br>
+                    • 参数3：数量（要生成的怪物个数）<br>
+                    • 参数4：存活时间（秒，到期后怪物会自动失效）<br>
+                    • 行为：从目标地图的随机区域中挑选坐标逐个刷新怪物，失败条件包括找不到地图/怪物模板或地图没有随机区域<br>
+                    • 注意：当前实现不会定位玩家所在的副本实例，如需在副本精确生成请改用“生成指定怪物”并从对应地图上下文调用<br>
+                    • 应用场景：野外刷怪、随机刷新任务怪、活动怪物批量投放
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">生成指定怪物</span></td>
+                <td>
+                    在指定位置精确生成怪物<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：生成指定怪物 地图编号 X坐标 Y坐标 怪物编号/名称 数量 存活时间 [时间单位]<br>
+                    • 参数1：地图编号（byte，可为普通或副本；副本命令需在对应地图上下文中执行）<br>
+                    • 参数2/3：精确坐标（整数，必须可通行）<br>
+                    • 参数4：怪物编号或怪物名称（两者其一）<br>
+                    • 参数5：数量（批量生成的个数）<br>
+                    • 参数6：存活时间（基于时间单位解释）<br>
+                    • 参数7：可选时间单位（1=秒，2=分钟，默认1）<br>
+                    • 行为：在指定坐标一次性生成多个怪物，禁止复活，存活时间到期后自动移除<br>
+                    • 应用场景：BOSS刷新点、守卫怪物、机关怪物、剧情怪物、精确坐标投放
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">清除地图怪物</span></td>
+                <td>
+                    清除指定地图的怪物<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：清除地图怪物 地图编号/地图名称 [是否包含BOSS(0/1)] [怪物名称]<br>
+                    • 参数1：地图编号或地图名称（忽略大小写）<br>
+                    • 参数2：可选，传1时连等级255的BOSS也会被清除；默认0保留BOSS<br>
+                    • 参数3：可选，指定怪物名称时仅移除该名称的怪物<br>
+                    • 行为：遍历地图对象并调用怪物死亡逻辑，立即移除目标怪物并触发死亡事件<br>
+                    • 注意事项：操作不可撤销，推荐在副本/活动结束后使用；地图不存在时命令直接失败
+                    • 应用场景：副本重置、活动结束清场、GM维护、紧急清怪
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">生成临时NPC</span></td>
+                <td>
+                    在指定位置生成临时NPC<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：生成临时NPC NPC编号 X坐标 Y坐标 地图编号 存活时间(秒) [自动弹窗(0/1)]<br>
+                    • 参数1：NPC编号（守卫模板ID，仅支持数字）<br>
+                    • 参数2/3/4：坐标与地图编号；若三项都写“*”或“0”则视为随身NPC，在玩家周围2格内随机生成，并强制移除同编号旧NPC<br>
+                    • 参数5：存活时间（秒，0或“*”表示永久）<br>
+                    • 参数6：可选，1=生成后立即弹出对话，其它值或缺省不弹窗<br>
+                    • 特性：随身NPC会记录在玩家的随身列表并受冷却限制；指定地图时需要保证玩家当前就在目标地图/副本中<br>
+                    • 应用场景：随身商人/助手、活动NPC、任务触发、剧情演出
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除临时NPC</span></td>
+                <td>
+                    删除指定的临时NPC<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除临时NPC NPC编号<br>
+                    • 参数：NPC编号（守卫模板ID）<br>
+                    • 行为：仅针对当前玩家的随身NPC列表，找到同模板编号的临时NPC后立即删除并移出列表<br>
+                    • 注意：不会影响地图上原生守卫/系统NPC，如需删除当前对话守卫请使用“删除当前NPC”命令<br>
+                    • 应用场景：替换随身NPC、结束临时NPC效果、脚本清理
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">批量部署NPC</span></td>
+                <td>
+                    批量生成NPC守卫（支持多坐标和索引管理）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：批量部署NPC 守卫编号 索引编号 地图编号 X坐标 Y坐标 [存活时间(秒)]<br>
+                    • 参数1：守卫编号（守卫模板ID）<br>
+                    • 参数2：索引编号（当前实现未使用，可填0占位）<br>
+                    • 参数3：地图编号（若玩家当前在该地图且为副本，会优先使用玩家所在的副本实例）<br>
+                    • 参数4/5：生成坐标<br>
+                    • 参数6：可选存活时间（秒，0或缺省表示默认存活）<br>
+                    • 注意：命令不会自动去重或记录索引，重复调用会不断叠加守卫；地图找不到时命令直接失败<br>
+                    • 应用场景：攻城守卫部署、活动NPC布阵、安全区布置
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除当前NPC</span></td>
+                <td>
+                    删除当前正在对话的守卫<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除当前NPC（无参数）<br>
+                    • 行为：获取玩家当前的对话守卫实例并立即删除，同时关闭对话窗口<br>
+                    • 限制：只能在NPC对话脚本中使用，且玩家必须正与该守卫交互中<br>
+                    • 应用场景：任务完成后移除NPC、一次性交互NPC、活动结束清理
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">添加守卫对话</span></td>
+                <td>
+                    让当前对话的守卫显示一段对话<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加守卫对话 对话内容<br>
+                    • 参数：对话内容（会先经过脚本变量替换，因此可嵌入%变量或颜色代码）<br>
+                    • 行为：调用当前对话守卫的气泡聊天接口，在头顶显示文本，可多次调用堆叠效果<br>
+                    • 限制：需要玩家当前正与某个守卫对话，否则命令会被忽略<br>
+                    • 应用场景：剧情对话、任务提示、NPC反馈、特效对白
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🏰 公会相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">改变公会等级</span></td>
+                <td>
+                    覆写玩家在行会中的等级标记<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：改变公会等级 等级<br>
+                    • 参数：等级（直接写入到玩家的行会等级字节，允许0-255）<br>
+                    • 行为：仅修改当前玩家保存的 <code>行会等级</code> 字段，不会更新实际行会数据、权限或成员上限<br>
+                    • 限制：不做合法性校验，脚本需自行保证写入合理值；离会后该字段也会被清零<br>
+                    • 应用场景：调试自定义行会等级判定、模拟行会等级奖励、配合“召唤行会妖兽”选择等级
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">加入指定公会</span></td>
+                <td>
+                    将玩家加入指定公会<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：加入指定公会 公会名称<br>
+                    • 参数：公会名称（目标公会的完整名称）<br>
+                    • 功能特性：<br>
+                    &nbsp;&nbsp;- 当玩家当前没有行会时，按名称（忽略大小写）检索已存在的行会数据<br>
+                    &nbsp;&nbsp;- 仅调用 <code>行会.添加成员(角色, 会员)</code>，不会自动创建行会或绕过行会上线限制<br>
+                    &nbsp;&nbsp;- 失败时静默返回，脚本可在调用前自行判定<br>
+                    • 注意事项：参数必须与服务器已有公会名称完全匹配；玩家已有行会时命令直接结束
+                    • 应用场景：任务奖励、活动自动分组、GM手动调整、脚本迁移成员
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整公会资金</span></td>
+                <td>
+                    修改玩家所属行会的资金字段<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整公会资金 运算符 数量<br>
+                    • 参数1：运算符（=、+、- 等，遵循 NPCSegment.Calculate 规则）<br>
+                    • 参数2：数量（整型，支持正负）<br>
+                    • 条件：玩家必须已加入行会，否则命令直接返回<br>
+                    • 行为：对 <code>行会资金</code> 应用运算并立即向所有成员广播“行会信息公告”刷新UI
+                    • 应用场景：脚本奖励/扣除资金、公会维护费、公会任务补贴、GM补偿
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">行会增加材料</span></td>
+                <td>
+                    增加行会资源材料<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：行会增加材料 材料类型 数量<br>
+                    • 参数1：材料类型（仅支持“粮食”“木材”“石料/石材”“铁料/铁矿”四档，忽略大小写）<br>
+                    • 参数2：数量（整型，可正可负；脚本需自行避免写负导致扣除过多）<br>
+                    • 条件：玩家必须已在行会中，且材料类型有效，否则本次调用不会生效<br>
+                    • 行为：累加对应的行会资源并广播“行会信息公告”刷新行会面板<br>
+                    • 应用场景：公会任务奖励、资源补给、活动建设、后台扶持
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">公会移除会员</span></td>
+                <td>
+                    将玩家从公会中移除<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：公会移除会员 玩家名称<br>
+                    • 当前状态：命令在代码中仅留空实现（TODO），调用不会产生任何效果<br>
+                    • 建议：如需移除成员，请改用后台工具或补充实现逻辑后再开放脚本调用
+                    • 备注：一旦补完逻辑，应注意离线角色处理、公会职位继承及公告推送
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">公会添加列表</span></td>
+                <td>
+                    将公会名称添加到指定列表文件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：公会添加列表 列表文件名<br>
+                    • 参数：列表文件名（相对于 <code>NameListPath</code> 的相对路径，可含子目录）<br>
+                    • 条件：脚本需预先将目标公会名写入变量 <code>%公会名称</code>，否则命令直接返回<br>
+                    • 行为：确保目录存在，读取/创建文本文件，若不存在同名记录则追加一行公会名<br>
+                    • 注意事项：不会自动填充玩家所在行会；需脚本自行设置变量；无锁并发写入时请谨慎
+                    • 应用场景：白名单、公会排行缓存、活动报名名单、临时过滤列表
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">列表删除公会</span></td>
+                <td>
+                    从指定列表文件中删除公会名称<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：列表删除公会 列表文件名<br>
+                    • 参数：同上，相对路径写法<br>
+                    • 条件：依赖 <code>%公会名称</code> 变量；当文件不存在时命令直接返回<br>
+                    • 行为：读取全部行并删除与变量完全相同的行（区分大小写），随后写回文件
+                    • 限制：仅支持精确匹配，不会做模糊/包含匹配；未找到目标时文件保持不变
+                    • 应用场景：移除白名单、公会退赛、重置活动名额、自动清理过期记录
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">清除公会列表</span></td>
+                <td>
+                    清空指定公会名单文件的所有内容<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：清除公会列表 列表文件名<br>
+                    • 参数：同上，相对路径写法；当文件不存在时会新建一个空文件<br>
+                    • 行为：使用 <code>File.WriteAllLines</code> 写入空数组，相当于彻底清空内容
+                    • 注意事项：无确认与备份，调用即生效；若需要保留历史需脚本先备份
+                    • 应用场景：活动重置、名单刷新、测试数据清理
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">召唤行会妖兽</span></td>
+                <td>
+                    在行会属地召唤行会妖兽<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：召唤行会妖兽（无参数）<br>
+                    • 条件：玩家必须有行会且行会拥有属地地图；若未配置“召唤妖兽”区域则使用默认坐标(918,584)<br>
+                    • 行为：按玩家当前 <code>行会等级</code> 生成“行会妖兽XX”模板（找不到则退回 01），在属地召唤一只禁止复活的怪物，存活2小时<br>
+                    • 注意事项：命令不会校验妖兽是否已存在，脚本需自行限制频率；须保证行会属地怪物表中存在对应模板
+                    • 应用场景：公会挑战、守城支援、剧情演出、行会副本刷新
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">获得行会祈祷经验</span></td>
+                <td>
+                    玩家参与行会祈祷活动获得经验<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：获得行会祈祷经验<br>
+                    • 参数：无<br>
+                    • 行为：若玩家有行会，则依据“玩家等级 * 1000 * (1 + 行会等级 * 10%)”计算经验并直接调用 <code>玩家增加经验</code><br>
+                    • 限制：无冷却/次数限制，命令本身也不会发送提示；请在脚本侧做好频率控制
+                    • 应用场景：祈祷活动奖励、公会祷告日常、测试经验倍率、行会福利脚本
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎖️ 称号相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">角色发放称号</span></td>
+                <td>
+                    给玩家发放指定称号并自动添加到称号列表<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：角色发放称号 称号编号 有效时间(分钟)<br>
+                    • 参数1：称号编号（byte，必须存在于 <code>游戏称号.数据表</code>）<br>
+                    • 参数2：有效时间（分钟，int；0表示沿用模板的 <code>有效时间</code>，若两者均为0则视为永久）<br>
+                    • 行为：
+                    &nbsp;&nbsp;- 直接调用 <code>玩家获得称号</code>：写入称号列表并计算到期时间<br>
+                    &nbsp;&nbsp;- 始终生效的称号立即刷新战力/属性；若玩家当前无称号则自动装配<br>
+                    &nbsp;&nbsp;- 发送“玩家获得称号”“同步称号信息”封包更新客户端
+                    • 注意事项：当称号编号不存在或参数不足时命令静默返回，不会抛出提示；脚本可在调用前自行校验
+                    • 应用场景：任务奖励、活动奖品、成就系统、VIP特权
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">角色佩戴称号</span></td>
+                <td>
+                    让玩家佩戴已拥有的称号并应用其属性加成<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：角色佩戴称号 称号编号<br>
+                    • 参数：称号编号（byte，必须已经在玩家称号列表中）<br>
+                    • 行为：
+                    &nbsp;&nbsp;- 通过 <code>玩家使用称号</code> 完成所有校验；未拥有/数据缺失会返回系统提示(5377/5378)<br>
+                    &nbsp;&nbsp;- 如果切换到与当前相同的称号，仅重发同步封包，不重复计算属性<br>
+                    &nbsp;&nbsp;- 自动卸下当前非“始终生效”称号的战力/属性加成，再为新称号套用对应加成
+                    • 注意：始终生效的称号被动生效，佩戴命令仅决定外观展示；命令无冷却，可重复调用
+                    • 应用场景：称号切换、展示称号、称号系统
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">角色删除称号</span></td>
+                <td>
+                    从玩家称号列表中永久删除指定称号<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：角色删除称号 称号编号<br>
+                    • 参数：称号编号（byte，存在于玩家当前称号列表中）<br>
+                    • 行为：调用 <code>玩家称号到期</code>，同时处理以下逻辑：
+                    &nbsp;&nbsp;- 从称号列表移除记录，并在必要时清除战力/属性加成
+                    &nbsp;&nbsp;- 若该称号正被佩戴，则重置当前称号并广播“同步装配称号”
+                    &nbsp;&nbsp;- 发送“玩家失去称号”封包提醒客户端
+                    • 注意：操作不可恢复，也不会校验称号是否为永久；如需提示玩家需脚本自行补充
+                    • 应用场景：惩罚机制、称号到期、GM命令、称号回收
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>⏱️ 定时器相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">设置定时器</span></td>
+                <td>
+                    预留的全局脚本定时器接口，目前仅输出调试日志<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：设置定时器 定时器编号 间隔时间(秒) [执行次数] [触发段落]<br>
+                    • 参数：解析器允许传入最多4个字符串，但当前实现只解析编号与间隔；其余全部忽略<br>
+                    • 行为：调用通用命令执行器仅写一条“[脚本定时器] 设置定时器 …”日志，不会真正创建定时器<br>
+                    • 现状：全局定时器系统尚未落地，命令效果等同于空操作；若脚本依赖全局器需自行扩展代码
+                    • 建议：改用“开启定时器/关闭定时器”对玩家级定时器进行控制，或直接在服务端补完该命令逻辑
+                    • 适用：暂不可用（规划中）。留在文档仅作占位说明
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">开启定时器</span></td>
+                <td>
+                    为玩家创建或更新个人脚本定时器<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：开启定时器 定时器编号 间隔秒数 执行次数<br>
+                    • 参数1：定时器编号（byte，0-255，对应 <code>定时器ID</code>）<br>
+                    • 参数2：间隔秒数（int，>=0；内部使用 <code>AddSeconds</code> 设置下一次触发）<br>
+                    • 参数3：执行次数（int，>=0；0 表示无限循环，需要手动关闭）<br>
+                    • 行为：调用 <code>玩家实例.开启脚本定时器</code>，若该ID已存在则重置间隔、执行次数与下次触发时间；触发时执行 <code>[@定时器触发(定时器编号)]</code> 段落
+                    • 注意事项：
+                    &nbsp;&nbsp;- NPC脚本解析当前只会把第一个参数传到底层，其余参数需要代码手动补充或改写解析器
+                    &nbsp;&nbsp;- 传入负值直接被忽略；触发段落永远固定为默认NPC上的“定时器触发”入口
+                    &nbsp;&nbsp;- 玩家离线会清空个人定时器
+                    • 应用场景：限时BUFF、倒计时提示、循环检查任务、延迟执行段落
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">关闭定时器</span></td>
+                <td>
+                    关闭并移除玩家的指定脚本定时器<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：关闭定时器 定时器编号<br>
+                    • 参数：定时器编号（byte）<br>
+                    • 行为：调用 <code>玩家实例.关闭脚本定时器</code>，遍历玩家定时器列表并移除匹配ID；若未找到则静默返回
+                    • 限制：仅作用于当前玩家个人定时器；不会影响通用/全局定时器
+                    • 应用场景：提前终止倒计时、脚本取消任务、后台清理异常循环
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🐾 宠物相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">玩家发放宠物</span></td>
+                <td>
+                    给玩家发放指定宠物（未完全实现）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：玩家发放宠物 宠物名称 数量(默认1) 宠物等级(默认0)<br>
+                    • 参数1：宠物名称（对应怪物模板名称）<br>
+                    • 参数2：数量（可选，默认1）<br>
+                    • 参数3：宠物等级（可选，默认0使用怪物默认等级）<br>
+                    • 当前实现：位于 <code>怪物命令执行处理器</code> 中的方法仍为空体，调用后不会创建任何宠物或发送提示<br>
+                    • 实现状态：命令已定义但核心逻辑待完善<br>
+                    • 预期功能：<br>
+                    &nbsp;&nbsp;- 创建宠物实例并添加到玩家宠物列表<br>
+                    &nbsp;&nbsp;- 自动设置宠物属性和状态<br>
+                    &nbsp;&nbsp;- 受职业宠物上限限制<br>
+                    • 替代方案：使用召唤类技能或物品召唤宠物<br>
+                    • 应用场景：GM命令、活动奖励、特殊任务
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">召回全部宠物</span></td>
+                <td>
+                    召回玩家所有宠物到玩家坐标附近<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：召回全部宠物<br>
+                    • 参数：无<br>
+                    • 行为：遍历玩家当前的宠物列表，只对“已激活且未死亡”的宠物调用 <code>宠物召回处理()</code>，让其跟随回到玩家身边<br>
+                    • 限制：不会复活已死亡的宠物，也不会召回未激活/尚未出战的宠物；命令本身不做冷却或数量校验
+                    • 适用：所有普通战宠；英雄/其他特殊随从若未挂接在宠物列表中不会受影响
+                    • 应用场景：宠物走散召回、副本传送前集合、紧急战斗召集
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">清空玩家宠物</span></td>
+                <td>
+                    清空玩家的所有宠物（未完全实现）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：清空玩家宠物<br>
+                    • 参数：无<br>
+                    • 当前实现：对应方法尚未编写，调用后只是立即返回，不会移除任何宠物
+                    • 实现状态：命令已定义但核心逻辑待完善<br>
+                    • 预期功能：<br>
+                    &nbsp;&nbsp;- 遍历玩家宠物列表并逐个移除<br>
+                    &nbsp;&nbsp;- 调用宠物死亡处理清理资源<br>
+                    &nbsp;&nbsp;- 从宠物数据表和宠物列表中移除<br>
+                    &nbsp;&nbsp;- 发送宠物清空提示到客户端<br>
+                    • 相关命令：召回全部宠物（已实现）<br>
+                    • 应用场景：职业转换、宠物重置、GM命令、惩罚机制
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🏛️ 攻城相关命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">开启沙巴克攻城</span></td>
+                <td>
+                    立即开启沙巴克攻城战<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：开启沙巴克攻城<br>
+                    • 参数：无<br>
+                    • 功能：立即启动沙巴克攻城战事件<br>
+                    • 应用场景：GM手动开启攻城、测试攻城系统
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">结束沙巴克攻城</span></td>
+                <td>
+                    立即结束沙巴克攻城战<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：结束沙巴克攻城<br>
+                    • 参数：无<br>
+                    • 功能：设置攻城战结束时间为2秒后并发送公告<br>
+                    • 应用场景：GM强制结束攻城、异常情况处理
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">申请行会攻沙</span></td>
+                <td>
+                    打开行会申请参加沙巴克攻城战界面<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：申请行会攻沙<br>
+                    • 参数：无<br>
+                    • 功能特性：<br>
+                    &nbsp;&nbsp;- 打开沙巴克攻城战报名界面<br>
+                    &nbsp;&nbsp;- 只有公会会长才能操作<br>
+                    &nbsp;&nbsp;- 可以查看攻城战时间和规则<br>
+                    &nbsp;&nbsp;- 支持申请参加或取消申请<br>
+                    • 应用场景：攻城战报名、公会活动、战争参与
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">查看攻城名单</span></td>
+                <td>
+                    显示攻城战报名行会名单<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：查看攻城名单<br>
+                    • 参数：无<br>
+                    • 功能特性：<br>
+                    &nbsp;&nbsp;- 显示当前报名参加攻城战的所有公会<br>
+                    &nbsp;&nbsp;- 包含公会名称、会长名字、报名时间<br>
+                    &nbsp;&nbsp;- 实时更新报名状态和数量<br>
+                    &nbsp;&nbsp;- 支持查看历史攻城记录<br>
+                    • 应用场景：攻城战准备、战情查看、公会统计
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">开启沙巴克城门</span></td>
+                <td>
+                    打开沙巴克的所有城门<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：开启沙巴克城门<br>
+                    • 参数：无<br>
+                    • 功能特性：<br>
+                    &nbsp;&nbsp;- 同时打开沙巴克的所有城门<br>
+                    &nbsp;&nbsp;- 恢复城门的可通行状态<br>
+                    &nbsp;&nbsp;- 通知所有在线玩家城门开启<br>
+                    &nbsp;&nbsp;- 重置城门相关的阻挡状态<br>
+                    • 应用场景：攻城战结束、系统维护、活动重置
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修理攻城设施</span></td>
+                <td>
+                    修理所有攻城战设施（主要是城门）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修理攻城设施<br>
+                    • 参数：无<br>
+                    • 功能：恢复沙巴克城门的体力值到满血状态<br>
+                    • 应用场景：攻城结束后修复、攻城前准备
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置攻城守卫</span></td>
+                <td>配置攻城战守卫（未实现）<br><span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">参数：配置参数<br>• 状态：未实现</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📏 文本与变量命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">添加名字列表</span></td>
+                <td>
+                    将脚本变量 <code>%名字</code> 写入指定名单文件（追加且去重）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加名字列表 文件完整路径<br>
+                    • 参数：文件路径（需要脚本提供绝对路径，命令不会自动补 <code>NameListPath</code>）<br>
+                    • 行为：读取全部文本行，若 <code>%名字</code> 不存在则追加一行；若找不到文件或变量为空则直接返回<br>
+                    • 使用提示：在 NPC 脚本中调用前需手动通过 <code>=</code> 赋值 <code>%名字</code>；若希望自动管理路径建议先用“文本增加字符”等命令写入 NameList 目录
+                    • 应用场景：黑/白名单、活动报名、GM 记录
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除名字列表</span></td>
+                <td>
+                    根据 <code>%名字</code> 从指定名单文件中移除完全匹配的行<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除名字列表 文件完整路径<br>
+                    • 行为：读取全部行，移除所有与 <code>%名字</code> 相同（区分大小写）的记录后写回；若文件不存在或变量为空则不操作
+                    • 注意：命令不会自动创建文件，也不会做模糊匹配；若名单路径需要统一管理，可在脚本层预先拼接 <code>NameListPath</code>
+                    • 应用场景：移除白名单、黑名单清理、活动名额撤销
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">清空名字列表</span></td>
+                <td>
+                    将目标名单文件内容直接清空<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：清空名字列表 文件完整路径<br>
+                    • 行为：以空数组写回文件，相当于删除所有行；当文件不存在时会创建一个空文件
+                    • 注意：操作不可撤销，执行前建议脚本层自行备份
+                    • 应用场景：活动重置、名单清理、测试数据刷新
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置任务标识</span></td>
+                <td>
+                    当前版本未提供实现——命令存在于脚本解析器，但执行器中没有对应逻辑<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 状态：调用不会修改任何任务标识或变量，仅作为占位
+                    • 建议：通过已有的任务系统接口/变量命令管理进度，或在服务器端补全该命令逻辑后再使用
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">文本增加字符</span></td>
+                <td>
+                    将一行文本追加到 <code>NPC脚本目录</code> 下的指定文件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：文本增加字符 文本内容 相对文件路径<br>
+                    • 参数1：要写入的整行文本；参数2：相对于 <code>配置管理器.NPC脚本目录</code> 的文件路径（命令会自动创建缺失目录）<br>
+                    • 行为：在文件末尾追加“文本内容 + \r”，适合维护简单名单或日志；不会去重<br>
+                    • 应用场景：脚本日志、抽奖池、简单名单
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">文本删除字符</span></td>
+                <td>
+                    从 <code>NPC脚本目录</code> 下的文件移除完全匹配的文本行<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：文本删除字符 文本内容 相对文件路径<br>
+                    • 行为：读取所有行，移除与参数1完全一致的行后写回；若文件不存在则直接返回
+                    • 注意：区分大小写，不支持模糊匹配；大量行处理会有整文件读写的性能开销
+                    • 应用场景：清理名单、移除日志条目
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">获取随机文本</span></td>
+                <td>
+                    从 <code>NPC脚本目录</code> 下的文本文件按随机/指定行读取内容，并写入脚本变量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：获取随机文本 文件名 变量名 [行号]
+                    • 行为：读取全部行；若给定行号且 >=0 则取指定行，否则随机选择；结果存入变量名（字符串）
+                    • 错误处理：当文件不存在时仅在日志打印提示并返回，不会抛异常
+                    • 应用场景：随机对白、词条轮换、脚本彩蛋
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">文件加载变量</span></td>
+                <td>
+                    （未实现）脚本解析器支持该命令，但执行器未提供逻辑；调用无任何效果。若需要持久化，请使用自定义读取代码或等待此命令完善。
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">文件保存变量</span></td>
+                <td>
+                    （未实现）同上，命令存在但未编写实际保存逻辑；可考虑通过“文本增加字符”等命令手动落盘。
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>✉️ 邮件系统命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">编写系统邮件</span></td>
+                <td>
+                    仅在脚本段变量中缓存邮件标题/正文，并清空 <code>MailItem*</code>/<code>MailGold</code> 占位字段；不会发送邮件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：编写系统邮件 标题 正文（可用英文引号包裹含空格文本）<br>
+                    • 行为：写入 <code>MailTitle</code>/<code>MailContent</code> 变量，同时把附件相关变量重置为空<br>
+                    • 限制：当前执行器的“邮件执行发送”不会读取这些变量，因此仍需在发送命令里再次提供标题/正文
+                    • 用途：若脚本其它逻辑需要引用 <code>%MailTitle</code> 等自定义变量，可借此占位；单独调用不会给玩家发送任何内容
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">邮件添加物品</span></td>
+                <td>
+                    将单个物品附件写入段变量 <code>MailItemID/Count/Bind</code>，供脚本自行引用<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：邮件添加物品 物品编号 数量 是否绑定(1=绑定,0=不绑)<br>
+                    • 行为：只要三个参数齐全且能解析为整数，就把对应数值保存到段变量中；再次调用会直接覆盖之前的记录，无法堆叠多个物品
+                    • 限制：执行器检测到参数不足会直接返回 <code>false</code>，中断后续命令；并且“邮件执行发送”不会读取这些变量，真正发信时仍需手动填写附件参数（且仅支持 1 个物品）
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">邮件添加金币</span></td>
+                <td>
+                    （未接线）将金币值写入 <code>MailGold</code> 变量，但后续发送命令不会读取，邮件实际不会附带金币<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：邮件添加金币 金币数量（必须为无符号整数）<br>
+                    • 现状：仅写变量，无任何服务器行为；如需发金币请改用其它奖励发放命令或扩展“邮件执行发送”实现
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">邮件执行发送</span></td>
+                <td>
+                    直接调用 <code>角色数据.发送邮件</code>，支持群发或指定玩家；不读取前面命令写入的变量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：邮件执行发送 收件人或* 标题 正文 物品编号(-1无) 物品数量 是否绑定(1/0)<br>
+                    • 行为：若收件人写 <code>*</code>，会遍历 <code>角色数据表.数据表</code> 为每个角色发送（不限制在线状态）；否则仅给指定角色尝试发送
+                    • 限制：只能附带 1 个物品，没有金币/多附件支持；命令不读取 <code>MailTitle/MailItem*</code> 等段变量，所有内容都需在本命令参数中重新填写
+                    • 提示：若目标角色不存在则静默失败且不记录日志，需要脚本自行校验
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💎 装备强化命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">添加身上物品幸运</span></td>
+                <td>
+                    在指定穿戴部位的装备随机追加一条“随机属性模板”<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加身上物品幸运 装备部位 随机属性编号列表(逗号分隔)<br>
+                    • 行为：若该装备存在且当前随机属性数量 ≤ 3，则从编号列表中随机挑一个值，查表 <code>随机属性.数据表</code> 后追加；否则直接返回<br>
+                    • 限制：无法直接指定幸运值，本质是添加任意随机属性模板；列表里可重复，不做合法性校验；当装备不存在或属性条数已满不会报错<br>
+                    • 族连操作：成功后会调用战力/属性刷新与 <code>更新物品详情</code>，客户端立即可见
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">添加背包物品幸运</span></td>
+                <td>
+                    与“添加身上物品幸运”逻辑相同，但目标是背包指定格子的装备<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：添加背包物品幸运 背包位置 随机属性编号列表(逗号分隔)<br>
+                    • 行为/限制：同上；只要格子里放的是 <code>装备数据</code> 且随机属性≤3，就会从列表随机挑一个编号追加；失败时静默返回
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除身上物品随机属性</span></td>
+                <td>
+                    仅按编号移除穿戴装备上的指定随机属性模板<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除身上物品随机属性 装备部位 属性编号列表(逗号分隔)<br>
+                    • 行为：遍历列表，将能在 <code>随机属性.数据表</code> 里找到的模板从装备 <code>随机属性</code> 集合中移除；随后刷新战力/属性/物品详情<br>
+                    • 限制：解析器在缺失第二参数时会自动填 0，因此“空=清空”在现有实现中不会生效；如需清空需明确列出所有已存在的属性编号或手动扩展代码
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">删除背包物品随机属性</span></td>
+                <td>
+                    同上，但作用于背包指定格子里的装备<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：删除背包物品随机属性 背包位置 属性编号列表(逗号分隔)<br>
+                    • 行为/限制：与身上版本一致；当列表缺失时同样只会尝试删除编号 0，并不会真正清空
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">清除随机属性</span></td>
+                <td>
+                    从穿戴装备的随机属性列表里移除所有“非幸运”条目，幸运相关属性保持不动<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：清除随机属性 装备部位<br>
+                    • 行为：当装备存在且有随机属性时，逆序遍历并删除 <code>对应属性 != 幸运等级/幸运等级系数</code> 的条目；没有任何刷新/同步逻辑，脚本若需要让客户端立即看到变化，需要追加“更新物品详情”等命令
+                    • 返回：若装备不存在或没有随机属性则直接返回 <code>false</code>，会中断后续命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修改物品数值</span></td>
+                <td>
+                    直接修改装备/物品的内部数值字段（持久、升级次数、幸运等）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修改物品数值 容器类型(0身上,1背包,2仓库,7资源包) 位置 数值类型 数值<br>
+                    • 数值类型映射：0=持久,1=升级次数,2~6=五职业攻击升级,7=灵魂绑定,8=祈祷次数,9=幸运等级,10=神佑,11=神圣伤害,12=圣石数量,13=双铭文栏开关,14=当前铭栏索引<br>
+                    • 限制：仅当目标位置存在且为 <code>装备数据</code> 时生效；内部没有任何范围校验、也不会自动刷新客户端属性，因此脚本通常需要紧跟“更新物品详情/更新玩家战力”类命令
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">特殊修理装备</span></td>
+                <td>
+                    调用 <code>玩家.随身修理全部()</code>，立即修复角色可修理的全套装备，不扣除金币/材料<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：特殊修理装备<br>
+                    • 行为：等同随身修理，适用于脚本奖励/维护；若需要收费或限定部位，需要在脚本中自行先做扣费逻辑
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎁 宝箱系统命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">地图生成宝箱</span></td>
+                <td>
+                    通过瞬间生成并击杀指定怪物模板来触发一次掉落（无实体宝箱保留）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：地图生成宝箱 怪物名称 数量 [地图编号或*] [X] [Y]<br>
+                    • 行为：按数量循环创建 <code>怪物实例</code>，若提供坐标则用该点，否则使用目标地图的第一个“随机区域”内坐标；随后立即调用 <code>自身死亡处理</code> 让怪物掉落一次<br>
+                    • 地图参数：可传具体编号，或留空/写 <code>*</code> 让系统使用当前脚本作用怪物所在地图；若最终未解析到地图将直接记录日志并返回<br>
+                    • 注意：依赖目标地图存在随机区域；若没有随机区域且未提供坐标则命令不会执行任何生成
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">停止宝箱探索</span></td>
+                <td>
+                    仅在“尝试开启宝箱触发”脚本中有效，用于终止默认的开箱流程<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 行为：若 <code>玩家.探索道具</code> 存在，就把其 <code>ScriptOp</code> 标记置为 true，促使服务器跳过自动开启/掉落逻辑<br>
+                    • 场景：脚本需要自行判断条件或完全接管奖励发放时先调用该命令，然后自行给玩家提示、掉落等
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置宝箱机率</span></td>
+                <td>
+                    设置当前开箱流程的掉落概率（0~100000，代表万分比的十倍精度）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：设置宝箱机率 概率值<br>
+                    • 条件：仅当 <code>玩家.探索道具</code> 已初始化（即正在执行宝箱脚本）时才会将 <code>Rate</code> 字段更新；否则静默返回<br>
+                    • 作用：稍后宝箱掉落调用 <code>掉落(... Rate / 100000)</code>；若不设置则保持默认 0，玩家无法获得掉落
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">宝箱开启时间</span></td>
+                <td>
+                    调整本次开箱所需的读条时长（单位：毫秒）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：宝箱开启时间 毫秒值<br>
+                    • 条件：需要处于宝箱脚本流程中；命令会把 <code>ChestPlayerOpener.TimeSec</code> 设置为给定值（>=0 才生效）<br>
+                    • 效果：影响客户端读条长度（服务器内部以 <code>TimeSec / 1000</code> 秒计算结束时间）
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置宝箱钥匙</span></td>
+                <td>
+                    绑定开箱需消耗的钥匙物品及数量，仅对当前开箱玩家生效<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：设置宝箱钥匙 物品名称 消耗数量<br>
+                    • 行为：在 <code>玩家.探索道具</code> 有效时，通过 <code>游戏物品.检索表</code> 解析物品名称，设置 <code>KeyId</code> 与 <code>KeyCost</code>；若物品不存在则无操作<br>
+                    • 后续：宝箱掉落前会调用 <code>查找背包物品(KeyId, KeyCost)</code> 确认消耗条件，未满足则不会生成掉落
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎯 任务系统命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">接受指定任务</span></td>
+                <td>
+                    （未实现）目前仅在服务器日志中记录任务编号，并不会真正创建/更新任何任务数据<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：接受指定任务 任务编号<br>
+                    • 现状：通用命令执行器只做 <code>int.TryParse</code> 并输出 <code>[脚本任务] 接受指定任务</code> 调试信息
+                    • 建议：等待任务系统落地后再使用，或改用现有任务接口实现同等效果
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">接受随机任务</span></td>
+                <td>
+                    （未实现）脚本解析阶段会从逗号分隔列表中选一个编号传入，但执行器同样只记录日志<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：接受随机任务 任务编号1,任务编号2,...（解析器负责随机）<br>
+                    • 现状：命令体只在日志输出 <code>[脚本任务] 接受随机任务: 编号</code>，不会对玩家任务状态造成任何影响
+                    • 若需真正随机任务，请改用自定义脚本逻辑或等待任务系统完成功能
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">更新任务进度</span></td>
+                <td>
+                    （未实现）计划行为是把任务状态从 ACTIVE 改为 COMPLETE，目前仅打印日志<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：更新任务进度 任务编号<br>
+                    • 现状：命令只做参数解析后输出 <code>[脚本任务] 更新任务进度</code> 调试信息，不会修改任何任务变量
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎨 角色外观命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">调整角色发型</span></td>
+                <td>
+                    修改玩家的发型 / 发色 / 脸型外观<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整角色发型 发型编号 [发色编号] [脸型编号]<br>
+                    • 参数1：发型编号（byte，仅发型号；职业和性别由当前角色决定）<br>
+                    • 参数2：发色编号（可选，byte，对应对象发色分类）<br>
+                    • 参数3：脸型编号（可选，byte，将按职业+性别+脸型号组合为脸型枚举）<br>
+                    • 行为：修改 `角色发型/角色发色/角色脸型` 并发送同步容貌封包<br>
+                    • 应用场景：外观变更道具、时装系统、GM 调整
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修改角色数据</span></td>
+                <td>
+                    通用修改玩家数据字段（通过字段名称 + 赋值函数驱动）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修改角色数据 字段名称 字符串值 数值值<br>
+                    • 参数1：字段名称（由底层 F.赋值 解释，例如 称号、ID、自定义字段等）<br>
+                    • 参数2：字符串形式的值<br>
+                    • 参数3：数值形式的值（int，会被 F.赋值 用作数值参数）<br>
+                    • 行为：调用 `命令.F.赋值(_玩家, 字段名, 字符串值, 数值)` 执行实际修改逻辑<br>
+                    • 提示：属于高级接口，建议只在清楚底层字段含义时使用
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>⚡ 特殊功能命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">是否获得经验</span></td>
+                <td>
+                    控制玩家当前是否能够获得经验<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：是否获得经验 开关值<br>
+                    • 开关值：1=允许获得经验，0=禁止获得经验<br>
+                    • 行为：写入玩家设置列表第 0 位（服务器内部位），由经验结算逻辑读取
+                    • 应用场景：经验封印玩法、活动期间禁止获得经验、GM 调整
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整双倍经验</span></td>
+                <td>
+                    调整当前角色的双倍经验值（用于双倍时间或双倍点数）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整双倍经验 运算符 数值<br>
+                    • 运算符：+ 增加、- 减少、= 直接设置<br>
+                    • 行为：使用 NPCSegment.Calculate 对 `_玩家.双倍经验` 做运算<br>
+                    • 应用场景：双倍经验道具、活动奖励、GM 设置
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整历练点</span></td>
+                <td>
+                    调整玩家历练点（角色变量中的专用字段）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整历练点 运算符 数值<br>
+                    • 行为：基于当前 `历练点` 通过 NPCSegment.Calculate 计算新值，并保证不为负<br>
+                    • 存储：写入角色变量 (角色变量.历练点)<br>
+                    • 应用场景：历练系统、修炼点奖励/消耗
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整雪域威名点</span></td>
+                <td>
+                    调整雪域威名点数值（使用威名_威名值变量）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调整雪域威名点 运算符 数值<br>
+                    • 行为：从角色变量[威名_威名值] 读取当前值，按运算符计算后回写，最小为 0<br>
+                    • 应用场景：雪域威名玩法、声望系统
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">设置玛法特权</span></td>
+                <td>
+                    为玩家开启或延长指定玛法特权（VIP 特权）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：设置玛法特权 特权类型 天数(默认31) 是否叠加(0或1)<br>
+                    • 参数1：特权类型（byte，对应具体玛法特权编号）<br>
+                    • 参数2：持续天数（int，解析失败时默认为 31 天）<br>
+                    • 参数3：是否叠加（0=不叠加覆盖，1=在原剩余时间基础上叠加）<br>
+                    • 行为：调用 `_玩家.获得玛法特权(特权类型, 天数, 是否叠加)`<br>
+                    • 应用场景：VIP 月卡、周卡、活动赠送
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修改节点数据</span></td>
+                <td>
+                    修改玩家的指定节点数据（副本/活动进度节点）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修改节点数据 节点编号 运算符 数值<br>
+                    • 节点编号：ushort，>0 才有效<br>
+                    • 行为：读取当前节点值，通过 NPCSegment.Calculate 与调整值运算后写回<br>
+                    • 应用场景：剧情节点控制、副本阶段、活动进度
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修改七天进度</span></td>
+                <td>
+                    修改玩家七天狂欢活动的某个进度值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修改七天进度 进度编号 运算符 数值<br>
+                    • 行为：从 `角色数据.七天进度` 读取当前进度，按运算符计算新值，并与 `七天最大进度表` 比较后调用 `_玩家.修改七天进度` 写回<br>
+                    • 限制：仅当已有该进度条记录时生效；超过最大进度不会写入
+                    • 应用场景：七天活动奖励、补发、GM 调整
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调整转生次数</span></td>
+                <td>
+                    ⚠ 当前仅在脚本操作命令枚举中占位，未在执行器中实现<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 状态：调用不会对玩家转生次数产生实际影响<br>
+                    • 建议：如需调整转生次数，请使用专门的转生逻辑或等待后续实现
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>⚙️ 玩家设置命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">普通分解开关</span></td>
+                <td>
+                    切换【普通装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：普通分解开关 [0/1]<br>
+                    • 无参数：在 0/1 之间自动切换<br>
+                    • 有参数：设置 0=关闭，1=开启<br>
+                    • 行为：写入角色变量.普通分解开关；由分解逻辑统一读取<br>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">沃玛分解开关</span></td>
+                <td>
+                    切换【沃玛装备】自动分解开关，其余说明同上<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：沃玛分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">祖玛分解开关</span></td>
+                <td>
+                    切换【祖玛装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：祖玛分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">赤月分解开关</span></td>
+                <td>
+                    切换【赤月装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：赤月分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">魔龙分解开关</span></td>
+                <td>
+                    切换【魔龙装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：魔龙分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">苍月分解开关</span></td>
+                <td>
+                    切换【苍月装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：苍月分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">星王分解开关</span></td>
+                <td>
+                    切换【星王装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：星王分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">神秘分解开关</span></td>
+                <td>
+                    切换【神秘装备】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：神秘分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">技能分解开关</span></td>
+                <td>
+                    切换【技能书】自动分解开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：技能分解开关 [0/1]
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">极品分解开关</span></td>
+                <td>
+                    切换【极品装备】是否参与自动分解<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：极品分解开关 [0/1]
+                    • 提示：与“极品自动入包开关”功能不同，一个管是否分解，一个管是否自动入包
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">装备分解开关</span></td>
+                <td>
+                    切换【全部装备】自动分解开关（总类开关）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：装备分解开关 [0/1]
+                    • 行为：配合各层级分解开关一起决定最终是否分解
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">自动分解开关</span></td>
+                <td>
+                    切换自动分解【总开关】（是否启用自动分解系统）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：自动分解开关 [0/1]
+                    • 行为：0=整体禁用自动分解，1=按各类型开关规则执行
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">自动拾取开关</span></td>
+                <td>
+                    配置玩家自动拾取参数（范围与间隔），并支持无参切换开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：自动拾取开关（无参数，切换开启/关闭状态，写入角色变量.自动拾取开关）<br>
+                    • 写法2：自动拾取开关 拾取范围 拾取间隔毫秒<br>
+                    • 行为：设置 `_玩家.自动拾取范围` 与 `_玩家.自动拾取间隔`，并在无参时给出提示“自动拾取已开启/关闭”
+                    • 提示：自动拾取功能与分解逻辑、金币银币自动入包等有联动
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">极品自动入包开关</span></td>
+                <td>
+                    配置极品装备自动入包功能开关<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：极品自动入包开关<br>
+                    • 参数：无（脚本每调用一次在 0/1 之间切换）<br>
+                    • 作用：切换玩家的极品装备自动入包开关状态（开启/关闭）<br>
+                    • 功能特性：<br>
+                    &nbsp;&nbsp;- 开启时：怪物掉落与玩家丢弃的极品装备优先自动入包，不创建特效陷阱<br>
+                    &nbsp;&nbsp;- 关闭时：极品装备正常掉落地面，并按配置创建极品特效陷阱展示<br>
+                    &nbsp;&nbsp;- 状态持久化保存，服务器重启后保持<br>
+                    • 状态查看：使用 &lt;$极品自动入包开关&gt; 显示当前状态（是/否）<br>
+                    • 应用场景：个性化游戏体验、便捷背包管理、炫耀展示选择
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">角色开始摆摊</span></td>
+                <td>
+                    让玩家进入摆摊状态（前提是客户端支持摆摊界面）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：角色开始摆摊<br>
+                    • 参数：无<br>
+                    • 应用场景：安全区摆摊、市场摊位系统
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎲 随机与娱乐命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">随机发放物品</span></td>
+                <td>
+                    从候选物品列表中随机选一组物品发放给玩家（支持权重与多条配置）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：随机发放物品 物品组标识 或 随机发放物品 物品名称/编号1 概率1 物品名称/编号2 概率2 ...<br>
+                    • 实现：使用命令配置结构，从多条物品记录中随机选取并调用发放逻辑<br>
+                    • 应用场景：抽奖系统、福袋、随机奖励箱
+                    • 提示：具体参数格式以脚本命令配置为准，此处为概念说明
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📊 排行与统计命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">开启变量排序</span></td>
+                <td>
+                    开启某个变量的排序统计（用于排行榜）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：开启变量排序 变量名<br>
+                    • 行为：在服务器端注册需要排序的变量，并准备排序缓存<br>
+                    • 应用场景：充值排行、战力排行、自定义活动排行
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">执行变量排序</span></td>
+                <td>
+                    立即执行一次变量排序，刷新排名结果<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：执行变量排序<br>
+                    • 行为：对已开启排序的变量进行统计与排序，写入排名数据表<br>
+                    • 应用场景：活动结束时手动结算、定时任务触发的排序
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">清空变量排序</span></td>
+                <td>
+                    清空排序数据和缓存<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：清空变量排序<br>
+                    • 行为：清除指定变量的排行榜记录（具体范围视实现而定）<br>
+                    • 应用场景：新一轮活动前重置排行
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">捐赠元宝</span></td>
+                <td>
+                    增加“捐赠元宝”变量，并触发排序逻辑（用于捐赠排行）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：捐赠元宝 运算符 数量<br>
+                    • 存储：内部采用固定变量编号（如 U666）记录总捐赠
+                    • 行为：对当前捐赠值按运算符计算新值，并保证不为负，再交给排序系统使用
+                    • 应用场景：元宝捐献榜、公益活动排行
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🔧 其他实用命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">定时召回玩家</span></td>
+                <td>
+                    延迟将当前玩家召回到脚本触发时的位置<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：定时召回玩家 定时器编号 延迟秒数<br>
+                    • 行为：在内部定时器系统中登记一次召回任务，到时间后强制玩家切图回到记录位置<br>
+                    • 应用场景：副本结束回收、活动倒计时传送
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">定时召回队伍</span></td>
+                <td>
+                    延迟将整个队伍召回到当前玩家所在位置<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：定时召回队伍 定时器编号 延迟秒数<br>
+                    • 行为：为队伍成员登记召回任务，在指定时间后统一传送回队长或触发者位置<br>
+                    • 应用场景：组队副本关闭、组队活动集合
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">取消定时召回</span></td>
+                <td>
+                    取消当前玩家所有待执行的定时召回任务<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：取消定时召回<br>
+                    • 行为：清空与玩家相关的召回定时任务
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修改副本节点</span></td>
+                <td>
+                    修改当前所在副本地图的节点值（仅在副本中有效）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修改副本节点 节点值<br>
+                    • 行为：直接写入 `_玩家.当前地图.副本节点`，非副本地图调用会静默返回<br>
+                    • 应用场景：副本阶段控制、多阶段 Boss、机关进度
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">修改节点计时</span></td>
+                <td>
+                    修改当前副本地图的节点计时器（增加一定秒数）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：修改节点计时 秒数<br>
+                    • 行为：将 `_玩家.当前地图.节点计时` 设置为当前时间 + 指定秒数，仅在副本地图中生效<br>
+                    • 应用场景：副本倒计时延长/缩短、阶段性限时玩法
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">调用Lua脚本</span></td>
+                <td>
+                    调用服务器端注册的 Lua 脚本函数（部分实现）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：调用Lua脚本 文件名 函数名 [参数1] [参数2] ...<br>
+                    • 行为：将当前玩家上下文与参数传入指定 Lua 函数，由 Lua 完成自定义逻辑<br>
+                    • 应用场景：复杂玩法扩展、快速脚本化实验
+                    • 提示：具体可用函数取决于 Lua 绑定实现
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">地图放置物品</span></td>
+                <td>
+                    在地图上指定位置掉落物品（通用命令执行器处理）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：地图放置物品 地图名/编号 X坐标 Y坐标 物品名称/编号 数量<br>
+                    • 行为：在指定地图坐标创建掉落物品，可用于活动或场景造物<br>
+                    • 应用场景：活动奖励投放、场景道具、GM 调试
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">卸下角色装备</span></td>
+                <td>
+                    卸下玩家身上指定部位的装备到背包<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：卸下角色装备 装备部位<br>
+                    • 装备部位：使用部位枚举或编号，由服务器映射到具体栏位<br>
+                    • 应用场景：特殊活动、惩罚机制、职业重置前卸装
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">刷新角色BUFF</span></td>
+                <td>
+                    刷新玩家当前所有 BUFF 的显示（不改变持续时间）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：刷新角色BUFF<br>
+                    • 行为：遍历当前 BUFF 列表，重新发送状态添加封包到客户端<br>
+                    • 应用场景：BUFF 显示异常修复、重载属性、客户端不同步时强制重传
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">发送重铸结果</span></td>
+                <td>
+                    发送装备重铸结果封包给客户端（通知重铸 UI）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：发送重铸结果 结果编号<br>
+                    • 结果编号：0 表示普通通知，其它值根据实际重铸逻辑使用<br>
+                    • 行为：构造并发送 `玩家重铸装备` 封包，携带结果编号等参数
+                    • 应用场景：重铸系统脚本、GM 测试重铸结果
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 使用示例与说明</h2>
+    <div class="category">
+        <h3>💡 完整示例：武斗场进入脚本</h3>
+        <div style="background: #1a1f2e; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', monospace; line-height: 1.8; border: 1px solid #2d3748;">
+<span style="color: #5c6370; font-style: italic;">; 检测条件并执行操作</span><br>
+<span style="color: #fc8181;">[@确认进入]</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #61afef;">检测角色等级</span> &lt; 25<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #fc8181;">BREAK</span><br>
+<span style="color: #c678dd; font-weight: bold;">#SAY</span><br>
+你的等级未满[25]级，暂时无法进入。<br>
+<br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #61afef;">检测金币数量</span> &lt; 10000<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #fc8181;">BREAK</span><br>
+<span style="color: #c678dd; font-weight: bold;">#SAY</span><br>
+身上不足[10000]金币，不足以支付报名费用！<br>
+<br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #68d391;">&lt;$小时&gt;</span> == 21<br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #68d391;">&lt;$分钟&gt;</span> &lt; 30<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #fc8181;">调整角色金币</span> - 10000<br>
+<span style="color: #fc8181;">传送指定地图</span> 183 0 0 3<br>
+<span style="color: #c678dd; font-weight: bold;">#ELSESAY</span><br>
+还未到开放时间！
+        </div>
+        
+        <div style="background: #0f1419; padding: 15px; margin-top: 15px; border-radius: 6px; border: 1px solid #2d3748;">
+            <div style="font-weight: bold; color: #f6ad55; margin-bottom: 10px;">💡 使用说明</div>
+            <span style="color: #a0aec0;">
+            • 操作命令必须在 <code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">#ACT</code> 或 <code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">#ELSEACT</code> 部分使用<br>
+            • 多个操作命令按顺序执行<br>
+            • 运算符：<code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">+</code> 增加、<code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">-</code> 减少、<code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">=</code> 设置为<br>
+            • 命令参数之间用空格分隔<br>
+            • 详细参数格式请参考完整API文档或实际脚本示例
+            </span>
+        </div>
+    </div>
+</body>
+</html>

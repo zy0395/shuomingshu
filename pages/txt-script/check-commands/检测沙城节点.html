@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测沙城节点 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测沙城节点</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测沙城攻城战的当前节点状态。沙城系统有四个不同的节点阶段（0=空闲、1=准备、2=攻城中、3=结束），此命令可以精确判断当前处于哪个阶段，从而执行对应的逻辑。常用于攻城活动管理、功能控制、奖励发放等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测沙城节点</span> <span class="string">比较符</span> <span class="number">节点值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 条件满足时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：比较符</div>
+            <div class="param-desc">
+                用于比较节点值的运算符。<br>
+                • <strong>==</strong> - 等于<br>
+                • <strong>&gt;</strong> - 大于<br>
+                • <strong>&lt;</strong> - 小于<br>
+                • <strong>&gt;=</strong> - 大于等于<br>
+                • <strong>&lt;=</strong> - 小于等于<br>
+                • <strong>!=</strong> - 不等于
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数2：节点值</div>
+            <div class="param-desc">
+                沙城节点状态值。<br>
+                • 类型：字节（0-255）<br>
+                • <strong>0</strong> - 空闲状态（非攻城时间）<br>
+                • <strong>1</strong> - 准备阶段（攻城战准备中）<br>
+                • <strong>2</strong> - 攻城中（正在进行攻城战）<br>
+                • <strong>3</strong> - 结束阶段（攻城战刚结束）
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>当前节点满足指定条件</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>当前节点不满足条件</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">参数错误</span></td>
+                <td>节点值格式错误</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：沙城活动管理NPC</div>
+        <div class="code-block"><span class="comment">; 沙城活动官 - 根据节点状态显示不同内容</span><br>
+[@沙城活动官]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测沙城节点</span> == <span class="number">2</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═════ 攻城战进行中 ═════&lt;BR&gt;<br>
+沙城争夺战正在激烈进行！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+当前战况：&lt;BR&gt;<br>
+· 守城行会：&lt;&lt;S$占领行会&gt;/fcolor=255&gt;&lt;BR&gt;<br>
+· 攻城行会：&lt;S$攻城数量&gt; 个&lt;BR&gt;<br>
+· 战斗时间：&lt;S$战斗时间&gt;&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;查看详情/@战况详情&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测沙城节点</span> == <span class="number">1</span><br>
+<span class="keyword">#ELSESAY</span><br>
+═════ 攻城战准备中 ═════&lt;BR&gt;<br>
+距离攻城战开始还有：&lt;BR&gt;<br>
+&lt;&lt;S$倒计时&gt;/fcolor=249&gt;&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+请各行会做好准备！&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测沙城节点</span> == <span class="number">3</span><br>
+<span class="keyword">#ELSESAY</span><br>
+═════ 攻城战已结束 ═════&lt;BR&gt;<br>
+本次沙城争夺战已经结束！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+胜利行会：&lt;&lt;S$占领行会&gt;/fcolor=249&gt;&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+恭喜获胜的勇士们！&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═════ 沙城攻城战 ═════&lt;BR&gt;<br>
+下次攻城时间：&lt;BR&gt;<br>
+&lt;&lt;S$下次攻城时间&gt;/fcolor=249&gt;&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+当前占领行会：&lt;BR&gt;<br>
+&lt;&lt;S$占领行会&gt;/fcolor=255&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：攻城期间传送控制</div>
+        <div class="code-block"><span class="comment">; 传送员 - 只在攻城中和准备阶段允许传送</span><br>
+[@沙城传送员]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测沙城节点</span> &gt;= <span class="number">1</span><br>
+<span class="tag">检测沙城节点</span> &lt;= <span class="number">2</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">角色随机传送</span> <span class="number">3</span><br>
+<span class="keyword">#SAY</span><br>
+传送成功！&lt;BR&gt;<br>
+欢迎来到沙城战场！<br>
+<span class="keyword">#ELSESAY</span><br>
+当前非攻城时间，无法传送到沙城。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：结算奖励发放</div>
+        <div class="code-block"><span class="comment">; 奖励发放NPC - 只在结束阶段发放奖励</span><br>
+[@攻城奖励官]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测沙城节点</span> == <span class="number">3</span><br>
+<span class="tag">检测是否沙城成员</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">调整角色经验</span> <span class="number">1000000</span><br>
+<span class="tag">调整角色金币</span> <span class="number">500000</span><br>
+<span class="keyword">#SAY</span><br>
+【攻城奖励】&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+恭喜您参与攻城战！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+获得奖励：&lt;BR&gt;<br>
+· 经验：1,000,000&lt;BR&gt;<br>
+· 金币：500,000&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+奖励发放仅在攻城战结束后。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：节点范围检测</div>
+        <div class="code-block"><span class="comment">; 使用范围检测来判断是否在活动期间</span><br>
+[@活动商人]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测沙城节点</span> &gt; <span class="number">0</span><br>
+<span class="keyword">#SAY</span><br>
+【攻城期间特卖】&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+攻城物资限时优惠！&lt;BR&gt;<br>
+· 生命药水(大) - 5折&lt;BR&gt;<br>
+· 魔法药水(大) - 5折&lt;BR&gt;<br>
+· 随机传送卷 - 8折&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;购买物品/@购买&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+活动期间才有特卖哦！&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 全局状态</strong><br>
+        • 沙城节点是<strong>服务器全局状态</strong><br>
+        • 影响所有玩家，所有人检测结果相同<br>
+        • 不是玩家个人状态或行会状态<br><br>
+        
+        <strong>2. 节点值说明</strong><br>
+        • <code>0</code> - 空闲状态（非攻城时间，正常游戏）<br>
+        • <code>1</code> - 准备阶段（攻城战准备中，玩家可进入）<br>
+        • <code>2</code> - 攻城中（正在激烈战斗）<br>
+        • <code>3</code> - 结束阶段（攻城战刚结束，结算中）<br><br>
+        
+        <strong>3. 自动切换机制</strong><br>
+        • 节点状态由系统根据时间自动切换<br>
+        • 切换时间在服务器配置中设定<br>
+        • 不应由脚本随意修改节点值<br>
+        • 手动修改可能导致攻城系统异常<br><br>
+        
+        <strong>4. 比较运算支持</strong><br>
+        • 支持所有常见比较符（==、&gt;、&lt;、&gt;=、&lt;=、!=）<br>
+        • 可以判断节点范围：如 &gt;= 1 表示活动期间<br>
+        • 可以使用 != 0 表示非空闲状态<br><br>
+        
+        <strong>5. 配合使用建议</strong><br>
+        • 常与<code>检测是否攻城</code>配合（检测是否攻城 等价于 检测沙城节点 == 2）<br>
+        • 与<code>检测是否沙城成员</code>配合，实现权限控制<br>
+        • 与<code>检测是否沙城城主</code>配合，实现特权功能<br><br>
+        
+        <strong>6. 逻辑分支处理</strong><br>
+        • 建议使用IF-ELSEIF-ELSE结构<br>
+        • 按节点值从大到小或从小到大排列<br>
+        • 确保所有节点状态都有对应处理
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 活动管理NPC</strong><br>
+        • 根据节点显示不同的活动信息<br>
+        • 准备阶段显示倒计时<br>
+        • 攻城中显示战况<br>
+        • 结束后显示结果<br><br>
+        
+        <strong>2. 传送控制</strong><br>
+        • 只在特定节点允许传送<br>
+        • 准备和攻城阶段开放传送<br>
+        • 空闲和结束阶段关闭传送<br><br>
+        
+        <strong>3. 奖励系统</strong><br>
+        • 结束阶段发放参与奖励<br>
+        • 攻城中发放击杀奖励<br>
+        • 根据节点给予不同奖励<br><br>
+        
+        <strong>4. 商店系统</strong><br>
+        • 活动期间（节点&gt;0）特卖<br>
+        • 攻城中出售战斗物资<br>
+        • 平时正常价格<br><br>
+        
+        <strong>5. 功能限制</strong><br>
+        • 攻城期间限制某些功能<br>
+        • 根据节点开放不同服务<br>
+        • 维护活动秩序
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玩家命令表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 1.4em;
+            color: #7d8fd0;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #404968;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .cmd-name {
+            color: #ff8b8b;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .cmd-format {
+            color: #6dd881;
+            font-weight: 500;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .cmd-desc {
+            color: #d4d4e0;
+            font-size: 0.9em;
+        }
+        
+        .category {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 玩家命令表</h1>
+    
+    <div class="category">💰 充值奖励命令</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 35%;">命令格式</th>
+                <th style="width: 40%;">功能说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">充值</span></td>
+                <td><span class="cmd-format">@充值 CDK码</span></td>
+                <td><span class="cmd-desc">使用CDK码进行充值，获得金币、元宝、物品等奖励</span></td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">礼包码</span></td>
+                <td><span class="cmd-format">@礼包码 礼包码</span></td>
+                <td><span class="cmd-desc">使用礼包码获得对应奖励，每个礼包码只能领取一次</span></td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">查询充值</span></td>
+                <td><span class="cmd-format">@查询充值</span></td>
+                <td><span class="cmd-desc">查询当前角色的累计充值和今日充值信息</span></td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">赠送元宝</span></td>
+                <td><span class="cmd-format">@赠送元宝 角色名字 元宝数量</span></td>
+                <td><span class="cmd-desc">向其他角色赠送元宝（需要扣除手续费）</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🗺️ 移动传送命令</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 35%;">命令格式</th>
+                <th style="width: 40%;">功能说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">传送</span></td>
+                <td><span class="cmd-format">@传送 MapX MapY</span></td>
+                <td><span class="cmd-desc">使用传送戒指传送到指定坐标（需要传送戒指）</span></td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">队伍集结</span></td>
+                <td><span class="cmd-format">@队伍集结 </span></td>
+                <td><span class="cmd-desc">将队伍成员传送到自己身边（需要记忆套装）</span></td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">允许集结</span></td>
+                <td><span class="cmd-format">@允许集结 </span></td>
+                <td><span class="cmd-desc">开启队伍传送权限，可以被队长拉到身边</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🐾 宠物功能命令</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 35%;">命令格式</th>
+                <th style="width: 40%;">功能说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">宠物拾取</span></td>
+                <td><span class="cmd-format">@宠物拾取 开关</span></td>
+                <td><span class="cmd-desc">开启或关闭宠物自动拾取功能（需要VIP3以上）</span></td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">宠物挖矿</span></td>
+                <td><span class="cmd-format">@宠物挖矿 开关</span></td>
+                <td><span class="cmd-desc">开启或关闭宠物自动挖矿功能（需要VIP等级）</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🏪 交易功能命令</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 35%;">命令格式</th>
+                <th style="width: 40%;">功能说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">摆摊</span></td>
+                <td><span class="cmd-format">@摆摊</span></td>
+                <td><span class="cmd-desc">开启或关闭摆摊功能（需要30级以上和玛法特权）</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🔍 探索功能命令</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 35%;">命令格式</th>
+                <th style="width: 40%;">功能说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">探测</span></td>
+                <td><span class="cmd-format">@探测 角色名字</span></td>
+                <td><span class="cmd-desc">探测指定玩家的位置（需要装备探测项链）</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🙏 特殊功能命令</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 35%;">命令格式</th>
+                <th style="width: 40%;">功能说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">祈祷</span></td>
+                <td><span class="cmd-format">@祈祷</span></td>
+                <td><span class="cmd-desc">触发禁忌祈祷仪式，献祭全身装备让全服宠物叛变</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📋 使用说明</h2>
+    <div style="background: #252b48; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <p style="margin-bottom: 10px;"><strong style="color: #8e9ff5;">命令格式：</strong>所有玩家命令都以 @ 符号开头，后跟命令名称和相应参数。</p>
+        <p style="margin-bottom: 10px;"><strong style="color: #8e9ff5;">执行方式：</strong>玩家命令需要在游戏聊天框中输入，由服务器解析执行。</p>
+        <p style="margin-bottom: 10px;"><strong style="color: #8e9ff5;">权限要求：</strong>部分命令需要特定条件（如VIP等级、特殊物品、等级要求等）。</p>
+        <p style="margin-bottom: 10px;"><strong style="color: #8e9ff5;">注意事项：</strong></p>
+        <ul style="margin-left: 20px; color: #b8c1ec;">
+            <li>充值和礼包码命令需要有效的CDK码或礼包码</li>
+            <li>传送命令需要装备传送戒指</li>
+            <li>天地合一需要装备记忆套装（戒指、手镯、项链、头盔）</li>
+            <li>宠物功能需要相应的VIP等级</li>
+            <li>摆摊需要在指定安全区且满足等级和特权要求</li>
+        </ul>
+    </div>
+</body>
+</html>

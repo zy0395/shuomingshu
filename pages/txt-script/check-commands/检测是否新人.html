@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测是否新人</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测当前触发脚本的玩家是否为新注册的角色。该命令用于识别刚创建的新角色，常用于新手引导系统、新人福利发放、欢迎公告等场景。新人状态通常在玩家完成特定操作或达到一定条件后自动解除。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式 - 无需任何参数</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否新人</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 玩家是新人时执行的操作</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="comment">; 玩家是新人时显示的内容</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">无参数</div>
+            <div class="param-desc">该命令不需要任何参数，直接使用即可检测玩家是否为新人。系统会自动判断玩家的新人状态。</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>玩家状态</th>
+                <th>检测结果</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">新人状态</span></td>
+                <td>条件满足</td>
+                <td>玩家是新注册的角色，执行#ACT中的命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">老玩家</span></td>
+                <td>条件不满足</td>
+                <td>玩家已不是新人状态，跳过#ACT，执行#ELSESAY或下一个判断</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：新人礼包发放</div>
+        <div class="code-block"><span class="comment">; 新人领取新手礼包</span><br>
+[@新手村长]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否新人</span><br>
+<span class="tag">检测任务标识</span> <span class="number">1</span> <span class="number">0</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">任务标识</span> <span class="number">1</span> <span class="number">1</span><br>
+<span class="tag">给予物品</span> <span class="string">"新手武器"</span> <span class="number">1</span><br>
+<span class="tag">给予物品</span> <span class="string">"新手药水(中量)"</span> <span class="number">50</span><br>
+<span class="tag">给予物品</span> <span class="string">"随机传送卷"</span> <span class="number">10</span><br>
+<span class="tag">调整金币数量</span> <span class="string">+</span> <span class="number">10000</span><br>
+<span class="keyword">#SAY</span><br>
+欢迎来到游戏世界！&lt;BR&gt;&lt;BR&gt;<br>
+这是新手礼包，请收好：&lt;BR&gt;<br>
+• 新手武器 x1&lt;BR&gt;<br>
+• 新手药水 x50&lt;BR&gt;<br>
+• 随机传送卷 x10&lt;BR&gt;<br>
+• 金币 x10000&lt;BR&gt;&lt;BR&gt;<br>
+祝您游戏愉快！&lt;BR&gt;<br>
+&lt;#SO:1&gt;谢谢村长&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">1</span> <span class="number">1</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您已经领取过新手礼包了！&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">取反</span> <span class="tag">检测是否新人</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+新手礼包仅限新人领取哦！&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 新人状态判定</strong><br>
+        • 新人状态由系统自动管理，通常在角色创建时设置<br>
+        • 新人状态可能在玩家达到特定等级、完成特定任务或游戏时长后自动解除<br>
+        • 具体的新人状态解除条件取决于服务器配置<br>
+        • 该检测命令只能识别新人状态，无法修改该状态<br><br>
+        
+        <strong>2. 使用场景</strong><br>
+        • <strong>登陆触发脚本：</strong>在玩家登陆时发送欢迎公告、赠送新人BUFF<br>
+        • <strong>新手村NPC：</strong>提供新人礼包、新手引导、专属任务<br>
+        • <strong>限时福利：</strong>为新人提供特殊折扣、额外经验等福利<br>
+        • <strong>地图限制：</strong>某些新手地图或活动只允许新人进入<br><br>
+        
+        <strong>3. 反向检测</strong><br>
+        • 使用 <code>取反 检测是否新人</code> 可以检测"不是新人"的情况<br>
+        • 示例：<code>取反 检测是否新人</code> 表示检测老玩家<br>
+        • 可用于限制某些功能仅对老玩家开放<br><br>
+        
+        <strong>4. 配合其他检测命令</strong><br>
+        • 可以与 <code>检测任务标识</code> 配合，防止玩家重复领取新人福利<br>
+        • 可以与 <code>检测角色等级</code> 配合，为不同等级的新人提供差异化引导<br>
+        • 可以与 <code>检测背包空间</code> 配合，确保玩家有足够空间接收礼包<br><br>
+        
+        <strong>5. 性能考虑</strong><br>
+        • 该检测命令性能开销极低，直接读取玩家属性<br>
+        • 可以在登陆触发、NPC对话等场景频繁使用<br>
+        • 无需担心检测次数对服务器性能的影响<br><br>
+        
+        <strong>6. 脚本设计建议</strong><br>
+        • 为新人设计简洁明了的引导流程，避免信息过载<br>
+        • 新人福利应该一次性发放，使用任务标识防止重复领取<br>
+        • 在登陆触发中添加新人欢迎公告时，建议使用 <code>Break</code> 避免重复触发<br>
+        • 可以设计新人专属地图或副本，提供安全的练级环境<br><br>
+        
+        <strong>7. 游戏体验优化</strong><br>
+        • 新人礼包内容应该实用且有吸引力（武器、药水、金币等）<br>
+        • 新人保护机制（如BUFF）可以提升新玩家的生存率<br>
+        • 引导任务应该循序渐进，帮助玩家快速了解游戏机制<br>
+        • 避免过度保护，适当的挑战才能提升玩家的成就感<br><br>
+        
+        <strong>8. 常见组合用法</strong><br>
+        • <code>检测是否新人</code> + <code>检测任务标识</code> = 防止重复领取礼包<br>
+        • <code>检测是否新人</code> + <code>检测背包空间</code> = 确保礼包能正常发放<br>
+        • <code>检测是否新人</code> + <code>检测角色等级</code> = 分阶段引导新人<br>
+        • <code>取反 检测是否新人</code> + <code>检测角色等级</code> = 老玩家专属内容
+    </div>
+
+</body>
+</html>

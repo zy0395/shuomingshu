@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NwServer 游戏服务器使用说明书</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        /* 顶部导航栏 */
+        .top-header {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+            color: #e0e0e0;
+            padding: 15px 40px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 80px;
+            border-bottom: 1px solid #404968;
+        }
+        
+        .top-header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            color: #8e9ff5;
+        }
+        
+        .top-header p {
+            font-size: 0.9em;
+            opacity: 0.8;
+            color: #b8c1ec;
+        }
+        
+        /* 价格表按钮 */
+        .price-button {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #5d6fa6 0%, #4a5a8f 100%);
+            color: #e0e0e0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(93, 111, 166, 0.4);
+        }
+        
+        .price-button:hover {
+            background: linear-gradient(135deg, #7a8ec4 0%, #5d6fa6 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(142, 159, 245, 0.5);
+        }
+        
+        /* 主容器布局 */
+        .main-layout {
+            display: flex;
+            margin-top: 80px;
+            height: calc(100vh - 80px);
+        }
+        
+        /* 侧边栏目录 */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(to bottom, #252b48 0%, #1f2544 100%);
+            overflow-y: auto;
+            border-right: 1px solid #404968;
+            padding: 12px 10px;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.3);
+            height: 100%;
+        }
+        
+        .sidebar h2 {
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            color: #8e9ff5;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #5d6fa6;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 4px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #b8c1ec;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 13px;
+            background: rgba(93, 111, 166, 0.1);
+        }
+        
+        .nav-link:hover {
+            background: rgba(93, 111, 166, 0.3);
+            color: #8e9ff5;
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #5d6fa6 0%, #4a5a8f 100%);
+            color: #e0e0e0;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(93, 111, 166, 0.4);
+        }
+        
+        .nav-icon {
+            font-size: 1.1em;
+            margin-right: 8px;
+        }
+        
+        /* 子菜单样式 */
+        .nav-submenu {
+            list-style: none;
+            padding-left: 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .nav-submenu.expanded {
+            max-height: 500px;
+        }
+        
+        .nav-submenu .nav-link {
+            font-size: 12px;
+            padding: 6px 10px;
+            margin-left: 10px;
+            border-left: 2px solid #5d6fa6;
+        }
+        
+        .nav-parent {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-arrow {
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+            color: #8e9ff5;
+        }
+        
+        .nav-arrow.expanded {
+            transform: rotate(90deg);
+        }
+        
+        /* 内容区域 */
+        .content-area {
+            flex: 1;
+            background: #1a1d2e;
+            overflow: hidden;
+        }
+        
+        .content-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #1a1d2e !important;
+            color-scheme: dark;
+        }
+        
+        /* 强制iframe内容深色背景 */
+        iframe {
+            background-color: #1a1d2e !important;
+        }
+        
+        /* 搜索对话框滚动条样式 */
+        #searchResultsList::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #searchResultsList::-webkit-scrollbar-track {
+            background: #2d3561;
+            border-radius: 0 0 8px 0;
+        }
+        
+        #searchResultsList::-webkit-scrollbar-thumb {
+            background: #5d6fa6;
+            border-radius: 3px;
+        }
+        
+        #searchResultsList::-webkit-scrollbar-thumb:hover {
+            background: #7a8ec4;
+        }
+        
+        /* 侧边栏滚动条样式 */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(93, 111, 166, 0.5);
+            border-radius: 3px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(93, 111, 166, 0.7);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 968px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .content-area {
+                height: calc(100vh - 280px);
+            }
+        }
+
+        /* 活动弹窗样式 */
+        .promo-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .promo-dialog {
+            background: linear-gradient(145deg, #1e2433 0%, #171c28 100%);
+            border-radius: 20px;
+            padding: 0;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 25px 80px rgba(255, 107, 107, 0.3), 0 0 0 1px rgba(255, 107, 107, 0.2);
+            animation: bounceIn 0.5s ease;
+            overflow: hidden;
+        }
+
+        .promo-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .promo-header h2 {
+            color: white;
+            font-size: 1.8em;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .promo-header .promo-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.25);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: white;
+        }
+
+        .promo-content {
+            padding: 30px;
+        }
+
+        .promo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .promo-item .name {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .promo-item .price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .promo-item .original {
+            color: #718096;
+            text-decoration: line-through;
+            font-size: 0.9em;
+        }
+
+        .promo-item .sale {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .promo-note {
+            background: rgba(254, 202, 87, 0.1);
+            border: 1px solid rgba(254, 202, 87, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #feca57;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .promo-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .promo-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .promo-btn.primary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            background-size: 200% auto;
+            animation: shine 3s infinite linear;
+        }
+
+        .promo-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .promo-btn.secondary {
+            background: rgba(93, 111, 166, 0.2);
+            color: #b8c1ec;
+            border: 1px solid #5d6fa6;
+        }
+
+        .promo-btn.secondary:hover {
+            background: rgba(93, 111, 166, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 活动弹窗 -->
+    <div id="promoOverlay" class="promo-overlay">
+        <div class="promo-dialog">
+            <div class="promo-header">
+                <h2>🎉 限时半价活动</h2>
+                <div class="promo-badge">⚡ 仅此一次，错过不再！</div>
+            </div>
+            <div class="promo-content">
+                <div class="promo-item">
+                    <span class="name">⭐ 月卡</span>
+                    <span class="price">
+                        <span class="original">¥420</span>
+                        <span class="sale">¥210</span>
+                    </span>
+                </div>
+                <div class="promo-item">
+                    <span class="name">季度卡</span>
+                    <span class="price">
+                        <span class="original">¥1,200</span>
+                        <span class="sale">¥600</span>
+                    </span>
+                </div>
+                <div class="promo-item">
+                    <span class="name">半年卡</span>
+                    <span class="price">
+                        <span class="original">¥2,160</span>
+                        <span class="sale">¥1,080</span>
+                    </span>
+                </div>
+                <div class="promo-item">
+                    <span class="name">🔥 年卡</span>
+                    <span class="price">
+                        <span class="original">¥4,100</span>
+                        <span class="sale">¥2,050</span>
+                    </span>
+                </div>
+                <div class="promo-item">
+                    <span class="name">永久卡</span>
+                    <span class="price">
+                        <span class="original">¥9,800</span>
+                        <span class="sale">¥4,900</span>
+                    </span>
+                </div>
+                <div class="promo-note">
+                    🚨 <strong>活动仅此一次，结束后恢复原价！</strong><br>
+                    💡 日卡、周卡、10人卡不参与本次活动
+                </div>
+                <div class="promo-buttons">
+                    <button class="promo-btn secondary" onclick="closePromo()">稍后再说</button>
+                    <button class="promo-btn primary" onclick="viewPricing()">立即查看 →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <header class="top-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+                <h1>📚 NwServer 游戏服务器</h1>
+                <p>完整的使用说明文档</p>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button onclick="showElectronSearch()" style="padding: 8px 15px; background: rgba(93, 111, 166, 0.2); border: 1px solid #5d6fa6; color: #e0e0e0; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;">
+                    <span>🔍</span> 全局搜索 (Ctrl+F)
+                </button>
+                <button class="price-button" onclick="loadPage('pages/授权价格.html')" style="display: none; position: static;">获取授权</button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 简洁搜索对话框 -->
+    <div id="electronSearchDialog" style="display: none; position: fixed; top: 90px; right: 30px; width: 320px; background: rgba(31, 37, 68, 0.98); border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); z-index: 9999; backdrop-filter: blur(10px); border: 1px solid #404968;">
+        <!-- 标题栏 -->
+        <div style="padding: 12px 15px; border-bottom: 1px solid #404968; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%); border-radius: 8px 8px 0 0;">
+            <span style="font-weight: 600; font-size: 14px; color: #8e9ff5;">🔍 全局内容搜索</span>
+            <button onclick="closeElectronSearch()" style="border: none; background: rgba(93, 111, 166, 0.3); font-size: 16px; cursor: pointer; color: #b8c1ec; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='rgba(93, 111, 166, 0.5)'" onmouseout="this.style.background='rgba(93, 111, 166, 0.3)'">×</button>
+        </div>
+        
+        <!-- 搜索输入 -->
+        <div style="padding: 15px;">
+            <div style="position: relative;">
+                <input type="text" id="electronSearchInput" placeholder="输入关键字查找功能、命令、物品..." style="width: 100%; padding: 10px 12px; border: 2px solid #404968; border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s; background: #252b48; color: #b8c1ec;" onfocus="this.style.borderColor='#5d6fa6'" onblur="this.style.borderColor='#404968'">
+            </div>
+            <button onclick="executeElectronSearch()" style="margin-top: 12px; padding: 10px; background: linear-gradient(135deg, #5d6fa6 0%, #4a5a8f 100%); color: #e0e0e0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; width: 100%; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">开始搜索</button>
+        </div>
+        
+        <!-- 结果计数 -->
+        <div id="searchResultCount" style="display: none; padding: 8px 15px; background: #252b48; border-top: 1px solid #404968; border-bottom: 1px solid #404968; font-size: 12px; color: #b8c1ec;">
+            找到 <span id="totalResults" style="font-weight: bold; color: #8e9ff5;">0</span> 个相关结果
+        </div>
+        
+        <!-- 搜索结果列表 -->
+        <div id="searchResultsList" style="max-height: 400px; overflow-y: auto; background: #1f2544; border-radius: 0 0 8px 8px;"></div>
+    </div>
+    
+    <!-- 主布局 -->
+    <div class="main-layout">
+        <!-- 侧边栏章节目录 -->
+        <aside class="sidebar">
+            <div style="margin-bottom: 15px;">
+                <h2 style="margin-bottom: 10px;">📑 章节目录</h2>
+                <!-- 侧边栏过滤框 -->
+                <div style="position: relative;">
+                    <input type="text" id="searchInput" placeholder="过滤目录..." oninput="filterSidebar()" style="width: 100%; padding: 6px 10px; padding-right: 30px; background: rgba(37, 43, 72, 0.8); border: 1px solid #404968; border-radius: 4px; color: #b8c1ec; font-size: 12px; outline: none;">
+                    <span style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #5d6fa6;">🔍</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="loadPage('pages/首页.html', this)">
+                        <span class="nav-icon">🏠</span>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/B站视频教程.html', this)">
+                        <span class="nav-icon">📺</span>
+                        <span>视频教程</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/脚本常量.html', this)">
+                        <span class="nav-icon">📝</span>
+                        <span>脚本常量</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/脚本变量.html', this)">
+                        <span class="nav-icon">🔢</span>
+                        <span>脚本变量</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/脚本触发标签.html', this)">
+                        <span class="nav-icon">🎯</span>
+                        <span>脚本触发标签</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/脚本检测命令.html', this)">
+                        <span class="nav-icon">✅</span>
+                        <span>脚本检测命令</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/脚本操作命令.html', this)">
+                        <span class="nav-icon">⚙️</span>
+                        <span>脚本操作命令</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/txt脚本编辑教程.html', this)">
+                        <span class="nav-icon">📝</span>
+                        <span>TXT脚本教程</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/lua脚本教程.html', this)">
+                        <span class="nav-icon">🌙</span>
+                        <span>Lua脚本教程</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="loadPage('pages/合区操作.html', this)">
+                        <span class="nav-icon">🧩</span>
+                        <span>合区操作指南</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="toggleSubmenu(event, this)">
+                        <span class="nav-parent">
+                            <span>
+                                <span class="nav-icon">📊</span>
+                                <span>常用数据表</span>
+                            </span>
+                            <span class="nav-arrow">▶</span>
+                        </span>
+                    </a>
+                    <ul class="nav-submenu">
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/装备位置表.html', this)">
+                                <span class="nav-icon">📦</span>
+                                <span>装备位置表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/基础技能表.html', this)">
+                                <span class="nav-icon">⚔️</span>
+                                <span>基础技能表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/人物属性表.html', this)">
+                                <span class="nav-icon">�</span>
+                                <span>人物属性表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/游戏货币表.html', this)">
+                                <span class="nav-icon">💰</span>
+                                <span>游戏货币表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/技能范围表.html', this)">
+                                <span class="nav-icon">🎯</span>
+                                <span>技能范围表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/地图区域表.html', this)">
+                                <span class="nav-icon">🗺️</span>
+                                <span>地图区域表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/GM命令表.html', this)">
+                                <span class="nav-icon">⚙️</span>
+                                <span>GM命令表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/玩家命令表.html', this)">
+                                <span class="nav-icon">🎮</span>
+                                <span>玩家命令表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/技能枚举表.html', this)">
+                                <span class="nav-icon">⚔️</span>
+                                <span>技能枚举表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/BUFF枚举表.html', this)">
+                                <span class="nav-icon">🛡️</span>
+                                <span>BUFF枚举表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="loadPage('pages/任务枚举表.html', this)">
+                                <span class="nav-icon">📜</span>
+                                <span>任务枚举表</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- 内容区域 -->
+        <main class="content-area">
+            <iframe id="contentFrame" class="content-frame" src="pages/首页.html"></iframe>
+        </main>
+    </div>
+    
+    <script>
+        // 搜索索引数据（预建索引，适合Electron打包）
+        const searchIndex = [
+            {
+                title: '脚本操作命令',
+                url: 'pages/脚本操作命令.html',
+                items: [
+                    { name: '传送指定地图', desc: '将玩家传送到指定地图的指定坐标', category: '地图传送' },
+                    { name: '调整角色金币', desc: '调整玩家金币数量', category: '货币调整' },
+                    { name: '调整角色元宝', desc: '调整玩家元宝数量', category: '货币调整' },
+                    { name: '调整角色银币', desc: '调整玩家的银币数量', category: '货币调整' },
+                    { name: '发放指定物品', desc: '发放物品到玩家背包', category: '物品操作' },
+                    { name: '扣除背包物品', desc: '扣除玩家背包中的物品', category: '物品操作' },
+                    { name: '调整角色经验', desc: '调整玩家经验值', category: '角色属性' },
+                    { name: '调整角色等级', desc: '调整玩家等级', category: '角色属性' },
+                    { name: '添加角色BUFF', desc: '给玩家添加BUFF效果', category: 'BUFF相关' },
+                    { name: '移除角色BUFF', desc: '移除玩家的BUFF效果', category: 'BUFF相关' },
+                    { name: '角色添加技能', desc: '给玩家添加指定技能', category: '技能相关' },
+                    { name: '移除角色技能', desc: '移除玩家的指定技能', category: '技能相关' },
+                    { name: '创建副本地图', desc: '创建一个副本地图实例', category: '地图传送' },
+                    { name: '传送副本地图', desc: '将玩家传送到副本地图', category: '地图传送' },
+                    { name: '生成随机怪物', desc: '在指定地图的随机坐标生成怪物', category: '怪物与NPC' },
+                    { name: '清除地图怪物', desc: '清除指定地图的怪物', category: '怪物与NPC' },
+                    { name: '发送系统消息', desc: '发送聊天框的系统消息给玩家', category: '消息相关' },
+                    { name: '发送全服公告', desc: '发送全服公告消息大字', category: '消息相关' },
+                    { name: '设置定时器', desc: '设置一个定时器', category: '定时器相关' },
+                    { name: '角色发放称号', desc: '给玩家发放称号', category: '称号相关' },
+                    { name: '玩家发放宠物', desc: '给玩家发放宠物', category: '宠物相关' },
+                    { name: '加入指定公会', desc: '将玩家加入指定公会', category: '公会相关' },
+                    { name: '开启沙巴克攻城', desc: '开启沙巴克攻城战', category: '攻城相关' },
+                    { name: '编写系统邮件', desc: '编写邮件（设置邮件主题和内容）', category: '邮件系统' },
+                    { name: '调整队员金币', desc: '调整队伍所有成员的金币数量', category: '组队相关' },
+                    { name: '组队传送地图', desc: '将整个队伍传送到指定地图', category: '组队相关' },
+                    { name: '普通分解开关', desc: '设置普通装备自动分解开关', category: '玩家设置' },
+                    { name: '自动拾取开关', desc: '配置玩家的自动拾取规则', category: '玩家设置' },
+                    { name: '调整转生次数', desc: '调整玩家转生次数', category: '特殊功能' }
+                ]
+            },
+            {
+                title: '脚本检测命令',
+                url: 'pages/脚本检测命令.html',
+                items: [
+                    { name: '检测角色等级', desc: '检测玩家等级是否满足条件', category: '角色检测' },
+                    { name: '检测金币数量', desc: '检测玩家金币是否足够', category: '货币检测' },
+                    { name: '检测背包物品', desc: '检测玩家背包中是否有指定物品', category: '物品检测' },
+                    { name: '检测变量', desc: '检测变量值是否满足条件', category: '变量检测' },
+                    { name: '检测任务状态', desc: '检测玩家任务完成状态', category: '任务检测' },
+                    { name: '检测公会成员', desc: '检测玩家是否是公会成员', category: '公会检测' }
+                ]
+            },
+            {
+                title: '脚本变量',
+                url: 'pages/脚本变量.html',
+                items: [
+                    { name: '全局变量', desc: '服务器全局共享的变量', category: '变量类型' },
+                    { name: '私有变量', desc: '玩家私有的变量', category: '变量类型' },
+                    { name: '字符串变量', desc: '文本类型的变量', category: '变量类型' },
+                    { name: '数值变量', desc: '数字类型的变量', category: '变量类型' }
+                ]
+            },
+            {
+                title: '脚本常量',
+                url: 'pages/脚本常量.html',
+                items: [
+                    { name: '地图常量', desc: '地图相关的常量定义', category: '常量类型' },
+                    { name: '职业常量', desc: '职业类型的常量', category: '常量类型' },
+                    { name: '性别常量', desc: '性别相关的常量', category: '常量类型' }
+                ]
+            },
+            {
+                title: '脚本触发标签',
+                url: 'pages/脚本触发标签.html',
+                items: [
+                    { name: '@进入地图', desc: '玩家进入地图时触发', category: '触发事件' },
+                    { name: '@离开地图', desc: '玩家离开地图时触发', category: '触发事件' },
+                    { name: '@杀死怪物', desc: '玩家杀死怪物时触发', category: '触发事件' },
+                    { name: '@玩家死亡', desc: '玩家死亡时触发', category: '触发事件' }
+                ]
+            },
+            {
+                title: 'TXT脚本教程',
+                url: 'pages/txt脚本编辑教程.html',
+                items: [
+                    { name: '脚本系统介绍', desc: 'TXT脚本系统的基本介绍和特点', category: '基础教程' },
+                    { name: '脚本语法结构', desc: '触发标签、检测命令、操作命令的使用', category: '基础教程' },
+                    { name: 'NPC对话编写', desc: '如何创建NPC对话和交互', category: '实战案例' },
+                    { name: '任务系统制作', desc: '使用脚本实现任务系统', category: '实战案例' },
+                    { name: '副本系统', desc: '副本入口和逻辑判断', category: '实战案例' },
+                    { name: '脚本模板', desc: '常用脚本模板和示例', category: '实战案例' },
+                    { name: '调试技巧', desc: '脚本调试和错误排查', category: '进阶技巧' }
+                ]
+            },
+            {
+                title: 'Lua脚本教程',
+                url: 'pages/lua脚本教程.html',
+                items: [
+                    { name: 'Lua语法基础', desc: '变量、条件判断、循环、函数等基础语法', category: '语法特性' },
+                    { name: '事件系统', desc: '玩家进入游戏、升级、死亡等50+事件', category: '事件特性' },
+                    { name: '玩家对象属性', desc: '对象名字、等级、金币、职业等属性', category: 'API函数' },
+                    { name: '脚本命令执行', desc: '传送、调整金币、发放物品等命令', category: '命令特性' },
+                    { name: '脚本检测', desc: '检测等级、金币、物品、组队等条件', category: '命令特性' },
+                    { name: '脚本变量常量', desc: '获取和使用脚本变量和常量', category: 'API函数' },
+                    { name: 'NPC脚本案例', desc: '传送NPC、副本入口、动态对话等实战案例', category: '实战案例' },
+                    { name: '文件结构', desc: 'Lua脚本目录结构和文件命名规范', category: '基础教程' },
+                    { name: '调试技巧', desc: '日志输出、错误处理、测试方法', category: '进阶技巧' }
+                ]
+            },
+            {
+                title: '视频教程',
+                url: 'pages/B站视频教程.html',
+                items: [
+                    { name: 'B站视频教程', desc: 'NwServer 详细视频教程，包含安装、配置和脚本开发', category: '视频教程' }
+                ]
+            },
+            {
+                title: '装备位置表',
+                url: 'pages/装备位置表.html',
+                items: [
+                    { name: '武器', desc: '主手武器装备位 枚举值0', category: '装备部位' },
+                    { name: '衣服', desc: '身体防具装备位 枚举值1', category: '装备部位' },
+                    { name: '披风', desc: '背部装饰装备位 枚举值2', category: '装备部位' },
+                    { name: '头盔', desc: '头部防具装备位 枚举值3', category: '装备部位' },
+                    { name: '护肩', desc: '肩部防具装备位 枚举值4', category: '装备部位' },
+                    { name: '护腕', desc: '手腕防具装备位 枚举值5', category: '装备部位' },
+                    { name: '腰带', desc: '腰部装备位 枚举值6', category: '装备部位' },
+                    { name: '鞋子', desc: '脚部防具装备位 枚举值7', category: '装备部位' },
+                    { name: '项链', desc: '颈部饰品装备位 枚举值8', category: '装备部位' },
+                    { name: '左戒指', desc: '左手戒指装备位 枚举值9', category: '装备部位' },
+                    { name: '右戒指', desc: '右手戒指装备位 枚举值10', category: '装备部位' },
+                    { name: '左手镯', desc: '左手手镯装备位 枚举值11', category: '装备部位' },
+                    { name: '右手镯', desc: '右手手镯装备位 枚举值12', category: '装备部位' },
+                    { name: '勋章', desc: '勋章装备位 枚举值13', category: '装备部位' },
+                    { name: '玉佩', desc: '玉佩装备位 枚举值14', category: '装备部位' },
+                    { name: '战具', desc: '战具装备位 枚举值15', category: '装备部位' },
+                    { name: '装备穿戴部位', desc: '装备穿戴部位枚举定义', category: '枚举说明' }
+                ]
+            },
+            {
+                title: '基础技能表',
+                url: 'pages/基础技能表.html',
+                items: [
+                    { name: '骑术', desc: '通用技能 ID4587', category: '通用技能' },
+                    { name: '追击', desc: '通用技能 ID1048', category: '通用技能' },
+                    { name: '战士普攻', desc: '战士技能 ID1030', category: '战士技能' },
+                    { name: '烈火剑法', desc: '战士技能 ID1036', category: '战士技能' },
+                    { name: '法师普攻', desc: '法师技能 ID2530', category: '法师技能' },
+                    { name: '小火球术', desc: '法师技能 ID2531', category: '法师技能' },
+                    { name: '雷电之术', desc: '法师技能 ID2533', category: '法师技能' },
+                    { name: '刺客普攻', desc: '刺客技能 ID1530', category: '刺客技能' },
+                    { name: '暴击之术', desc: '刺客技能 ID1531', category: '刺客技能' },
+                    { name: '弓手普攻', desc: '弓手技能 ID2040', category: '弓手技能' },
+                    { name: '基础射击', desc: '弓手技能 ID2041', category: '弓手技能' },
+                    { name: '道士普攻', desc: '道士技能 ID3000', category: '道士技能' },
+                    { name: '治愈之术', desc: '道士技能 ID3002', category: '道士技能' },
+                    { name: '召唤骷髅', desc: '道士技能 ID3003', category: '道士技能' },
+                    { name: '龙枪普攻', desc: '龙枪技能 ID1200', category: '龙枪技能' },
+                    { name: '中平枪术', desc: '龙枪技能 ID1201', category: '龙枪技能' }
+                ]
+            },
+            {
+                title: '人物属性表',
+                url: 'pages/人物属性表.html',
+                items: [
+                    { name: '最小攻击', desc: '基础攻击属性 ID6', category: '基础攻击' },
+                    { name: '最大攻击', desc: '基础攻击属性 ID7', category: '基础攻击' },
+                    { name: '最小防御', desc: '基础防御属性 ID2', category: '基础防御' },
+                    { name: '最大防御', desc: '基础防御属性 ID3', category: '基础防御' },
+                    { name: '最大体力', desc: '生命与魔力 ID16', category: '生命与魔力' },
+                    { name: '最大魔力', desc: '生命与魔力 ID17', category: '生命与魔力' },
+                    { name: '行走速度', desc: '速度与敏捷 ID18', category: '速度敏捷' },
+                    { name: '攻击速度', desc: '速度与敏捷 ID36', category: '速度敏捷' },
+                    { name: '暴击概率', desc: '暴击属性 ID23', category: '暴击属性' },
+                    { name: '暴击伤害', desc: '暴击属性 ID24', category: '暴击属性' },
+                    { name: '减速强化', desc: '状态强化 ID77', category: '状态强化' },
+                    { name: '定身强化', desc: '状态强化 ID78', category: '状态强化' },
+                    { name: '物理抗性', desc: '抗性属性 ID85', category: '抗性属性' },
+                    { name: '魔法抗性', desc: '抗性属性 ID86', category: '抗性属性' },
+                    { name: '最小防御系数', desc: '属性系数 ID202', category: '属性系数' },
+                    { name: '最大攻击系数', desc: '属性系数 ID207', category: '属性系数' }
+                ]
+            },
+            {
+                title: '游戏货币表',
+                url: 'pages/游戏货币表.html',
+                items: [
+                    { name: '银币', desc: '游戏货币 ID0', category: '游戏货币' },
+                    { name: '金币', desc: '游戏货币 ID1', category: '游戏货币' },
+                    { name: '声威', desc: '游戏货币 ID2', category: '游戏货币' },
+                    { name: '元宝', desc: '游戏货币 ID3', category: '游戏货币' },
+                    { name: '魂值', desc: '游戏货币 ID5', category: '游戏货币' },
+                    { name: '师门声望', desc: '游戏货币 ID6', category: '游戏货币' },
+                    { name: '万法之气', desc: '游戏货币 ID7', category: '游戏货币' },
+                    { name: '战场点数', desc: '游戏货币 ID8', category: '游戏货币' },
+                    { name: '公会贡献', desc: '游戏货币 ID9', category: '游戏货币' },
+                    { name: '修炼点数', desc: '游戏货币 ID10', category: '游戏货币' },
+                    { name: '绑定元宝', desc: '游戏货币 ID15', category: '游戏货币' },
+                    { name: '武道荣誉', desc: '游戏货币 ID16', category: '游戏货币' },
+                    { name: '勇者金币', desc: '游戏货币 ID17', category: '游戏货币' },
+                    { name: '疲劳值', desc: '游戏货币 ID20', category: '游戏货币' }
+                ]
+            },
+            {
+                title: '技能范围表',
+                url: 'pages/技能范围表.html',
+                items: [
+                    { name: '单体1x1', desc: '技能范围类型 枚举值0', category: '技能范围' },
+                    { name: '半月3x1', desc: '技能范围类型 枚举值1', category: '技能范围' },
+                    { name: '半月3x3', desc: '技能范围类型 枚举值3', category: '技能范围' },
+                    { name: '空心3x3', desc: '技能范围类型 枚举值4', category: '技能范围' },
+                    { name: '实心3x3', desc: '技能范围类型 枚举值5', category: '技能范围' },
+                    { name: '实心5x5', desc: '技能范围类型 枚举值6', category: '技能范围' },
+                    { name: '斩月1x3', desc: '技能范围类型 枚举值7', category: '技能范围' },
+                    { name: '线型1x5', desc: '技能范围类型 枚举值9', category: '技能范围' },
+                    { name: '线型1x8', desc: '技能范围类型 枚举值10', category: '技能范围' },
+                    { name: '菱形3x3', desc: '技能范围类型 枚举值12', category: '技能范围' },
+                    { name: '叉型3x3', desc: '技能范围类型 枚举值14', category: '技能范围' },
+                    { name: '螺旋7x7', desc: '技能范围类型 枚举值18', category: '技能范围' },
+                    { name: '螺旋15x15', desc: '技能范围类型 枚举值21', category: '技能范围' }
+                ]
+            },
+            {
+                title: '地图区域表',
+                url: 'pages/地图区域表.html',
+                items: [
+                    { name: '未知区域', desc: '地图区域类型 枚举值0', category: '地图区域' },
+                    { name: '复活区域', desc: '地图区域类型 枚举值1', category: '地图区域' },
+                    { name: '红名区域', desc: '地图区域类型 枚举值2', category: '地图区域' },
+                    { name: '传送区域', desc: '地图区域类型 枚举值3', category: '地图区域' },
+                    { name: '随机区域', desc: '地图区域类型 枚举值4', category: '地图区域' }
+                ]
+            },
+            {
+                title: 'GM命令表',
+                url: 'pages/GM命令表.html',
+                items: [
+                    { name: '添加物品', desc: '玩家管理 向指定角色添加物品', category: 'GM命令' },
+                    { name: '添加元宝', desc: '玩家管理 向指定角色添加元宝', category: 'GM命令' },
+                    { name: '添加金币', desc: '玩家管理 向指定角色添加金币', category: 'GM命令' },
+                    { name: '设置等级', desc: '玩家管理 设置指定角色的等级', category: 'GM命令' },
+                    { name: '封禁角色', desc: '封禁管理 封禁指定角色', category: 'GM命令' },
+                    { name: '封禁账号', desc: '封禁管理 封禁指定账号', category: 'GM命令' },
+                    { name: '传送', desc: '地图管理 传送到指定坐标', category: 'GM命令' },
+                    { name: '添加怪物', desc: '地图管理 在当前地图添加怪物', category: 'GM命令' },
+                    { name: '发送公告', desc: '系统管理 发送全服公告', category: 'GM命令' },
+                    { name: '查看数据', desc: '查询统计 查看服务器数据库统计信息', category: 'GM命令' },
+                    { name: '无敌', desc: '特殊功能 设置角色无敌状态', category: 'GM命令' },
+                    { name: '重载模板', desc: '重载维护 重新加载游戏模板数据', category: 'GM命令' }
+                ]
+            },
+            {
+                title: '玩家命令表',
+                url: 'pages/玩家命令表.html',
+                items: [
+                    { name: '充值', desc: '充值奖励 使用CDK码进行充值获得奖励', category: '玩家命令' },
+                    { name: '礼包码', desc: '充值奖励 使用礼包码获得对应奖励', category: '玩家命令' },
+                    { name: '查询充值', desc: '充值奖励 查询充值信息', category: '玩家命令' },
+                    { name: '赠送元宝', desc: '充值奖励 向其他角色赠送元宝', category: '玩家命令' },
+                    { name: '传送', desc: '移动传送 使用传送戒指传送到指定坐标', category: '玩家命令' },
+                    { name: '天地合一', desc: '移动传送 将队伍成员传送到自己身边', category: '玩家命令' },
+                    { name: '宠物拾取', desc: '宠物功能 开启或关闭宠物自动拾取功能', category: '玩家命令' },
+                    { name: '宠物挖矿', desc: '宠物功能 开启或关闭宠物自动挖矿功能', category: '玩家命令' },
+                    { name: '摆摊', desc: '交易功能 开启或关闭摆摊功能', category: '玩家命令' },
+                    { name: '探测', desc: '探索功能 探测指定玩家的位置（需要探测项链）', category: '玩家命令' },
+                    { name: '祈祷', desc: '特殊功能 触发禁忌祈祷仪式献祭装备让全服宠物叛变', category: '玩家命令' }
+                ]
+            },
+            {
+                title: '技能枚举表',
+                url: 'pages/技能枚举表.html',
+                items: [
+                    { name: '锁定自身', desc: '技能锁定 技能锁定自身目标', category: '技能枚举' },
+                    { name: '锁定目标', desc: '技能锁定 技能锁定指定目标', category: '技能枚举' },
+                    { name: '技能无法闪避', desc: '技能闪避 技能无法被闪避', category: '技能枚举' },
+                    { name: '可被物理闪避', desc: '技能闪避 技能可被物理闪避', category: '技能枚举' },
+                    { name: '原点位置绝对触发', desc: '技能触发 在原点位置绝对触发', category: '技能枚举' },
+                    { name: '目标命中绝对触发', desc: '技能触发 命中目标时绝对触发', category: '技能枚举' },
+                    { name: '主体技能', desc: '技能对应 主体技能类型', category: '技能枚举' },
+                    { name: '子类技能', desc: '技能对应 子类技能类型', category: '技能枚举' },
+                    { name: '正常', desc: '技能命中 正常命中反馈', category: '技能枚举' },
+                    { name: '喷血', desc: '技能命中 喷血命中反馈', category: '技能枚举' },
+                    { name: '格挡', desc: '技能命中 格挡命中反馈', category: '技能枚举' },
+                    { name: '闪避', desc: '技能命中 闪避命中反馈', category: '技能枚举' },
+                    { name: '攻击', desc: '技能伤害 攻击伤害类型', category: '技能枚举' },
+                    { name: '魔法', desc: '技能伤害 魔法伤害类型', category: '技能枚举' },
+                    { name: '道术', desc: '技能伤害 道术伤害类型', category: '技能枚举' },
+                    { name: '刺术', desc: '技能伤害 刺术伤害类型', category: '技能枚举' },
+                    { name: '弓术', desc: '技能伤害 弓术伤害类型', category: '技能枚举' },
+                    { name: '毒性', desc: '技能伤害 毒性伤害类型', category: '技能枚举' },
+                    { name: '神圣', desc: '技能伤害 神圣伤害类型', category: '技能枚举' },
+                    { name: '灼烧', desc: '技能伤害 灼烧伤害类型', category: '技能枚举' },
+                    { name: '撕裂', desc: '技能伤害 撕裂伤害类型', category: '技能枚举' }
+                ]
+            },
+            {
+                title: 'BUFF枚举表',
+                url: 'pages/BUFF枚举表.html',
+                items: [
+                    { name: '技能标志', desc: 'BUFF效果 技能标志效果', category: 'BUFF枚举' },
+                    { name: '状态标志', desc: 'BUFF效果 状态标志效果', category: 'BUFF枚举' },
+                    { name: '造成伤害', desc: 'BUFF效果 造成伤害效果', category: 'BUFF枚举' },
+                    { name: '属性增减', desc: 'BUFF效果 属性增减效果', category: 'BUFF枚举' },
+                    { name: '伤害增减', desc: 'BUFF效果 伤害增减效果', category: 'BUFF枚举' },
+                    { name: '创建陷阱', desc: 'BUFF效果 创建陷阱效果', category: 'BUFF枚举' },
+                    { name: '生命回复', desc: 'BUFF效果 生命回复效果', category: 'BUFF枚举' },
+                    { name: '诱惑提升', desc: 'BUFF效果 诱惑提升效果', category: 'BUFF枚举' },
+                    { name: '添加BUFF', desc: 'BUFF效果 添加BUFF效果', category: 'BUFF枚举' },
+                    { name: '释放技能', desc: 'BUFF效果 释放技能效果', category: 'BUFF枚举' },
+                    { name: '坐骑BUFF', desc: 'BUFF效果 坐骑BUFF效果', category: 'BUFF枚举' },
+                    { name: '获得奖励', desc: 'BUFF效果 获得奖励效果', category: 'BUFF枚举' },
+                    { name: '禁止叠加', desc: 'BUFF叠加 BUFF禁止叠加', category: 'BUFF枚举' },
+                    { name: '同类替换', desc: 'BUFF叠加 同类BUFF替换', category: 'BUFF枚举' },
+                    { name: '同类叠加', desc: 'BUFF叠加 同类BUFF叠加', category: 'BUFF枚举' },
+                    { name: '同类延时', desc: 'BUFF叠加 同类BUFF延时', category: 'BUFF枚举' },
+                    { name: '所有技能伤害', desc: 'BUFF判定 所有技能伤害判定', category: 'BUFF枚举' },
+                    { name: '所有物理伤害', desc: 'BUFF判定 所有物理伤害判定', category: 'BUFF枚举' },
+                    { name: '所有魔法伤害', desc: 'BUFF判定 所有魔法伤害判定', category: 'BUFF枚举' },
+                    { name: '主动攻击增伤', desc: 'BUFF判定 主动攻击增伤判定', category: 'BUFF枚举' },
+                    { name: '增益类型', desc: 'BUFF作用 增益BUFF类型', category: 'BUFF枚举' },
+                    { name: '减益类型', desc: 'BUFF作用 减益BUFF类型', category: 'BUFF枚举' }
+                ]
+            },
+            {
+                title: '任务枚举表',
+                url: 'pages/任务枚举表.html',
+                items: [
+                    { name: '主线任务', desc: '任务类型 主线任务类型', category: '任务枚举' },
+                    { name: '悬赏任务', desc: '任务类型 悬赏任务类型', category: '任务枚举' },
+                    { name: '活动任务', desc: '任务类型 活动任务类型', category: '任务枚举' },
+                    { name: '紧急任务', desc: '任务类型 紧急任务类型', category: '任务枚举' },
+                    { name: '重复任务', desc: '任务类型 重复任务类型', category: '任务枚举' },
+                    { name: '获得物品', desc: '任务目标 获得物品目标', category: '任务枚举' },
+                    { name: '回收物品', desc: '任务目标 回收物品目标', category: '任务枚举' },
+                    { name: '击杀怪物', desc: '任务目标 击杀怪物目标', category: '任务枚举' },
+                    { name: '击杀怪物组', desc: '任务目标 击杀怪物组目标', category: '任务枚举' },
+                    { name: '击毁场景物件', desc: '任务目标 击毁场景物件目标', category: '任务枚举' },
+                    { name: '装备物品', desc: '任务目标 装备物品目标', category: '任务枚举' },
+                    { name: '学习技能', desc: '任务目标 学习技能目标', category: '任务枚举' },
+                    { name: '提升声望', desc: '任务目标 提升声望目标', category: '任务枚举' },
+                    { name: '进行训练', desc: '任务目标 进行训练目标', category: '任务枚举' },
+                    { name: '装备重铸', desc: '任务目标 装备重铸目标', category: '任务枚举' },
+                    { name: '典籍回忆', desc: '任务目标 典籍回忆目标', category: '任务枚举' },
+                    { name: '雇佣佣兵', desc: '任务目标 雇佣佣兵目标', category: '任务枚举' },
+                    { name: '拆卸装备', desc: '任务目标 拆卸装备目标', category: '任务枚举' },
+                    { name: '升级技能', desc: '任务目标 升级技能目标', category: '任务枚举' },
+                    { name: '装备合成', desc: '任务目标 装备合成目标', category: '任务枚举' },
+                    { name: '铭文精炼', desc: '任务目标 铭文精炼目标', category: '任务枚举' },
+                    { name: '领取游戏奖励', desc: '任务目标 领取游戏奖励目标', category: '任务枚举' },
+                    { name: '游戏点数', desc: '任务目标 游戏点数目标', category: '任务枚举' },
+                    { name: '学习炼金或石工术', desc: '任务目标 学习炼金或石工术目标', category: '任务枚举' },
+                    { name: '参与活动', desc: '任务目标 参与活动目标', category: '任务枚举' },
+                    { name: '工会祈祷', desc: '任务目标 工会祈祷目标', category: '任务枚举' },
+                    { name: '工会温泉活动', desc: '任务目标 工会温泉活动目标', category: '任务枚举' },
+                    { name: '工会捐赠物品', desc: '任务目标 工会捐赠物品目标', category: '任务枚举' },
+                    { name: '工会铭文执行', desc: '任务目标 工会铭文执行目标', category: '任务枚举' },
+                    { name: '货币奖励', desc: '任务奖励 货币奖励类型', category: '任务枚举' },
+                    { name: '物品奖励', desc: '任务奖励 物品奖励类型', category: '任务枚举' },
+                    { name: '经验值', desc: '任务奖励 经验值奖励类型', category: '任务枚举' },
+                    { name: '声望值', desc: '任务奖励 声望值奖励类型', category: '任务枚举' },
+                    { name: '活跃度', desc: '任务奖励 活跃度奖励类型', category: '任务枚举' },
+                    { name: '特殊称号', desc: '任务奖励 特殊称号奖励类型', category: '任务枚举' },
+                    { name: '不重置', desc: '任务重置 任务不重置', category: '任务枚举' },
+                    { name: '每日重置', desc: '任务重置 任务每日重置', category: '任务枚举' },
+                    { name: '每周重置', desc: '任务重置 任务每周重置', category: '任务枚举' },
+                    { name: '需完成任务', desc: '任务约束 需完成任务约束', category: '任务枚举' },
+                    { name: '最低等级', desc: '任务约束 最低等级约束', category: '任务枚举' },
+                    { name: '最高等级', desc: '任务约束 最高等级约束', category: '任务枚举' },
+                    { name: '开始时间段', desc: '任务约束 开始时间段约束', category: '任务枚举' },
+                    { name: '结束时间段', desc: '任务约束 结束时间段约束', category: '任务枚举' },
+                    { name: '职业要求', desc: '任务约束 职业要求约束', category: '任务枚举' },
+                    { name: '性别要求', desc: '任务约束 性别要求约束', category: '任务枚举' },
+                    { name: '无限制', desc: '任务关联 无任务关联限制', category: '任务枚举' },
+                    { name: '师徒限制', desc: '任务关联 师徒任务关联限制', category: '任务枚举' }
+                ]
+            },
+            {
+                title: '技能节点表',
+                url: 'pages/技能节点表.html',
+                items: [
+                    { name: 'A_00_触发子类技能', desc: '处理子类技能的触发条件和参数配置', category: '触发类节点' },
+                    { name: 'A_01_触发对象Buff', desc: '处理对象Buff的触发效果和管理', category: '触发类节点' },
+                    { name: 'A_02_触发陷阱技能', desc: '处理陷阱技能的触发和范围计算', category: '触发类节点' },
+                    { name: 'B_00_技能切换通知', desc: '处理技能切换时的通知消息', category: '通知类节点' },
+                    { name: 'B_01_技能释放通知', desc: '处理技能释放时的通知消息', category: '通知类节点' },
+                    { name: 'B_02_技能命中通知', desc: '处理技能命中时的通知消息', category: '通知类节点' },
+                    { name: 'B_03_前摇结束通知', desc: '处理技能前摇结束时的通知', category: '通知类节点' },
+                    { name: 'B_04_后摇结束通知', desc: '处理技能后摇结束时的通知', category: '通知类节点' },
+                    { name: 'C_00_计算技能锚点', desc: '计算技能的锚点位置和方向', category: '计算类节点' },
+                    { name: 'C_01_计算命中目标', desc: '计算技能命中的目标和相关参数', category: '计算类节点' },
+                    { name: 'C_02_计算目标伤害', desc: '计算技能对目标造成的伤害', category: '计算类节点' },
+                    { name: 'C_03_计算对象位移', desc: '计算对象的位移效果和参数', category: '计算类节点' },
+                    { name: 'C_04_计算目标诱惑', desc: '计算对目标的诱惑效果', category: '计算类节点' },
+                    { name: 'C_05_计算目标回复', desc: '计算对目标的回复效果', category: '计算类节点' },
+                    { name: 'C_06_计算宠物召唤', desc: '计算宠物召唤的相关参数', category: '计算类节点' },
+                    { name: 'C_07_计算目标瞬移', desc: '计算目标的瞬移效果', category: '计算类节点' },
+                    { name: '技能触发方式', desc: 'A_00_触发子类技能 技能触发方式属性', category: '技能属性' },
+                    { name: '技能伤害基数', desc: 'C_02_计算目标伤害 技能伤害基数数组', category: '技能属性' },
+                    { name: '技能范围类型', desc: '技能范围范围类型枚举', category: '技能属性' },
+                    { name: '触发Buff编号', desc: 'A_01_触发对象Buff 触发Buff编号属性', category: '技能属性' },
+                    { name: '角色自身位移', desc: 'C_03_计算对象位移 角色自身位移属性', category: '技能属性' },
+                    { name: '增加技能经验', desc: '技能节点通用属性 增加技能经验', category: '技能属性' },
+                    { name: '经验技能编号', desc: '技能节点通用属性 经验技能编号', category: '技能属性' },
+                    { name: '清除目标状态', desc: '技能节点属性 清除目标状态', category: '技能属性' },
+                    { name: 'BUFF联动', desc: 'C_02_计算目标伤害 BUFF联动分类', category: '属性分类' },
+                    { name: '技能伤害', desc: 'C_02_计算目标伤害 技能伤害分类', category: '属性分类' },
+                    { name: '吸血吸蓝', desc: 'C_02_计算目标伤害 吸血吸蓝分类', category: '属性分类' },
+                    { name: '基本设置', desc: '技能节点通用分类 基本设置', category: '属性分类' },
+                    { name: '概率触发', desc: '技能节点通用分类 概率触发', category: '属性分类' }
+                ]
+            }
+        ];
+        
+        // 页面加载功能
+        function loadPage(pageUrl, linkElement) {
+            const iframe = document.getElementById('contentFrame');
+            
+            // 更新导航菜单激活状态
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            // 如果是从搜索结果等地方调用，可能没有传入 linkElement
+            // 这里根据 pageUrl 尝试自动匹配一个左侧菜单项用于高亮
+            if (!linkElement && pageUrl) {
+                navLinks.forEach(link => {
+                    const onclick = link.getAttribute('onclick') || '';
+                    if (onclick.includes("'" + pageUrl + "'")) {
+                        linkElement = link;
+                    }
+                });
+            }
+
+            if (linkElement) {
+                linkElement.classList.add('active');
+            }
+            
+            // 设置新的页面URL
+            iframe.src = pageUrl;
+            
+            // 立即尝试注入CSS（不等待加载完成）
+            const injectDarkTheme = () => {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (!iframeDoc) return false;
+                    
+                    // 创建或更新深色主题样式
+                    let darkStyle = iframeDoc.getElementById('darkThemeStyle');
+                    if (!darkStyle) {
+                        darkStyle = iframeDoc.createElement('style');
+                        darkStyle.id = 'darkThemeStyle';
+                        // 插入到head的最前面，优先级最高
+                        if (iframeDoc.head) {
+                            iframeDoc.head.insertBefore(darkStyle, iframeDoc.head.firstChild);
+                        }
+                    }
+                    
+                    darkStyle.textContent = DARK_THEME_CSS;
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            };
+            
+            // 多次尝试注入，确保尽早注入
+            let injected = injectDarkTheme();
+            if (!injected) {
+                const tryInject = setInterval(() => {
+                    if (injectDarkTheme()) {
+                        clearInterval(tryInject);
+                    }
+                }, 10);
+                
+                setTimeout(() => clearInterval(tryInject), 500);
+            }
+            
+            // 页面加载完成后强制修改白色背景元素
+            iframe.onload = function() {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    const iframeWindow = iframe.contentWindow;
+                    if (!iframeDoc) return;
+                    
+                    // 确保CSS已注入
+                    injectDarkTheme();
+                    
+                    // 强制修改所有白色背景元素
+                    setTimeout(() => {
+                        const allElements = iframeDoc.querySelectorAll('*');
+                        allElements.forEach(el => {
+                            const bgColor = iframeWindow.getComputedStyle(el).backgroundColor;
+                            if (bgColor === 'rgb(255, 255, 255)' || 
+                                bgColor === 'white' || 
+                                bgColor.startsWith('rgb(255') ||
+                                bgColor === 'rgba(0, 0, 0, 0)') {
+                                el.style.backgroundColor = '#1f2544';
+                            }
+                            if (bgColor.startsWith('rgb(248') || 
+                                bgColor.startsWith('rgb(249') ||
+                                bgColor.startsWith('rgb(250')) {
+                                el.style.backgroundColor = '#252b48';
+                            }
+                        });
+                    }, 50);
+                } catch (e) {
+                    console.log('无法注入深色主题:', e);
+                }
+            };
+        }
+        
+        // 全局搜索变量
+        let currentSearchKeyword = '';
+        
+        // 深色主题CSS
+        const DARK_THEME_CSS = `
+            /* 深色主题 */
+            body {
+                background: #1a1d2e !important;
+                color: #e0e0e0 !important;
+            }
+            
+            /* 标题 */
+            h1, h2, h3, h4, h5, h6 {
+                color: #8e9ff5 !important;
+                border-color: #5d6fa6 !important;
+            }
+            h1 { border-bottom-color: #5d6fa6 !important; }
+            h2 { border-left-color: #5d6fa6 !important; }
+            
+            /* 文本 */
+            p, div, span, li, strong {
+                color: #b8c1ec !important;
+            }
+            
+            /* 信息框 */
+            .info {
+                background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%) !important;
+                color: #e0e0e0 !important;
+                border: 1px solid #404968 !important;
+            }
+            .info strong {
+                color: #8e9ff5 !important;
+            }
+            
+            /* 特性卡片 */
+            .feature-card {
+                background: linear-gradient(135deg, #252b48 0%, #1f2544 100%) !important;
+                border: 1px solid #404968 !important;
+            }
+            .feature-card:hover {
+                border-color: #5d6fa6 !important;
+                box-shadow: 0 10px 30px rgba(93, 111, 166, 0.3) !important;
+            }
+            .feature-card h3 {
+                color: #8e9ff5 !important;
+            }
+            .feature-card li {
+                color: #b8c1ec !important;
+            }
+            .feature-card li:before {
+                color: #8e9ff5 !important;
+            }
+            
+            /* 快速开始 */
+            .quick-start {
+                background: #2d3561 !important;
+                border-left-color: #7a8ec4 !important;
+            }
+            .quick-start h3, .quick-start p {
+                color: #b8c1ec !important;
+            }
+            
+            /* 表格 */
+            table {
+                background: #252b48 !important;
+                border-color: #404968 !important;
+            }
+            th {
+                background: #2d3561 !important;
+                color: #8e9ff5 !important;
+                border-color: #404968 !important;
+            }
+            td {
+                background: #1f2544 !important;
+                color: #b8c1ec !important;
+                border-color: #404968 !important;
+            }
+            tr:hover td {
+                background: #252b48 !important;
+            }
+            
+            /* 代码块 */
+            code, pre {
+                background: #252b48 !important;
+                color: #8e9ff5 !important;
+                border-color: #404968 !important;
+            }
+            .code-block {
+                background: #252b48 !important;
+                border-color: #404968 !important;
+                color: #b8c1ec !important;
+            }
+            
+            /* 链接 */
+            a {
+                color: #7a8ec4 !important;
+            }
+            a:hover {
+                color: #8e9ff5 !important;
+            }
+            
+            /* 命令块 */
+            .command {
+                background: #252b48 !important;
+                border-color: #404968 !important;
+                color: #b8c1ec !important;
+            }
+            
+            /* 示例块 */
+            .example {
+                background: #1f2544 !important;
+                border-color: #404968 !important;
+            }
+            
+            /* 注意/警告块 */
+            .note, .warning {
+                background: #2d3561 !important;
+                border-color: #5d6fa6 !important;
+                color: #b8c1ec !important;
+            }
+            
+            /* 介绍块 */
+            .intro {
+                background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%) !important;
+                color: #e0e0e0 !important;
+                border: 1px solid #404968 !important;
+            }
+            .intro p {
+                color: #b8c1ec !important;
+            }
+            .intro strong {
+                color: #8e9ff5 !important;
+            }
+            .intro code {
+                background: #1f2544 !important;
+                color: #8e9ff5 !important;
+            }
+            
+            /* 分类块 */
+            .category {
+                background: #252b48 !important;
+                border-left-color: #5d6fa6 !important;
+            }
+            .category h3 {
+                color: #8e9ff5 !important;
+            }
+            
+            /* 命令样式 */
+            .cmd-name {
+                color: #ff8b8b !important;
+            }
+            .cmd-params {
+                color: #6dd881 !important;
+            }
+            .optional {
+                color: #ff8b8b !important;
+            }
+            
+            /* 表头 */
+            thead {
+                background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%) !important;
+                color: #e0e0e0 !important;
+            }
+            tbody tr {
+                background: #1f2544 !important;
+            }
+            tbody tr:hover {
+                background: #252b48 !important;
+            }
+            
+            /* 通用覆盖 - 强制深色背景 */
+            div, section, article, aside, main, header, footer, nav {
+                background-color: transparent !important;
+            }
+            
+            /* 白色背景强制转换 */
+            [style*="background: white"],
+            [style*="background: #fff"],
+            [style*="background:#fff"],
+            [style*="background-color: white"],
+            [style*="background-color: #fff"],
+            [style*="background-color:#fff"],
+            [style*="background: rgb(255"],
+            [style*="background-color: rgb(255"] {
+                background: #1f2544 !important;
+            }
+            
+            /* 浅色背景强制转换 */
+            [style*="background: #f"],
+            [style*="background-color: #f"] {
+                background: #252b48 !important;
+            }
+            
+            /* 所有边框 */
+            [style*="border"] {
+                border-color: #404968 !important;
+            }
+            
+            /* 文本颜色 - 排除特定类 */
+            p, div:not([class*="cmd"]), span:not([class*="cmd"]), 
+            li:not([class*="cmd"]), label, input {
+                color: #b8c1ec !important;
+            }
+            
+            /* 卡片样式 */
+            .card, [class*="card"] {
+                background: #1f2544 !important;
+                border-color: #404968 !important;
+                color: #b8c1ec !important;
+            }
+            
+            /* 面板样式 */
+            .panel, [class*="panel"] {
+                background: #252b48 !important;
+                border-color: #404968 !important;
+            }
+            
+            /* 列表项 */
+            ul, ol {
+                color: #b8c1ec !important;
+            }
+            
+            /* 所有按钮 */
+            button {
+                background: #2d3561 !important;
+                color: #b8c1ec !important;
+                border-color: #404968 !important;
+            }
+            button:hover {
+                background: #404968 !important;
+            }
+        `;
+        
+        // CHM风格搜索功能
+        function showElectronSearch() {
+            const dialog = document.getElementById('electronSearchDialog');
+            const input = document.getElementById('electronSearchInput');
+            
+            dialog.style.display = 'block';
+            input.value = '';
+            input.focus();
+            
+            // 清空之前的搜索结果
+            document.getElementById('searchResultCount').style.display = 'none';
+            document.getElementById('searchResultsList').innerHTML = '';
+            
+            // 按键监听
+            input.onkeydown = function(e) {
+                if (e.key === 'Enter') {
+                    executeElectronSearch();
+                } else if (e.key === 'Escape') {
+                    closeElectronSearch();
+                }
+            };
+        }
+        
+        function closeElectronSearch() {
+            const dialog = document.getElementById('electronSearchDialog');
+            dialog.style.display = 'none';
+        }
+        
+        function executeElectronSearch() {
+            const input = document.getElementById('electronSearchInput');
+            const resultCount = document.getElementById('searchResultCount');
+            const resultsList = document.getElementById('searchResultsList');
+            const keyword = input.value.trim();
+            
+            if (!keyword) {
+                alert('请输入搜索关键字');
+                return;
+            }
+            
+            currentSearchKeyword = keyword;
+            const lowerKeyword = keyword.toLowerCase();
+            const results = [];
+            
+            // 执行搜索
+            if (typeof searchIndex !== 'undefined') {
+                searchIndex.forEach(page => {
+                    page.items.forEach(item => {
+                        const nameMatch = item.name.toLowerCase().includes(lowerKeyword);
+                        const descMatch = item.desc.toLowerCase().includes(lowerKeyword);
+                        const categoryMatch = item.category.toLowerCase().includes(lowerKeyword);
+                        
+                        if (nameMatch || descMatch || categoryMatch) {
+                            results.push({
+                                title: page.title,
+                                url: page.url,
+                                name: item.name,
+                                desc: item.desc,
+                                category: item.category
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // 显示结果
+            if (results.length === 0) {
+                resultCount.style.display = 'block';
+                document.getElementById('totalResults').textContent = '0';
+                resultsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #7a8ec4;">未找到匹配的结果</div>';
+            } else {
+                resultCount.style.display = 'block';
+                document.getElementById('totalResults').textContent = results.length;
+                
+                // 生成列表
+                let html = '';
+                results.forEach((result, index) => {
+                    html += `
+                        <div onclick="selectSearchResultFromList('${result.url.replace(/'/g, "\\'")}', '${currentSearchKeyword.replace(/'/g, "\\'")}', '${result.name.replace(/'/g, "\\'")}')" 
+                             style="padding: 8px 15px; border-bottom: 1px solid #404968; cursor: pointer; transition: all 0.2s; background: #1f2544;"
+                             onmouseover="this.style.background='#2d3561'; this.style.paddingLeft='18px'"
+                             onmouseout="this.style.background='#1f2544'; this.style.paddingLeft='15px'">
+                            <div style="font-size: 12px; color: #8e9ff5; font-weight: 600; margin-bottom: 2px;">
+                                ${result.name}
+                            </div>
+                            <div style="font-size: 10px; color: #b8c1ec; line-height: 1.4;">
+                                ${result.title}
+                            </div>
+                        </div>
+                    `;
+                });
+                resultsList.innerHTML = html;
+            }
+        }
+        
+        function selectSearchResultFromList(url, keyword, commandName) {
+            const iframe = document.getElementById('contentFrame');
+            
+            // 检查是否已经在目标页面
+            let isSamePage = false;
+            try {
+                const currentPath = iframe.contentWindow.location.pathname; // e.g., /pages/xxx.html
+                const currentSearch = iframe.contentWindow.location.search;
+                const fullCurrentUrl = decodeURIComponent(currentPath + currentSearch);
+                
+                // 简单判断：如果当前URL包含目标URL（忽略大小写）
+                if (fullCurrentUrl.toLowerCase().includes(url.toLowerCase())) {
+                    isSamePage = true;
+                }
+            } catch(e) {
+                // 跨域或其他错误，忽略
+                console.log('无法检测当前页面URL:', e);
+            }
+
+            if (isSamePage) {
+                // 如果已经在当前页面，直接尝试定位
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc) {
+                    highlightAndScrollInIframe(iframeDoc, keyword, commandName);
+                }
+            } else {
+                // 加载新页面
+                loadPage(url);
+                
+                // 等待iframe加载完成后定位到具体内容
+                // 不再清除 onload，而是叠加监听器
+                iframe.addEventListener('load', function handler() {
+                    // 使用递增延迟重试机制，确保页面完全渲染
+                    let attempts = 0;
+                    const maxAttempts = 6; // 最多尝试6次
+                    const delays = [100, 300, 500, 800, 1200, 2000]; // 延迟时间序列
+                    
+                    const tryHighlight = () => {
+                        try {
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            if (iframeDoc && iframeDoc.body) {
+                                console.log(`尝试定位第 ${attempts + 1} 次...`);
+                                const found = highlightAndScrollInIframe(iframeDoc, keyword, commandName);
+                                
+                                // 如果没找到且还有重试次数，继续重试
+                                if (!found && attempts < maxAttempts - 1) {
+                                    attempts++;
+                                    setTimeout(tryHighlight, delays[attempts]);
+                                }
+                            }
+                        } catch (e) {
+                            console.error('定位尝试失败:', e);
+                        }
+                    };
+                    
+                    // 第一次尝试
+                    setTimeout(tryHighlight, delays[0]);
+                    
+                    iframe.removeEventListener('load', handler);
+                }, { once: true });
+            }
+        }
+        
+        // 在iframe中高亮并滚动到关键字位置
+        function highlightAndScrollInIframe(iframeDoc, keyword, commandName) {
+            console.log('=== 开始高亮处理 ===');
+            console.log('关键字:', keyword);
+            console.log('命令名:', commandName);
+            
+            let found = false;
+            
+            try {
+                // 准备匹配用的清理后字符串
+                const cleanCommand = (commandName || '').replace(/\s+/g, '').toLowerCase();
+                const cleanKeyword = (keyword || '').replace(/\s+/g, '').toLowerCase();
+                
+                // 移除之前的高亮和样式
+                const oldHighlights = iframeDoc.querySelectorAll('.search-highlight-target');
+                oldHighlights.forEach(el => el.outerHTML = el.textContent);
+                
+                // 移除所有行的高亮背景
+                const allRows = iframeDoc.querySelectorAll('tr');
+                allRows.forEach(row => {
+                    row.style.backgroundColor = '';
+                    row.style.boxShadow = '';
+                });
+                
+                // 1. 优先搜索表格中的命令名称
+                const tables = iframeDoc.querySelectorAll('table');
+                let matchedRow = null;
+                
+                tables.forEach((table) => {
+                    if (found) return;
+                    
+                    const rows = table.querySelectorAll('tbody tr');
+                    rows.forEach((row) => {
+                        if (found) return;
+                        
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length > 0) {
+                            const firstCell = cells[0];
+                            const cellText = firstCell.textContent.trim();
+                            const cleanCellText = cellText.replace(/\s+/g, '').toLowerCase();
+                            
+                            // 检查是否包含命令名称（精确或包含匹配）
+                            // 优先匹配 cleanCommand
+                            let isMatch = false;
+                            if (cleanCommand && (cleanCellText === cleanCommand || cleanCellText.includes(cleanCommand))) {
+                                isMatch = true;
+                            } 
+                            // 其次匹配关键字
+                            else if (cleanKeyword && cleanCellText.includes(cleanKeyword)) {
+                                isMatch = true;
+                            }
+                            
+                            if (isMatch) {
+                                console.log(`✅ 找到表格匹配: "${cellText}"`);
+                                matchedRow = row;
+                                found = true;
+                            }
+                        }
+                    });
+                });
+                
+                // 如果找到了表格行
+                if (found && matchedRow) {
+                    matchedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // 高亮整行
+                    matchedRow.style.backgroundColor = '#ffeb3b';
+                    matchedRow.style.transition = 'background-color 0.5s';
+                    matchedRow.style.boxShadow = '0 0 15px rgba(255, 235, 59, 0.6) inset';
+                    
+                    // 3秒后渐隐高亮
+                    setTimeout(() => {
+                        matchedRow.style.backgroundColor = '#f0f4ff'; // 恢复到淡蓝色而不是完全透明，保持选中感
+                        matchedRow.style.boxShadow = '';
+                        
+                        setTimeout(() => {
+                            matchedRow.style.backgroundColor = '';
+                        }, 2000);
+                    }, 3000);
+                    
+                    return true;
+                }
+                
+                // 2. 如果表格没找到，尝试在普通文本中查找（模糊匹配）
+                console.log('⚠️ 表格中未找到精确匹配，尝试全文搜索...');
+                
+                const targetText = cleanCommand || cleanKeyword;
+                if (targetText) {
+                    // 查找所有可能的文本容器
+                    const textNodes = iframeDoc.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd,code,pre,span,div.cmd-name');
+                    
+                    for (let i = 0; i < textNodes.length; i++) {
+                        const el = textNodes[i];
+                        // 跳过太长的文本块
+                        if (el.innerText.length > 500) continue;
+                        
+                        const cleanElText = el.textContent.replace(/\s+/g, '').toLowerCase();
+                        
+                        if (cleanElText.includes(targetText)) {
+                            console.log('✅ 找到文本匹配元素:', el.tagName);
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            
+                            el.style.backgroundColor = '#ffeb3b';
+                            el.style.borderRadius = '4px';
+                            el.style.transition = 'background-color 0.5s';
+                            el.style.boxShadow = '0 0 10px rgba(255, 235, 59, 0.8)';
+
+                            setTimeout(() => {
+                                el.style.backgroundColor = '';
+                                el.style.boxShadow = '';
+                            }, 3000);
+
+                            found = true;
+                            return true;
+                        }
+                    }
+                }
+                
+                console.log('❌ 最终未找到匹配');
+                return false;
+                
+            } catch (e) {
+                console.error('❗ 高亮错误:', e);
+                return false;
+            }
+        }
+        
+        // 页面加载完成后，为首页注入深色主题
+        window.addEventListener('load', function() {
+            const iframe = document.getElementById('contentFrame');
+            // 短暂延迟后注入样式
+            setTimeout(function() {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    const iframeWindow = iframe.contentWindow;
+                    if (!iframeDoc) return;
+                    
+                    // 创建深色主题样式
+                    let darkStyle = iframeDoc.getElementById('darkThemeStyle');
+                    if (!darkStyle) {
+                        darkStyle = iframeDoc.createElement('style');
+                        darkStyle.id = 'darkThemeStyle';
+                        iframeDoc.head.appendChild(darkStyle);
+                        darkStyle.textContent = DARK_THEME_CSS;
+                    }
+                    
+                    // 强制修改所有白色背景元素
+                    setTimeout(() => {
+                        const allElements = iframeDoc.querySelectorAll('*');
+                        allElements.forEach(el => {
+                            const bgColor = iframeWindow.getComputedStyle(el).backgroundColor;
+                            if (bgColor === 'rgb(255, 255, 255)' || 
+                                bgColor === 'white' || 
+                                bgColor.startsWith('rgb(255') ||
+                                bgColor === 'rgba(0, 0, 0, 0)') {
+                                el.style.backgroundColor = '#1f2544';
+                            }
+                            if (bgColor.startsWith('rgb(248') || 
+                                bgColor.startsWith('rgb(249') ||
+                                bgColor.startsWith('rgb(250')) {
+                                el.style.backgroundColor = '#252b48';
+                            }
+                        });
+                    }, 150);
+                } catch (e) {
+                    console.log('无法为首页注入深色主题:', e);
+                }
+            }, 200);
+        });
+        
+        // 子菜单展开/折叠功能
+        function toggleSubmenu(event, element) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // 获取子菜单和箭头
+            const submenu = element.parentElement.querySelector('.nav-submenu');
+            const arrow = element.querySelector('.nav-arrow');
+            
+            if (!submenu) return;
+            
+            // 切换展开状态
+            submenu.classList.toggle('expanded');
+            arrow.classList.toggle('expanded');
+            
+            // 移除其他菜单的 active 状态
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link !== element) {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // 侧边栏目录过滤功能
+        function filterSidebar() {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            
+            const filter = input.value.trim().toLowerCase();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            // 如果搜索框为空，恢复默认状态
+            if (!filter) {
+                navItems.forEach(item => {
+                    item.style.display = '';
+                    // 恢复子菜单折叠状态
+                    const submenu = item.querySelector('.nav-submenu');
+                    if (submenu) {
+                        submenu.classList.remove('expanded');
+                        submenu.style.maxHeight = '';
+                        const arrow = item.querySelector('.nav-arrow');
+                        if (arrow) arrow.classList.remove('expanded');
+                    }
+                });
+                return;
+            }
+            
+            // 第一遍：处理所有叶子节点（没有子菜单的项）
+            navItems.forEach(item => {
+                if (item.querySelector('.nav-submenu')) return; // 跳过父级节点
+                
+                const text = item.innerText.toLowerCase();
+                const match = text.includes(filter);
+                
+                if (match) {
+                    item.style.display = '';
+                    // 递归展开所有父级菜单
+                    let parent = item.parentElement;
+                    while (parent) {
+                        if (parent.classList.contains('nav-submenu')) {
+                            parent.classList.add('expanded');
+                            parent.style.maxHeight = '2000px'; // 强制展开
+                            
+                            const grandParent = parent.parentElement;
+                            if (grandParent) {
+                                grandParent.style.display = ''; // 确保父级显示
+                                const arrow = grandParent.querySelector('.nav-arrow');
+                                if (arrow) arrow.classList.add('expanded');
+                            }
+                        }
+                        if (parent.classList.contains('nav-menu')) break;
+                        parent = parent.parentElement;
+                    }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // 第二遍：处理父级节点的显示逻辑
+            // 如果父级本身匹配，或者它有可见的子节点，则显示父级
+            navItems.forEach(item => {
+                const submenu = item.querySelector('.nav-submenu');
+                if (submenu) {
+                    const hasVisibleChildren = Array.from(submenu.querySelectorAll('.nav-item'))
+                        .some(child => child.style.display !== 'none');
+                    
+                    // 检查父级标题是否匹配
+                    const linkText = item.querySelector('.nav-link')?.innerText.toLowerCase() || '';
+                    const selfMatch = linkText.includes(filter);
+                    
+                    if (hasVisibleChildren || selfMatch) {
+                        item.style.display = '';
+                        // 如果父级匹配但子级都不匹配，是否展开子级？
+                        // 这里选择不强制展开，除非子级有匹配
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // 全局快捷键监听 (Ctrl+F)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                showElectronSearch();
+            }
+        });
+
+        // 活动弹窗功能
+        function closePromo() {
+            document.getElementById('promoOverlay').style.display = 'none';
+        }
+
+        function viewPricing() {
+            closePromo();
+            loadPage('pages/授权价格.html');
+        }
+
+        // 点击遮罩层关闭弹窗
+        document.getElementById('promoOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePromo();
+            }
+        });
+
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePromo();
+            }
+        });
+        
+    </script>
+</body>
+</html>

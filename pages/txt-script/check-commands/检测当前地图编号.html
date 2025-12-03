@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>🗺️ 检测当前地图</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家当前所在地图的编号，用于限制某些功能只能在特定地图使用，或根据不同地图提供不同的服务。此命令是地图权限控制、地图特定功能、传送系统等的基础，广泛应用于副本系统、安全区限制、PVP区域管理等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测当前地图</span> <span class="number">地图编号</span><br>
+<span class="keyword">#ACT</span><br>
+执行该地图的操作<br>
+<span class="keyword">#SAY</span><br>
+显示的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">地图编号</div>
+            <div class="param-desc">要检测的地图编号。<br>
+            • 类型：整数（int）<br>
+            • 范围：根据服务器地图配置而定<br>
+            • 地图编号在地图配置文件中定义<br>
+            • 示例：0=新手村、1=比奇城、100=副本地图等</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家当前所在地图编号与参数匹配</td>
+                <td>执行#ACT中的操作命令，显示#SAY中的对话内容</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>玩家当前所在地图编号与参数不匹配</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">参数错误</span></td>
+                <td>地图编号参数格式错误或不存在</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：副本内专属NPC功能</div>
+        <div class="code-block"><span class="comment">; 副本内的特殊传送NPC（只能在副本地图D001中使用）</span><br>
+[@副本传送员]<br>
+<span class="keyword">#IF</span><br>
+检测当前地图 D001<br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 副本传送 ═══════════&lt;BR&gt;您当前在副本地图中。&lt;BR&gt;─────────────────────────&lt;BR&gt;当前地图：&lt;$地图名字&gt;（编号：&lt;$地图编号&gt;）&lt;BR&gt;─────────────────────────&lt;BR&gt;传送服务：&lt;BR&gt;• 传送到副本入口&lt;BR&gt;• 传送到BOSS房间&lt;BR&gt;• 传送到宝箱区域&lt;BR&gt;─────────────────────────&lt;BR&gt;&lt;传送到副本入口/@回到入口&gt;&lt;BR&gt;&lt;传送到BOSS房间/@去BOSS房&gt;&lt;BR&gt;&lt;传送到宝箱区域/@去宝箱区&gt;&lt;BR&gt;&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 副本传送 ═══════════&lt;BR&gt;抱歉，此传送服务只能在副本内使用！&lt;BR&gt;─────────────────────────&lt;BR&gt;当前地图：&lt;$地图名字&gt;（编号：&lt;$地图编号&gt;）&lt;BR&gt;需要地图：副本地图（编号：D001）&lt;BR&gt;─────────────────────────&lt;BR&gt;请先进入副本再使用此功能！&lt;BR&gt;&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br>
+<br>
+[@回到入口]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+传送 D001 100 100 0<br>
+<span class="keyword">#SAY</span><br>
+已传送到副本入口！<br>
+<br>
+[@去BOSS房]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+传送 D001 200 200 0<br>
+<span class="keyword">#SAY</span><br>
+已传送到BOSS房间！小心应战！<br>
+<br>
+[@去宝箱区]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+传送 D001 300 300 0<br>
+<span class="keyword">#SAY</span><br>
+已传送到宝箱区域！</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 地图编号的获取</strong><br>
+        • 地图编号在地图配置文件（MapInfo.txt）中定义<br>
+        • 可以使用变量 &lt;$地图编号&gt; 显示玩家当前地图编号<br>
+        • 可以使用变量 &lt;$地图名字&gt; 显示地图名称<br>
+        • 编写脚本前请先确认地图编号是否正确<br><br>
+        
+        <strong>2. 常见应用场景</strong><br>
+        • <strong>副本限制</strong>：限制某些功能只能在副本内使用<br>
+        • <strong>安全区检测</strong>：判断玩家是否在安全区域<br>
+        • <strong>PVP区域</strong>：检测玩家是否在PK地图<br>
+        • <strong>传送限制</strong>：某些地图禁止传送或回城<br>
+        • <strong>地图特定NPC</strong>：特定地图的专属NPC功能<br>
+        • <strong>活动地图</strong>：活动专用地图的特殊规则<br><br>
+        
+        <strong>3. 多地图检测</strong><br>
+        • 使用#OR段可以检测多个地图（满足任一即可）<br>
+        • 例如：检测玩家是否在任意一个副本地图<br>
+        • #OR中每个检测地图编号命令独占一行<br>
+        • 满足任意一个地图条件即执行#ACT和#SAY<br><br>
+        
+        <strong>4. 地图编号格式</strong><br>
+        • 地图编号可以是纯数字（如0、1、100）<br>
+        • 也可以是字母+数字（如D001、B001、PVP001）<br>
+        • 字母数字混合时要完全匹配，区分大小写<br>
+        • 建议使用统一的命名规则，便于管理<br><br>
+        
+        <strong>5. 与其他地图检测命令配合</strong><br>
+        • <strong>检测坐标范围</strong>：限制在地图特定区域使用<br>
+        • <strong>检测是否安全区</strong>：判断是否在安全区内<br>
+        • <strong>检测地图玩家数量</strong>：控制地图人数上限<br>
+        • 建议先检测地图编号，再检测其他地图相关条件<br><br>
+        
+        <strong>6. 玩家体验优化</strong><br>
+        • 在#ELSESAY中使用 &lt;$地图编号&gt; 显示当前地图<br>
+        • 明确提示需要在哪个地图才能使用功能<br>
+        • 提供前往目标地图的传送或引导<br>
+        • 显示地图名称，比编号更直观<br><br>
+        
+        <strong>7. 地图实例化</strong><br>
+        • 某些副本地图可能是实例化的（每个队伍独立）<br>
+        • 实例化地图的编号可能动态生成<br>
+        • 检测实例化地图需要特殊处理<br>
+        • 建议使用地图模板编号而非实例编号<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 地图编号填写错误（与实际配置不符）<br>
+        • ❌ 字母数字混合时大小写错误<br>
+        • ❌ 未考虑地图实例化的情况<br>
+        • ❌ 检测失败时未提供明确的地图信息<br>
+        • ✅ 正确做法：使用正确的地图编号，提供清晰的地图提示，考虑地图实例化
+    </div>
+
+</body>
+</html>

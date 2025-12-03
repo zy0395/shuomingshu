@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 40px; background: #0f1419; line-height: 1.8; color: #e2e8f0; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px; font-size: 2.2em; }
+        h2 { color: #f6ad55; margin: 40px 0 20px; padding-left: 15px; border-left: 5px solid #f6ad55; font-size: 1.6em; }
+        h3 { color: #667eea; margin: 25px 0 15px; font-size: 1.3em; }
+        
+        .intro { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #e2e8f0; padding: 25px; margin: 25px 0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .intro p { color: #e2e8f0; margin: 8px 0; }
+        .intro code { background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 4px; font-family: 'Consolas', monospace; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px; text-align: left; font-weight: 600; }
+        td { padding: 12px 15px; border-bottom: 1px solid #2d3748; background: #1a1f2e; color: #a0aec0; }
+        tbody tr:hover td { background: #1f2633; }
+        tbody tr:last-child td { border-bottom: none; }
+        
+        .var-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 0.9em; }
+        .var-global { background: #fc8181; color: white; }
+        .var-private { background: #68d391; color: white; }
+        .var-number { background: #667eea; color: white; }
+        .var-string { background: #c678dd; color: white; }
+        
+        .operation-box { background: #1a1f2e; border-left: 4px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 5px; border: 1px solid #2d3748; }
+        .operation-box h3 { margin-top: 0; color: #667eea; }
+        .syntax { background: #0f1419; border: 1px dashed #667eea; padding: 15px; margin: 15px 0; border-radius: 5px; font-family: 'Consolas', monospace; color: #fc8181; font-size: 1.05em; }
+        
+        .example-box { background: #1a1f2e; color: #abb2bf; padding: 20px; margin: 20px 0; border-radius: 8px; font-family: 'Consolas', monospace; overflow-x: auto; border: 1px solid #2d3748; }
+        .example-box .comment { color: #5c6370; font-style: italic; }
+        .example-box .keyword { color: #c678dd; font-weight: bold; }
+        .example-box .tag { color: #fc8181; }
+        .example-box .string { color: #68d391; }
+        .example-box .number { color: #f6ad55; }
+        
+        .tip { background: #1a1f2e; border-left: 4px solid #667eea; padding: 15px; margin: 15px 0; border-radius: 4px; border: 1px solid #2d3748; }
+        .tip-title { font-weight: bold; color: #667eea; margin-bottom: 8px; }
+        
+        .warning { background: #1a1f2e; border-left: 4px solid #f6ad55; padding: 15px; margin: 15px 0; border-radius: 4px; border: 1px solid #2d3748; }
+        .warning-title { font-weight: bold; color: #f6ad55; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🔢 脚本变量</h1>
+    
+    <div class="intro">
+        <p><strong>📖 什么是脚本变量？</strong></p>
+        <p>脚本变量用于在NPC对话和脚本执行过程中存储、传递和计算数据。</p>
+        <p>变量分为<strong>全局变量</strong>（所有玩家共享）和<strong>私人变量</strong>（玩家独立），每类又分为<strong>数字型</strong>和<strong>字符型</strong>。</p>
+        <p>变量的显示格式为：<code>&lt;$STR(变量名)&gt;</code></p>
+    </div>
+
+    <h2>📊 变量类型总览</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>变量前缀</th>
+                <th>作用域</th>
+                <th>数据类型</th>
+                <th>持久化</th>
+                <th>清空条件</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="var-tag var-global">G0-G任意数字</span></td>
+                <td>全局变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 数据库保存</td>
+                <td>清据数据时清零</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-global">A0-A任意数字</span></td>
+                <td>全局变量</td>
+                <td><span class="var-tag var-string">字符型</span></td>
+                <td>✅ 数据库保存</td>
+                <td>清据数据时清空</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-private">N0-N任意数字</span></td>
+                <td>私人变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>❌ 不保存</td>
+                <td>下线/小退归0</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-private">S0-S任意数字</span></td>
+                <td>私人变量</td>
+                <td><span class="var-tag var-string">字符型</span></td>
+                <td>❌ 不保存</td>
+                <td>下线/小退清空</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-private">U0-U任意数字</span></td>
+                <td>私人变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 人物数据保存</td>
+                <td>删除角色时清除</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-private">T0-T任意数字</span></td>
+                <td>私人变量</td>
+                <td><span class="var-tag var-string">字符型</span></td>
+                <td>✅ 人物数据保存</td>
+                <td>删除角色时清除</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-private">J0-J任意数字</span></td>
+                <td>私人变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 人物数据保存</td>
+                <td>每天0点自动清零</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-private">Q0-Q任意数字</span></td>
+                <td>私人变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 守卫实例保存</td>
+                <td>守卫销毁或重置时清零（多个玩家共享）</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-global">B0-B任意数字</span></td>
+                <td>地图变量</td>
+                <td><span class="var-tag var-string">字符型</span></td>
+                <td>✅ 当地图存在时保持</td>
+                <td>地图实例卸载/重建时清空</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-global">M0-M任意数字</span></td>
+                <td>地图变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 当地图存在时保持</td>
+                <td>地图实例卸载/重建时清空</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-global">PPOINT</span></td>
+                <td>账号变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 账号永久保存</td>
+                <td>删除账号时清除</td>
+            </tr>
+            <tr>
+                <td><span class="var-tag var-global">DAYPOINT</span></td>
+                <td>角色变量</td>
+                <td><span class="var-tag var-number">数字型</span></td>
+                <td>✅ 角色永久保存</td>
+                <td>脚本重置或清档时清空</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="tip">
+        <div class="tip-title">📌 额外说明</div>
+        • B/M 变量写入当前地图实例的内存，在跨线或重启后会重置；适合做“地图内机关状态”。<br>
+        • PPOINT 直接关联账号推广点，可在多个角色之间共享；DAYPOINT 则表示角色日程进度。<br>
+        • 若 NPC 同时面对多个玩家，使用 Q 变量时要注意它是“守卫级别”的共享内存。<br>
+    </div>
+
+    <h2>🔧 变量操作方法</h2>
+
+    <div class="operation-box">
+        <h3>1️⃣ 变量赋值</h3>
+        <p>给变量设置一个具体的值</p>
+        <div class="syntax">变量赋值 变量名 值</div>
+        <p><strong>示例：</strong></p>
+        <div class="example-box">
+<span class="comment">; 给U1变量赋值为30</span><br>
+<span class="tag">变量赋值</span> U1 30<br>
+<br>
+<span class="comment">; 给G100变量赋值为500</span><br>
+<span class="tag">变量赋值</span> G100 500<br>
+<br>
+<span class="comment">; 给字符型变量赋值</span><br>
+<span class="tag">变量赋值</span> T0 <span class="string">勇士称号</span>
+        </div>
+    </div>
+
+    <div class="operation-box">
+        <h3>2️⃣ 变量检测</h3>
+        <p>在 #IF 条件中检测变量的值</p>
+        <div class="syntax">检测变量 &lt;$STR(变量名)&gt; 比较符 值</div>
+        <p><strong>支持的比较符：</strong> ==（等于）、!=（不等于）、&gt;（大于）、&lt;（小于）、&gt;=（大于等于）、&lt;=（小于等于）</p>
+        <p><strong>示例：</strong></p>
+        <div class="example-box">
+<span class="comment">; 检测G100变量是否小于200</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$STR(G100)&gt;</span> &lt; <span class="number">200</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">发送系统消息</span> G100的值小于200 FALSE<br>
+<br>
+<span class="comment">; 检测U1变量是否等于30</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$STR(U1)&gt;</span> == <span class="number">30</span><br>
+<span class="keyword">#SAY</span><br>
+你的U1变量值等于30<br>
+<br>
+<span class="comment">; 检测字符型变量（使用数字编码表示勇士称号，例如T0 = 1）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$STR(T0)&gt;</span> == <span class="number">1</span><br>
+<span class="keyword">#SAY</span><br>
+你拥有勇士称号
+        </div>
+    </div>
+
+    <div class="operation-box">
+        <h3>3️⃣ 变量运算</h3>
+        <p>对变量进行数学运算（加、减、乘、除）</p>
+        <div class="syntax">变量运算 变量名 运算符 值或变量</div>
+        <p><strong>支持的运算符：</strong> + （加）、- （减）、* （乘）、/ （除）、= （赋值）</p>
+        <p><strong>示例：</strong></p>
+        <div class="example-box">
+<span class="comment">; J3变量自增1（最常用）</span><br>
+<span class="tag">变量运算</span> J3 + 1<br>
+<br>
+<span class="comment">; U1变量加上G100变量的值</span><br>
+<span class="tag">变量运算</span> U1 + G100<br>
+<br>
+<span class="comment">; U1变量减去10</span><br>
+<span class="tag">变量运算</span> U1 - <span class="number">10</span><br>
+<br>
+<span class="comment">; G100变量乘以2</span><br>
+<span class="tag">变量运算</span> G100 * <span class="number">2</span><br>
+<br>
+<span class="comment">; N5变量除以3</span><br>
+<span class="tag">变量运算</span> N5 / <span class="number">3</span><br>
+<br>
+<span class="comment">; U1直接赋值为G100的值</span><br>
+<span class="tag">变量运算</span> U1 = G100
+        </div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">重要提示</div>
+        <strong>1. 变量显示格式</strong><br>
+        • 在脚本中显示变量值，必须使用 <code>&lt;$STR(变量名)&gt;</code> 格式<br>
+        • 直接写变量名不会显示值，例如：U1 不会显示，必须写 &lt;$STR(U1)&gt;<br><br>
+        
+        <strong>2. 变量数据类型</strong><br>
+        • 数字型变量（G、N、U、J、Q）只能存储整数<br>
+        • 字符型变量（A、S、T）可以存储任意文本<br>
+    • 不要混用数字型和字符型变量（N/S 实际不做强制校验，脚本需要自律）<br><br>
+        
+        <strong>3. 变量作用域</strong><br>
+    • 全局变量（G、A）所有玩家共享，修改会影响所有玩家<br>
+    • 私人变量（N、S、U、T、J）每个玩家独立，互不影响<br>
+    • Q 变量绑定在守卫实例上，同一守卫的所有玩家共用一套数值，守卫销毁或重建才会清空<br><br>
+        
+    <strong>4. 变量持久化</strong><br>
+    • Q变量保存在守卫实例上，只在守卫重置/销毁时清零，可跨玩家共享<br>
+    • J变量依赖“角色零点触发”脚本在每日刷新时归零，适合每日任务进度<br>
+    • N/S变量存放在 NPC 实例内存中，玩家下线或服务器重启即清除<br>
+    • U/T变量持久化到角色数据，适合长期任务与系统状态<br><br>
+
+        <strong>5. 比较与运算规则</strong><br>
+        • <code>检测变量</code> 只支持比较符：<code>==</code>、<code>!=</code>、<code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code><br>
+        • <code>变量运算</code> 才会用到 <code>=</code>、<code>+</code>、<code>-</code>、<code>*</code>、<code>/</code> 等运算符<br>
+        • 在 <code>检测变量</code> 中使用 <code>&lt;$STR(变量名)&gt;</code> 时，会先将变量值取出并转换为数字字符串，再参与数值比较（要求变量本身为数字型）<br>
+    </div>
+
+    <div class="tip">
+        <div class="tip-title">💡 最佳实践建议</div>
+        • 合理规划变量编号，建立变量用途文档<br>
+        • 优先使用私人变量，全局变量仅在必要时使用<br>
+        • 每日任务用J变量，永久任务用U变量<br>
+        • 对话流程用Q变量，避免污染其他变量<br>
+        • 定期清理不用的全局变量，避免数据库膨胀
+    </div>
+</body>
+</html>

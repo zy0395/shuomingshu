@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>🏰 检测行会等级</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家所在行会的等级是否满足指定条件。行会等级是行会发展程度的重要指标，等级越高代表行会实力越强。此命令用于限制某些功能需要行会达到一定等级才能使用，如高级行会技能、行会副本、行会战等。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测行会等级</span> <span class="string">比较符</span> <span class="number">等级值</span><br>
+<span class="keyword">#ACT</span><br>
+执行相应的操作<br>
+<span class="keyword">#SAY</span><br>
+显示的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">比较符</div>
+            <div class="param-desc">用于比较行会等级的运算符，支持以下选项：<br>
+            • <strong>=</strong>：等于指定等级（注意：使用单个等号）<br>
+            • <strong>&gt;</strong>：大于指定等级<br>
+            • <strong>&lt;</strong>：小于指定等级<br>
+            • 不支持 &gt;=、&lt;=、!= 等复合比较符</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">等级值</div>
+            <div class="param-desc">要检测的行会等级。<br>
+            • 类型：整数（int）<br>
+            • 范围：1 - 行会最大等级（通常为5或10级）<br>
+            • 示例：检测行会是否达到3级，填写 3</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家所在行会等级符合比较条件</td>
+                <td>执行#ACT中的操作命令，显示#SAY中的对话内容</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>行会等级不符合条件或未加入行会</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">未加入行会</span></td>
+                <td>玩家未加入任何行会</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：行会技能学习</div>
+        <div class="code-block"><span class="comment">; 行会技能导师（需要行会等级达到3级）</span><br>
+[@行会技能导师]<br>
+<span class="keyword">#IF</span><br>
+检测行会等级 &gt;= 3<br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 行会技能 ═══════════&lt;BR&gt;<br>
+欢迎来到行会技能学习中心！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+您的行会信息：&lt;BR&gt;<br>
+• 行会名称：&lt;$行会名称&gt;&lt;BR&gt;<br>
+• 行会等级：&lt;$行会等级&gt;级&lt;BR&gt;<br>
+• 当前职位：&lt;$行会职位&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+可学习的行会技能：&lt;BR&gt;<br>
+&lt;行会攻击BUFF（提升全体攻击力）/@学习攻击BUFF&gt;&lt;BR&gt;<br>
+&lt;行会防御BUFF（提升全体防御力）/@学习防御BUFF&gt;&lt;BR&gt;<br>
+&lt;行会经验BUFF（提升经验获取）/@学习经验BUFF&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;查看技能详情/@技能详情&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 行会技能 ═══════════&lt;BR&gt;<br>
+抱歉，您的行会等级不足！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+学习行会技能需要：&lt;BR&gt;<br>
+• 加入行会&lt;BR&gt;<br>
+• 行会等级达到 &lt;3级/fcolor=255&gt; 或以上&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+您当前状态：&lt;BR&gt;<br>
+• 行会：&lt;$行会名称&gt;&lt;BR&gt;<br>
+• 等级：&lt;$行会等级&gt;级&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+请提升行会等级后再来！&lt;BR&gt;<br>
+&lt;如何提升行会等级/@升级说明&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br>
+<br>
+[@学习攻击BUFF]<br>
+<span class="keyword">#IF</span><br>
+检测金币数量 &gt;= 100000<br>
+检测任务标识 800 0<br>
+<span class="keyword">#ACT</span><br>
+调整金币数量 - 100000<br>
+任务标识 800 1<br>
+添加技能 1001<br>
+<span class="keyword">#SAY</span><br>
+恭喜您成功学习 &lt;行会攻击BUFF/fcolor=255&gt;！&lt;BR&gt;<br>
+使用后可提升全体行会成员攻击力10%！&lt;BR&gt;<br>
+持续时间：30分钟&lt;BR&gt;<br>
+&lt;#SO:1&gt;确定&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+学习失败！&lt;BR&gt;<br>
+需要：100,000金币 且 未学习过此技能&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 比较符特殊说明</strong><br>
+        • 此命令只支持 =、&gt;、&lt; 三种基本比较符<br>
+        • 不支持 &gt;=、&lt;=、!= 等复合比较符<br>
+        • 使用 = 而不是 ==（与其他检测命令不同）<br>
+        • 如需检测"大于等于3级"，需组合使用 &gt; 2 或 = 3<br><br>
+        
+        <strong>2. 行会等级范围</strong><br>
+        • 行会等级通常从1级开始<br>
+        • 最高等级根据服务器设置而定（常见为5级或10级）<br>
+        • 等级越高升级难度越大，需要更多资源<br>
+        • 可以使用变量 &lt;$行会等级&gt; 显示当前等级<br><br>
+        
+        <strong>3. 常见应用场景</strong><br>
+        • <strong>行会技能</strong>：高级技能需要行会达到一定等级<br>
+        • <strong>行会副本</strong>：高级副本限制行会等级<br>
+        • <strong>行会福利</strong>：等级越高福利越好<br>
+        • <strong>行会战</strong>：参加高级行会战需要等级要求<br>
+        • <strong>行会商店</strong>：高级商品需要行会等级解锁<br>
+        • <strong>成员上限</strong>：行会等级影响成员数量上限<br><br>
+        
+        <strong>4. 与其他行会检测配合</strong><br>
+        • 先检测是否加入行会，再检测行会等级<br>
+        • 可以配合"检测是否会长"限制升级权限<br>
+        • 配合"检测金币数量"检测升级资源<br>
+        • 建议检测顺序：是否加入行会 → 行会等级 → 其他条件<br><br>
+        
+        <strong>5. 行会等级提升</strong><br>
+        • 行会等级通过"改变行会等级"命令提升<br>
+        • 升级通常需要消耗金币、材料等资源<br>
+        • 升级可能需要完成特定任务或条件<br>
+        • 等级提升后解锁新功能和提升行会属性<br><br>
+        
+        <strong>6. 玩家体验优化</strong><br>
+        • 显示当前行会等级和所需等级<br>
+        • 提供行会等级提升的方法说明<br>
+        • 等级不足时给出明确的提升建议<br>
+        • 显示不同等级解锁的功能列表<br><br>
+        
+        <strong>7. 平衡性考虑</strong><br>
+        • 合理设置不同功能的等级要求<br>
+        • 避免等级要求过高导致玩家失去动力<br>
+        • 提供明确的升级奖励，鼓励行会发展<br>
+        • 平衡大小行会的游戏体验<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 使用 &gt;= 等不支持的比较符<br>
+        • ❌ 使用 == 而不是 =<br>
+        • ❌ 未检测是否加入行会就检测等级<br>
+        • ❌ 等级要求设置不合理，过高或过低<br>
+        • ✅ 正确做法：使用支持的比较符（=、&gt;、&lt;），先检测是否加入行会，合理设置等级要求
+    </div>
+
+</body>
+</html>

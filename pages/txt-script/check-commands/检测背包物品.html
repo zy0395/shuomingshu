@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测背包物品</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家背包中是否拥有指定的物品及数量。该命令是任务系统、商店系统、兑换系统的核心检测命令。支持按物品名称或物品编号两种方式进行检测，并支持个人检测和队伍检测两种模式。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 格式：按物品名称或编号检测</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测背包物品</span> <span class="string">物品名称/编号</span> <span class="number">数量</span> <span class="number">[检测模式]</span> <span class="number">[幸运值]</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 拥有物品时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">检测背包物品</div>
+            <div class="param-desc">
+                • <strong>参数1：物品名称/编号</strong> - 要检测的物品名称（字符串）或编号（整数）<br>
+                • <strong>参数2：数量</strong> - 要检测的物品数量，取值范围：0-65535<br>
+                • <strong>参数3：检测模式（可选）</strong> - 0=个人检测（默认），1=队伍检测<br>
+                • <strong>参数4：幸运值（可选）</strong> - 检测指定幸运值的物品，仅对物品编号有效
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测方式</th>
+                <th>检测模式</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">物品名称</span></td>
+                <td>个人检测（0）</td>
+                <td>检测玩家背包中是否有指定名称和数量的物品</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">物品名称</span></td>
+                <td>队伍检测（1）</td>
+                <td>检测队伍所有成员是否都拥有指定物品，全部满足才通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">物品编号</span></td>
+                <td>个人检测（0）</td>
+                <td>检测玩家背包中是否有指定编号和数量的物品</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">物品编号</span></td>
+                <td>队伍检测（1）</td>
+                <td>检测队伍所有成员是否都拥有指定物品，全部满足才通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">条件满足</span></td>
+                <td>所有模式</td>
+                <td>✅ 拥有足够数量的物品，执行#ACT中的命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">条件不满足</span></td>
+                <td>所有模式</td>
+                <td>❌ 物品不足，跳过#ACT或执行#ELSESAY</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：任务材料收集</div>
+        <div class="code-block"><span class="comment">; 检测玩家是否收集齐任务所需的材料</span><br>
+[@任务NPC]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测背包物品</span> <span class="string">"铁矿石"</span> <span class="number">10</span><br>
+<span class="tag">检测背包物品</span> <span class="string">"木材"</span> <span class="number">20</span><br>
+<span class="tag">检测背包物品</span> <span class="string">"宝石"</span> <span class="number">5</span><br>
+<span class="tag">检测任务标识</span> <span class="number">100</span> <span class="number">0</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">删除物品名称</span> <span class="string">"铁矿石"</span> <span class="number">10</span><br>
+<span class="tag">删除物品名称</span> <span class="string">"木材"</span> <span class="number">20</span><br>
+<span class="tag">删除物品名称</span> <span class="string">"宝石"</span> <span class="number">5</span><br>
+<span class="tag">任务标识</span> <span class="number">100</span> <span class="number">1</span><br>
+<span class="tag">给予物品</span> <span class="string">"经验卷轴"</span> <span class="number">1</span><br>
+<span class="tag">调整金币数量</span> <span class="string">+</span> <span class="number">50000</span><br>
+<span class="keyword">#SAY</span><br>
+太好了！您已经收集齐所有材料了！&lt;BR&gt;&lt;BR&gt;<br>
+任务完成奖励：&lt;BR&gt;<br>
+• 经验卷轴 x1&lt;BR&gt;<br>
+• 金币 x50000&lt;BR&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;领取奖励&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测任务标识</span> <span class="number">100</span> <span class="number">1</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您已经完成过这个任务了！&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;<br><br>
+<span class="keyword">#ELSESAY</span><br>
+您的材料还不够，请继续收集：&lt;BR&gt;&lt;BR&gt;<br>
+需要材料：&lt;BR&gt;<br>
+• 铁矿石 x10&lt;BR&gt;<br>
+• 木材 x20&lt;BR&gt;<br>
+• 宝石 x5&lt;BR&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;继续收集&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 物品名称与编号</strong><br>
+        • 可以使用物品名称（字符串）或物品编号（整数）进行检测<br>
+        • 使用物品名称时，必须与数据库中的名称完全一致（区分大小写）<br>
+        • 使用物品编号时，必须使用正确的物品ID<br>
+        • 建议优先使用物品编号，避免因名称修改导致脚本失效<br>
+        • 可以在物品数据库中查询物品的准确编号和名称<br><br>
+        
+        <strong>2. 检测模式区别</strong><br>
+        • <strong>个人检测（0）：</strong>只检测触发脚本的玩家自己的背包<br>
+        • <strong>队伍检测（1）：</strong>检测整个队伍所有成员，必须全员都拥有才通过<br>
+        • 队伍检测时，如果玩家未组队，检测会失败<br>
+        • 离线或不在线的队员会导致队伍检测失败<br><br>
+        
+        <strong>3. 数量检测</strong><br>
+        • 检测的数量必须是整数，范围 0-65535<br>
+        • 检测会统计背包中所有相同物品的总数量（可叠加物品）<br>
+        • 装备类物品通常不可叠加，每件装备占用一个格子<br>
+        • 数量为0时，等同于检测玩家是否拥有该物品<br><br>
+        
+        <strong>4. 常见应用场景</strong><br>
+        • <strong>任务系统：</strong>检测玩家是否收集齐任务所需材料<br>
+        • <strong>兑换系统：</strong>检测玩家是否有足够的兑换材料<br>
+        • <strong>合成系统：</strong>检测合成所需的所有材料是否齐全<br>
+        • <strong>商店系统：</strong>检测玩家是否有特定的购买凭证<br>
+        • <strong>副本系统：</strong>检测进入副本所需的门票或钥匙<br><br>
+        
+        <strong>5. 性能考虑</strong><br>
+        • 按物品编号检测的性能略优于按名称检测<br>
+        • 队伍检测需要遍历所有队员，消耗稍高但仍可接受<br>
+        • 避免在同一个脚本中重复检测相同的物品<br>
+        • 建议先检测物品，再执行删除或给予操作<br><br>
+        
+        <strong>6. 脚本设计建议</strong><br>
+        • 在删除物品前，必须先用检测命令确认玩家拥有足够数量<br>
+        • 使用 #ELSESAY 为物品不足的情况提供明确提示<br>
+        • 建议配合 <code>检测任务标识</code> 防止重复完成任务<br>
+        • 多个物品检测时，按从上到下的顺序逐一检测<br>
+        • 可以在对话中列出所需物品清单，方便玩家了解<br><br>
+        
+        <strong>7. 组合检测示例</strong><br>
+        • 同时检测多个物品：在 #IF 段中依次写多个检测命令<br>
+        • 检测物品和金币：<code>检测背包物品</code> + <code>检测金币数量</code><br>
+        • 检测物品和等级：<code>检测背包物品</code> + <code>检测角色等级</code><br>
+        • 防止重复领取：<code>检测背包物品</code> + <code>检测任务标识</code><br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 错误：物品名称拼写错误或不完全匹配<br>
+        • ❌ 错误：使用了错误的物品编号<br>
+        • ❌ 错误：在队伍检测中，有队员不在线或未组队<br>
+        • ❌ 错误：删除物品前没有先检测是否拥有<br>
+        • ✅ 正确：先用检测命令确认，再在 #ACT 中删除物品<br>
+        • ✅ 正确：为物品不足的情况提供 #ELSESAY 提示
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>装备位置表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        .intro {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #404968;
+        }
+        
+        .intro h2 {
+            color: #8e9ff5;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .intro p {
+            color: #b8c1ec;
+            margin-bottom: 10px;
+        }
+        
+        .intro code {
+            background: #1f2544;
+            color: #8e9ff5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.95em;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .enum-name {
+            color: #ff8b8b;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .enum-value {
+            color: #6dd881;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .note {
+            background: #2d3561;
+            border-left: 4px solid #5d6fa6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .note p {
+            color: #b8c1ec;
+        }
+        
+        .note strong {
+            color: #8e9ff5;
+        }
+        
+        .example {
+            background: #1f2544;
+            border: 1px solid #404968;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        
+        .example h3 {
+            color: #8e9ff5;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .code-block {
+            background: #252b48;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #404968;
+            color: #b8c1ec;
+            font-family: 'Consolas', monospace;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>📦 装备位置表</h1>
+    
+    <div class="intro">
+        <h2>📋 说明</h2>
+        <p>装备穿戴部位枚举定义了游戏中所有装备的穿戴位置。每个装备在创建时都需要指定其对应的穿戴部位。</p>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">装备部位</th>
+                <th style="width: 15%;">枚举值</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">武器</span></td>
+                <td><span class="enum-value">0</span></td>
+                <td>主手武器装备位，包括剑、刀、法杖等所有主手武器</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">衣服</span></td>
+                <td><span class="enum-value">1</span></td>
+                <td>身体防具装备位，包括所有职业的上衣、铠甲等</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">披风</span></td>
+                <td><span class="enum-value">2</span></td>
+                <td>背部装饰装备位，披风可以提供额外的属性加成</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">头盔</span></td>
+                <td><span class="enum-value">3</span></td>
+                <td>头部防具装备位，包括各种帽子、头盔等</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">护肩</span></td>
+                <td><span class="enum-value">4</span></td>
+                <td>肩部防具装备位，提供肩膀保护和属性加成</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">护腕</span></td>
+                <td><span class="enum-value">5</span></td>
+                <td>手腕防具装备位，护腕装备</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">腰带</span></td>
+                <td><span class="enum-value">6</span></td>
+                <td>腰部装备位，腰带可以增加角色负重等属性</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">鞋子</span></td>
+                <td><span class="enum-value">7</span></td>
+                <td>脚部防具装备位，各种靴子、鞋子</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">项链</span></td>
+                <td><span class="enum-value">8</span></td>
+                <td>颈部饰品装备位，项链通常提供魔法相关属性</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">左戒指</span></td>
+                <td><span class="enum-value">9</span></td>
+                <td>左手戒指装备位，可以佩戴两枚戒指</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">右戒指</span></td>
+                <td><span class="enum-value">10</span></td>
+                <td>右手戒指装备位，与左戒指配对使用</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">左手镯</span></td>
+                <td><span class="enum-value">11</span></td>
+                <td>左手手镯装备位，手镯通常提供防御和血量加成</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">右手镯</span></td>
+                <td><span class="enum-value">12</span></td>
+                <td>右手手镯装备位，与左手镯配对使用</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">勋章</span></td>
+                <td><span class="enum-value">13</span></td>
+                <td>勋章装备位，特殊荣誉装备</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">玉佩</span></td>
+                <td><span class="enum-value">14</span></td>
+                <td>玉佩装备位，提供特殊属性加成</td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">战具</span></td>
+                <td><span class="enum-value">15</span></td>
+                <td>战具装备位，特殊战斗装备</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="note">
+        <p><strong>💡 使用提示：</strong></p>
+        <p>• 每个装备在创建时必须指定唯一的穿戴部位</p>
+        <p>• 左右戒指、左右手镯虽然是不同的装备位，但通常使用相同的装备模板</p>
+        <p>• 装备位置编号从0开始，连续递增</p>
+    </div>
+</body>
+</html>

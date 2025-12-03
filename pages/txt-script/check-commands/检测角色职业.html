@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测角色职业</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家角色的职业是否为指定值。该命令是最常用的检测命令之一，广泛应用于职业专属任务、职业限定装备、技能学习、转职系统等场景。角色职业在创建角色时确定，通常只能通过特殊转职系统或GM命令更改。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色职业</span> <span class="string">职业名称</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 职业匹配时执行的操作</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="comment">; 职业匹配时显示的内容</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：职业名称</div>
+            <div class="param-desc">
+                指定要检测的职业，必须使用以下枚举值之一（不区分大小写）：<br>
+                • <strong>战士</strong> - 近战物理职业，高血量高防御<br>
+                • <strong>法师</strong> - 远程魔法职业，高魔法攻击<br>
+                • <strong>道士</strong> - 辅助召唤职业，可召唤宠物<br>
+                • <strong>刺客</strong> - 敏捷暗杀职业，高爆发伤害<br>
+                • <strong>弓手</strong> - 远程物理职业，远距离攻击<br>
+                • <strong>龙枪</strong> - 特殊职业（如果游戏支持）<br>
+                • <strong>通用</strong> - 不限职业（一般不用于检测）<br>
+                • <strong>电脑</strong> - 系统控制职业（AI假人等，一般不用于检测）<br><br>
+                <strong>⚠️ 注意：</strong>参数不区分大小写，但建议使用标准的中文职业名称。
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>玩家职业</th>
+                <th>检测参数</th>
+                <th>检测结果</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-info">战士</span></td>
+                <td>战士</td>
+                <td>✅ 通过，执行#ACT</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">战士</span></td>
+                <td>法师</td>
+                <td>❌ 不通过，跳过#ACT</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">法师</span></td>
+                <td>法师</td>
+                <td>✅ 通过，执行#ACT</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">道士</span></td>
+                <td>道士</td>
+                <td>✅ 通过，执行#ACT</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：职业专属技能学习</div>
+        <div class="code-block"><span class="comment">; 法师专属技能学习NPC</span><br>
+[@学习火墙技能]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色职业</span> <span class="string">战士</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+抱歉，火墙是法师的专属技能。&lt;BR&gt;战士无法学习此技能！&lt;BR&gt;&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色职业</span> <span class="string">道士</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+抱歉，火墙是法师的专属技能。&lt;BR&gt;道士无法学习此技能！&lt;BR&gt;&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色职业</span> <span class="string">法师</span><br>
+<span class="tag">检测角色等级</span> <span class="string">&lt;</span> <span class="number">35</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您的等级不足35级，无法学习火墙技能。&lt;BR&gt;当前等级：&lt;$当前等级&gt;级&lt;BR&gt;&lt;#SO:1&gt;继续努力&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色职业</span> <span class="string">法师</span><br>
+<span class="tag">检测角色等级</span> <span class="string">&gt;=</span> <span class="number">35</span><br>
+<span class="tag">检测拥有技能</span> <span class="string">火墙</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+您已经学会了火墙技能！<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色职业</span> <span class="string">法师</span><br>
+<span class="tag">检测角色等级</span> <span class="string">&gt;=</span> <span class="number">35</span><br>
+<span class="tag">取反 检测拥有技能</span> <span class="string">火墙</span><br>
+<span class="tag">检测金币数量</span> <span class="string">&gt;=</span> <span class="number">100000</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">金币数量</span> <span class="string">-</span> <span class="number">100000</span><br>
+<span class="tag">添加技能</span> <span class="string">火墙</span><br>
+<span class="keyword">#SAY</span><br>
+恭喜您学会了火墙技能！<br>
+&lt;#SO:1&gt;太好了&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+学习火墙技能需要100000金币。<br>
+您的金币不足！</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 参数格式说明</strong><br>
+        • 参数不区分大小写：<code>战士</code>、<code>战士</code>、<code>WARRIOR</code> 等效（但建议使用中文）<br>
+        • 必须使用游戏中实际存在的职业名称<br>
+        • 使用错误的职业名称会导致检测失败<br><br>
+        
+        <strong>2. 常见错误示例</strong><br>
+        • ❌ 错误：<code>检测角色职业 武士</code>（应使用"战士"）<br>
+        • ❌ 错误：<code>检测角色职业 1</code>（不能使用数字）<br>
+        • ❌ 错误：<code>检测角色职业 Warrior</code>（建议使用中文"战士"）<br>
+        • ✅ 正确：<code>检测角色职业 战士</code><br>
+        • ✅ 正确：<code>检测角色职业 法师</code><br>
+        • ✅ 正确：<code>检测角色职业 道士</code><br><br>
+        
+        <strong>3. 支持的职业列表</strong><br>
+        • <strong>战士</strong> - 物理近战职业<br>
+        • <strong>法师</strong> - 魔法远程职业<br>
+        • <strong>道士</strong> - 召唤辅助职业<br>
+        • <strong>刺客</strong> - 敏捷暗杀职业<br>
+        • <strong>弓手</strong> - 远程物理职业<br>
+        • <strong>龙枪</strong> - 特殊职业（部分服务器支持）<br>
+        • <strong>通用</strong> - 不建议用于检测<br>
+        • <strong>电脑</strong> - 系统职业，不建议用于检测<br><br>
+        
+        <strong>4. 多职业检测</strong><br>
+        • 要检测多个职业，可以使用 #OR 段<br>
+        • 例如：检测战士或法师，需要两个 #IF 或使用 #OR<br>
+        • 建议为每个职业编写独立的检测逻辑<br><br>
+        
+        <strong>5. 应用场景</strong><br>
+        • 职业专属技能学习限制<br>
+        • 职业限定装备的购买和穿戴<br>
+        • 职业特定的任务线<br>
+        • 转职系统的职业验证<br>
+        • NPC对不同职业的差异化对话<br><br>
+        
+        <strong>6. 性能说明</strong><br>
+        • 该检测命令性能消耗极低，直接读取角色属性<br>
+        • 可以在任何场景下频繁使用<br>
+        • 无需担心性能问题
+    </div>
+
+</body>
+</html>

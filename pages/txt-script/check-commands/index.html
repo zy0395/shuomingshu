@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 分类卡片 */
+        .category-card { background: white; border: 2px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 15px 0; transition: all 0.3s; }
+        .category-card:hover { border-color: #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2); }
+        .category-title { color: #2c3e50; font-size: 1.3em; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .category-desc { color: #555; margin-bottom: 15px; line-height: 1.6; }
+        .command-list { list-style: none; padding: 0; }
+        .command-list li { padding: 8px 0; padding-left: 20px; position: relative; color: #555; }
+        .command-list li:before { content: "▶"; position: absolute; left: 0; color: #3498db; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测命令概览</h1>
+    
+    <div class="info">
+        <strong>📖 检测命令是什么？</strong><br>
+        检测命令是TXT脚本系统的核心组成部分，专门用于在<strong>#IF</strong>或<strong>#OR</strong>条件段中进行各种条件判断。通过检测命令，脚本可以根据玩家的状态、物品、任务进度等信息，动态地决定是否执行后续的操作命令或显示特定的对话内容。
+    </div>
+
+    <h2>🎯 检测命令的核心作用</h2>
+    <div class="success">
+        <div class="success-title">✅ 条件判断的基石</div>
+        <strong>1. 流程控制</strong><br>
+        • 检测命令是脚本中所有条件判断的基础，决定了脚本的执行流程<br>
+        • 可以实现复杂的逻辑分支，让NPC根据不同情况做出不同反应<br><br>
+        
+        <strong>2. 状态检测</strong><br>
+        • 检测玩家的等级、职业、性别、PK值等基本属性<br>
+        • 检测玩家的物品、金币、元宝等资源是否满足条件<br>
+        • 检测玩家的任务进度、BUFF状态、技能等级等游戏状态<br><br>
+        
+        <strong>3. 权限验证</strong><br>
+        • 检测玩家是否是管理员、会长、队长等特殊身份<br>
+        • 检测玩家是否有权限执行某些操作或进入某些区域<br><br>
+        
+        <strong>4. 环境判定</strong><br>
+        • 检测当前地图、坐标、时间等环境信息<br>
+        • 检测地图中的玩家数量、怪物数量等动态数据<br>
+        • 实现基于时间、地点的特殊事件触发
+    </div>
+
+    <h2>📝 基本使用语法</h2>
+    <div class="code-block"><span class="comment">; 检测命令的基本结构</span><br>
+[@脚本标签]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测命令名称</span> <span class="number">参数1</span> <span class="number">参数2</span> <span class="number">...</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 条件满足时执行的命令</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="comment">; 条件满足时显示的对话</span><br>
+<span class="keyword">#ELSESAY</span><br>
+<span class="comment">; 条件不满足时显示的对话</span></div>
+
+    <h2>🔄 检测命令分类</h2>
+    
+    <div class="category-card">
+        <div class="category-title">👤 基础检测命令（角色属性）</div>
+        <div class="category-desc">
+            这类命令用于检测玩家角色的基本属性和状态，是最常用的检测命令类别。通过这些命令，可以根据玩家的等级、职业、性别等信息，提供个性化的游戏体验。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测是否管理员</strong> - 检测玩家是否拥有管理员权限</li>
+            <li><strong>检测角色等级</strong> - 检测玩家当前等级是否满足条件</li>
+            <li><strong>检测角色性别</strong> - 检测玩家角色的性别（男/女）</li>
+            <li><strong>检测角色职业</strong> - 检测玩家职业类型（战士/法师/道士）</li>
+            <li><strong>检测角色PK值</strong> - 检测玩家PK值是否在指定范围</li>
+            <li><strong>检测是否新人</strong> - 检测玩家是否为新注册角色</li>
+            <li><strong>检测转生次数</strong> - 检测玩家的转生次数</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🎒 物品相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家背包中的物品情况，包括物品数量、装备属性、背包空间等。这类命令是任务系统、商店系统、装备强化系统的核心。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测物品名称</strong> - 检测背包中是否有指定名称的物品</li>
+            <li><strong>检测物品编号</strong> - 检测背包中是否有指定编号的物品</li>
+            <li><strong>检测物品幸运值</strong> - 检测物品的幸运属性值</li>
+            <li><strong>检测装备属性</strong> - 检测装备的各项属性数值</li>
+            <li><strong>检测背包空间</strong> - 检测背包是否有足够的空位</li>
+            <li><strong>检测随机属性</strong> - 检测装备的随机属性</li>
+            <li><strong>检测装备孔洞</strong> - 检测装备的孔洞数量</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">💰 货币相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家拥有的各种货币数量，是交易系统、商店系统、任务奖励系统的基础。确保玩家有足够的资金进行交易或购买。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测金币数量</strong> - 检测玩家金币是否满足要求</li>
+            <li><strong>检测元宝数量</strong> - 检测玩家元宝是否满足要求</li>
+            <li><strong>检测银币数量</strong> - 检测玩家银币是否满足要求</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">⏰ 时间相关检测命令</div>
+        <div class="category-desc">
+            用于检测当前的时间信息，可以实现基于时间的活动开放、定时事件触发等功能。常用于每日任务、限时活动、定时BOSS刷新等场景。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测星期几</strong> - 检测当前是星期几（0-6，0=星期日）</li>
+            <li><strong>检测当前小时</strong> - 检测当前小时数（0-23）</li>
+            <li><strong>检测当前分钟</strong> - 检测当前分钟数（0-59）</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🗺️ 地图相关检测命令</div>
+        <div class="category-desc">
+            用于检测地图环境信息，包括玩家所在地图、坐标位置、地图中的玩家/怪物数量等。常用于副本系统、传送系统、活动管理等。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测当前地图编号</strong> - 检测玩家所在地图的编号</li>
+            <li><strong>检测坐标范围</strong> - 检测玩家是否在指定坐标范围内</li>
+            <li><strong>检测地图玩家数量</strong> - 检测指定地图的玩家人数</li>
+            <li><strong>检测地图怪物数量</strong> - 检测指定地图的怪物总数</li>
+            <li><strong>检测怪物数量</strong> - 检测指定怪物的数量</li>
+            <li><strong>检测是否安全区</strong> - 检测当前位置是否为安全区</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">👥 组队相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家的组队状态，包括是否组队、队伍人数、队长身份等。是组队副本、团队任务系统的核心支撑。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测是否队长</strong> - 检测玩家是否为队伍队长</li>
+            <li><strong>检测组队人数</strong> - 检测队伍的成员数量</li>
+            <li><strong>检测地图队员</strong> - 检测队员是否在同一地图附近</li>
+            <li><strong>检测队员变量</strong> - 检测队员的脚本变量</li>
+            <li><strong>检测有无队伍</strong> - 检测玩家是否已组队</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🐾 宠物相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家的宠物状态，包括宠物数量、宠物等级等。适用于宠物系统、召唤系统的开发。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测拥有宠物</strong> - 检测是否拥有指定宠物</li>
+            <li><strong>检测宠物等级</strong> - 检测宠物的等级</li>
+            <li><strong>检测宠物数量</strong> - 检测玩家当前宠物数量</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">⚔️ 技能相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家的技能学习情况和技能等级，常用于技能学习系统、技能任务、转职系统等。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测拥有技能</strong> - 检测玩家是否学习了指定技能</li>
+            <li><strong>检测技能等级</strong> - 检测指定技能的等级</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🏰 公会相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家的公会状态和公会信息，是行会系统、攻城战系统的重要组成部分。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测角色行会</strong> - 检测玩家是否加入了公会</li>
+            <li><strong>检测行会等级</strong> - 检测玩家所在公会的等级</li>
+            <li><strong>检测是否会长</strong> - 检测玩家是否为公会会长</li>
+            <li><strong>检测行会人数</strong> - 检测公会成员数量</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🎖️ 称号相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家的称号拥有情况，可以根据称号提供不同的游戏特权或展示效果。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测角色称号</strong> - 检测自己是否拥有指定称号</li>
+            <li><strong>检测他人称号</strong> - 检测其他玩家是否拥有指定称号</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">✨ 状态相关检测命令</div>
+        <div class="category-desc">
+            用于检测玩家当前的各种状态效果，如双倍经验、BUFF效果等，常用于活动系统、增益系统。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测双倍经验</strong> - 检测玩家是否处于双倍经验状态</li>
+            <li><strong>检测拥有BUFF</strong> - 检测玩家是否拥有指定BUFF效果</li>
+            <li><strong>检测龙卫功能</strong> - 检测龙卫相关功能状态</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">📊 脚本变量检测命令</div>
+        <div class="category-desc">
+            用于检测和判断脚本变量的值，是实现复杂任务逻辑、多步骤任务、任务状态追踪的核心工具。这类命令让脚本具有"记忆"能力。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测任务标识</strong> - 检测指定任务标识的值</li>
+            <li><strong>检测脚本爆率</strong> - 检测脚本变量数据</li>
+            <li><strong>检测任务状态</strong> - 检测任务的完成状态</li>
+            <li><strong>检测变量</strong> - 进行数值比较运算（支持&gt;、&lt;、=等）</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">📝 文本列表检测命令</div>
+        <div class="category-desc">
+            用于检测文本内容或角色名单，常用于黑名单系统、白名单系统、敏感词过滤等功能。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测文本字符</strong> - 检测文本中是否包含指定字符串</li>
+            <li><strong>检测角色名单</strong> - 检测角色是否在指定名单中</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🎲 概率判定命令</div>
+        <div class="category-desc">
+            用于实现随机概率判定，常用于抽奖系统、随机奖励、随机事件触发等场景，增加游戏的趣味性和不确定性。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测随机概率</strong> - 按指定概率进行随机判定</li>
+            <li><strong>检测区间概率</strong> - 在指定区间内进行随机判定</li>
+        </ul>
+    </div>
+
+    <div class="category-card">
+        <div class="category-title">🏛️ 攻城相关检测命令</div>
+        <div class="category-desc">
+            专门用于攻城战系统的检测命令，包括城主身份、攻城状态、报名情况等。是沙巴克攻城战、行会战的核心功能支撑。
+        </div>
+        <ul class="command-list">
+            <li><strong>检测是否沙城城主</strong> - 检测是否为沙巴克城主</li>
+            <li><strong>检测是否攻城</strong> - 检测当前是否处于攻城时间</li>
+            <li><strong>检测报名攻沙</strong> - 检测是否已报名参加攻城</li>
+            <li><strong>检测沙城节点</strong> - 检测攻城战的当前阶段</li>
+            <li><strong>检测是否沙巴克行会</strong> - 检测是否为沙巴克占领行会</li>
+            <li><strong>检测是否攻过沙</strong> - 检测是否参与过攻城</li>
+        </ul>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 使用建议</div>
+        <strong>1. 检测顺序很重要</strong><br>
+        • 建议先检测最容易不满足的条件，这样可以提前结束判断，提高效率<br>
+        • 使用Break命令可以在条件不满足时立即终止脚本执行<br><br>
+        
+        <strong>2. 善用取反命令</strong><br>
+        • 在检测命令前加上"取反"关键字，可以反转检测结果<br>
+        • 例如："取反 检测是否队长" 表示"不是队长"的情况<br><br>
+        
+        <strong>3. 多条件组合</strong><br>
+        • #IF段中可以写多个检测命令，默认是"与"关系（全部满足）<br>
+        • 使用#OR段可以实现"或"关系（满足其一即可）<br><br>
+        
+        <strong>4. 变量检测的强大功能</strong><br>
+        • 通过脚本变量检测，可以实现复杂的多步骤任务<br>
+        • 变量可以在不同NPC、不同脚本之间共享数据<br>
+        • 善用检测变量命令，可以实现各种数值计算和比较<br><br>
+        
+        <strong>5. 检测失败的处理</strong><br>
+        • 使用#ELSESAY给出明确的失败提示，让玩家知道哪个条件不满足<br>
+        • 使用#ELSEACT可以在条件不满足时执行其他操作<br><br>
+        
+        <strong>6. 性能优化</strong><br>
+        • 避免在同一个脚本中重复检测相同的条件<br>
+        • 对于复杂的检测逻辑，可以使用变量缓存检测结果<br>
+        • 地图怪物数量等实时检测命令会消耗较多性能，谨慎使用
+    </div>
+
+    <h2>📚 相关文档</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>分类</th>
+                <th>说明</th>
+                <th>推荐指数</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">基础检测</span></td>
+                <td>角色等级、职业、性别等基础属性检测</td>
+                <td>⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">物品检测</span></td>
+                <td>背包物品、装备属性等检测命令</td>
+                <td>⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">货币检测</span></td>
+                <td>金币、元宝、银币等货币检测</td>
+                <td>⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">时间检测</span></td>
+                <td>星期、小时、分钟等时间条件检测</td>
+                <td>⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">地图检测</span></td>
+                <td>地图编号、坐标、玩家/怪物数量检测</td>
+                <td>⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">组队检测</span></td>
+                <td>队伍状态、队长身份、队员数量检测</td>
+                <td>⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">变量检测</span></td>
+                <td>任务标识、检测变量等脚本变量检测</td>
+                <td>⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">检测随机概率</span></td>
+                <td>随机概率、区间随机等判定命令</td>
+                <td>⭐⭐⭐⭐</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💡 学习建议</h2>
+    <div class="implementation">
+        <div class="implementation-title">📖 如何学习检测命令</div>
+        <strong>新手入门路线：</strong><br>
+        1️⃣ <strong>从基础开始</strong>：先学习等级、物品、金币等最常用的检测命令<br>
+        2️⃣ <strong>理解逻辑</strong>：掌握#IF、#OR、取反等逻辑组合方式<br>
+        3️⃣ <strong>实践练习</strong>：尝试编写简单的NPC对话和任务脚本<br>
+        4️⃣ <strong>进阶应用</strong>：学习变量检测，实现复杂的多步骤任务<br>
+        5️⃣ <strong>系统开发</strong>：结合执行命令，开发完整的游戏系统<br><br>
+        
+        <strong>推荐学习顺序：</strong><br>
+        • 基础检测命令 → 物品/货币检测 → 变量检测 → 组队检测 → 时间/地图检测 → 高级检测命令
+    </div>
+
+</body>
+</html>

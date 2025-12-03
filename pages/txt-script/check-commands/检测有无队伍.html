@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>👥 检测有无队伍</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测当前玩家是否已经加入了队伍。此命令无需参数，用于判断玩家是否处于组队状态。常用于需要组队才能参与的活动、副本、任务等场景，或者用于区分单人玩法和组队玩法，提供不同的游戏体验和奖励。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式（无参数）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测有无队伍</span><br>
+<span class="keyword">#ACT</span><br>
+执行组队玩家的操作<br>
+<span class="keyword">#SAY</span><br>
+显示给组队玩家的文本<br>
+<br>
+<span class="comment">; 使用取反检测未组队</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">取反 检测有无队伍</span><br>
+<span class="keyword">#ACT</span><br>
+执行单人玩家的操作<br>
+<span class="keyword">#SAY</span><br>
+显示给单人玩家的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">无参数</div>
+            <div class="param-desc">此命令不需要任何参数，直接使用即可。<br>
+            • 自动检测当前玩家是否加入队伍<br>
+            • 已组队的玩家（包括队长和队员）检测通过<br>
+            • 未组队的单人玩家检测失败<br>
+            • 可以使用"取反"关键字反转检测结果，检测"未组队"状态</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>玩家状态</th>
+                <th>检测结果</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">已组队</span></td>
+                <td>检测通过</td>
+                <td>玩家已加入队伍（队长或队员），执行#ACT和#SAY</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">未组队</span></td>
+                <td>检测失败</td>
+                <td>玩家未加入任何队伍，显示#ELSESAY</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">取反检测</span></td>
+                <td>结果反转</td>
+                <td>使用"取反"后，未组队检测通过，已组队检测失败</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：组队副本入口守卫</div>
+        <div class="code-block"><span class="comment">; 组队副本守卫 - 必须组队才能进入</span><br>
+[@组队副本守卫]<br>
+<span class="keyword">#IF</span><br>
+检测有无队伍<br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 组队副本入口 ═══════════&lt;BR&gt;<br>
+欢迎来到组队副本！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+您当前已组队，可以进入副本。&lt;BR&gt;<br>
+副本信息：&lt;BR&gt;<br>
+• 推荐人数：3-5人&lt;BR&gt;<br>
+• 副本难度：困难&lt;BR&gt;<br>
+• 副本时间：60分钟&lt;BR&gt;<br>
+• 入场费用：50,000金币&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;进入副本（队长专用）/@进入副本&gt;&lt;BR&gt;<br>
+&lt;查看副本说明/@副本说明&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 组队副本入口 ═══════════&lt;BR&gt;<br>
+抱歉，此副本仅限组队进入！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+进入条件：&lt;BR&gt;<br>
+• 您必须 &lt;加入队伍/fcolor=255&gt;&lt;BR&gt;<br>
+• 推荐人数：&lt;3-5人/fcolor=255&gt;&lt;BR&gt;<br>
+• 队长带领进入&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+温馨提示：&lt;BR&gt;<br>
+1. 按 [P] 键打开组队界面&lt;BR&gt;<br>
+2. 右键点击其他玩家邀请组队&lt;BR&gt;<br>
+3. 或在聊天框输入 @组队 + 玩家名&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;返回城镇/@回城&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 检测逻辑</strong><br>
+        • 检测玩家的"所属队伍"属性是否为空<br>
+        • 如果玩家已加入队伍（无论是队长还是队员），检测通过<br>
+        • 如果玩家未组队，所属队伍为null，检测失败<br>
+        • 队长和队员在此检测中没有区别，都算"已组队"<br><br>
+        
+        <strong>2. 常见应用场景</strong><br>
+        • <strong>组队副本</strong>：限制只有组队玩家才能进入<br>
+        • <strong>组队任务</strong>：接取需要组队完成的任务<br>
+        • <strong>组队活动</strong>：参加组队活动、组队竞赛等<br>
+        • <strong>单人限制</strong>：某些玩法禁止组队进入（使用"取反"检测）<br>
+        • <strong>奖励区分</strong>：组队和单人提供不同的奖励<br>
+        • <strong>难度调整</strong>：根据是否组队调整BOSS难度<br><br>
+        
+        <strong>3. 取反检测的使用</strong><br>
+        • 使用"取反 检测有无队伍"可以检测玩家"未组队"<br>
+        • 常用于限制单人玩法，禁止组队进入<br>
+        • 例如：单人挑战副本、单人竞技场、个人任务等<br>
+        • 取反检测通过时表示玩家是单人状态<br><br>
+        
+        <strong>4. 与其他队伍检测命令配合</strong><br>
+        • <strong>检测是否队长</strong>：先检测有无队伍，再检测是否队长<br>
+        • <strong>检测组队人数</strong>：确保队伍人数满足要求<br>
+        • <strong>检测地图队员</strong>：确保队员在附近一起行动<br>
+        • <strong>检测队员变量</strong>：检测队员的任务进度或状态<br>
+        • 建议检测顺序：有无队伍 → 是否队长 → 组队人数 → 其他条件<br><br>
+        
+        <strong>5. 玩家体验优化</strong><br>
+        • 在#ELSESAY中明确提示"需要组队"或"禁止组队"<br>
+        • 提供组队方法的说明（如何组队、如何邀请）<br>
+        • 显示推荐的队伍人数和配置<br>
+        • 未组队时可以提供自动匹配功能<br>
+        • 组队后可以显示当前队伍信息<br><br>
+        
+        <strong>6. 组队与单人的平衡</strong><br>
+        • 合理设计组队和单人的奖励差异<br>
+        • 组队玩法应提供更高的奖励，鼓励社交<br>
+        • 单人玩法应保留，满足不同玩家需求<br>
+        • 避免强制组队导致玩家流失<br>
+        • 提供灵活的组队和单人选择<br><br>
+        
+        <strong>7. 队伍状态的实时性</strong><br>
+        • 玩家组队状态可能随时变化（加入、退出、解散）<br>
+        • 检测结果是实时的，反映当前的组队状态<br>
+        • 进入副本前建议多次检测，确保状态正确<br>
+        • 队伍解散后，所有队员的组队状态立即清除<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 未检测组队状态就执行组队操作，导致错误<br>
+        • ❌ 组队检测失败提示不明确，玩家不知道如何组队<br>
+        • ❌ 强制组队导致单人玩家无法游玩<br>
+        • ❌ 忘记使用"取反"检测单人状态<br>
+        • ✅ 正确做法：明确提示组队要求，提供组队引导，平衡组队和单人玩法
+    </div>
+
+</body>
+</html>

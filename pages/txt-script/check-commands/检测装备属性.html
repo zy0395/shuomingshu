@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测装备属性 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测装备属性</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家背包或装备栏中指定位置装备的属性数值。可以检测攻击、防御、魔法等各类装备属性，用于装备鉴定、属性验证、交易检查等场景。通过<code>&lt;$物品属性()&gt;</code>标签获取属性值后进行判断。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式 - 配合变量使用</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(装备类型,装备位置,属性ID)&gt;</span> <span class="string">比较符</span> <span class="number">属性值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 条件满足时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">&lt;$物品属性()&gt; 标签参数</div>
+            <div class="param-desc">
+                <strong>参数1：装备类型</strong><br>
+                • <strong>0</strong> - 背包物品<br>
+                • <strong>1</strong> - 装备栏物品<br>
+                • <strong>2</strong> - 仓库物品<br><br>
+                
+                <strong>参数2：装备位置</strong><br>
+                • 背包：0-99（根据背包大小）<br>
+                • 装备栏：0-12（武器、衣服、头盔等）<br>
+                • 仓库：0-仓库上限<br><br>
+                
+                <strong>参数3：属性ID</strong><br>
+                • 不同的ID对应不同的装备属性<br>
+                • 具体属性ID见下方属性列表
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">比较符</div>
+            <div class="param-desc">
+                用于比较属性值的运算符。<br>
+                • <strong>==</strong> - 等于<br>
+                • <strong>&gt;</strong> - 大于<br>
+                • <strong>&lt;</strong> - 小于<br>
+                • <strong>&gt;=</strong> - 大于等于<br>
+                • <strong>&lt;=</strong> - 小于等于<br>
+                • <strong>!=</strong> - 不等于
+            </div>
+        </div>
+    </div>
+
+    <h2>📊 常用属性ID列表</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>属性ID</th>
+                <th>属性名称</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag-info">0</span></td>
+                <td>最小攻击</td>
+                <td>武器最小物理攻击力</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">1</span></td>
+                <td>最大攻击</td>
+                <td>武器最大物理攻击力</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">2</span></td>
+                <td>最小魔法</td>
+                <td>武器最小魔法攻击</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">3</span></td>
+                <td>最大魔法</td>
+                <td>武器最大魔法攻击</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">4</span></td>
+                <td>最小道术</td>
+                <td>武器最小道术攻击</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">5</span></td>
+                <td>最大道术</td>
+                <td>武器最大道术攻击</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">6</span></td>
+                <td>最小防御</td>
+                <td>防具最小防御力</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">7</span></td>
+                <td>最大防御</td>
+                <td>防具最大防御力</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">8</span></td>
+                <td>最小魔防</td>
+                <td>防具最小魔法防御</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-info">9</span></td>
+                <td>最大魔防</td>
+                <td>防具最大魔法防御</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-warning">10</span></td>
+                <td>持久度</td>
+                <td>装备当前持久值</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag-warning">11</span></td>
+                <td>幸运值</td>
+                <td>装备幸运属性</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：武器攻击力鉴定</div>
+        <div class="code-block"><span class="comment">; 装备鉴定师 - 检测武器攻击力</span><br>
+[@武器鉴定师]<br>
+<span class="keyword">#SAY</span><br>
+请将需要鉴定的武器放入背包第1格。&lt;BR&gt;&lt;BR&gt;&lt;开始鉴定/@鉴定武器&gt;&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<br>
+[@鉴定武器]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(0,0,1)&gt;</span> &gt;= <span class="number">100</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+【鉴定结果】&lt;BR&gt;&lt;BR&gt;★★★ 极品武器 ★★★&lt;BR&gt;最大攻击力：&lt;$物品属性(0,0,1)&gt;&lt;BR&gt;&lt;BR&gt;这是一把攻击力极高的武器！&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(0,0,1)&gt;</span> &gt;= <span class="number">50</span><br>
+<span class="keyword">#ELSESAY</span><br>
+【鉴定结果】&lt;BR&gt;&lt;BR&gt;★★ 优质武器 ★★&lt;BR&gt;最大攻击力：&lt;$物品属性(0,0,1)&gt;&lt;BR&gt;&lt;BR&gt;这是一把不错的武器。&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+【鉴定结果】&lt;BR&gt;&lt;BR&gt;★ 普通武器 ★&lt;BR&gt;攻击力较低，建议更换。&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：装备属性回收</div>
+        <div class="code-block"><span class="comment">; 装备回收 - 根据攻击力回收</span><br>
+[@装备回收商]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(0,0,1)&gt;</span> &gt;= <span class="number">80</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(0,0,11)&gt;</span> &gt;= <span class="number">5</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">删除背包物品</span> <span class="number">0</span><br>
+<span class="tag">调整角色金币</span> <span class="number">500000</span><br>
+<span class="keyword">#SAY</span><br>
+回收成功！&lt;BR&gt;攻击力：&lt;$物品属性(0,0,1)&gt;&lt;BR&gt;幸运值：&lt;$物品属性(0,0,11)&gt;&lt;BR&gt;获得：50万金币<br>
+<span class="keyword">#ELSESAY</span><br>
+该装备属性不符合回收要求。&lt;BR&gt;&lt;BR&gt;要求：&lt;BR&gt;· 最大攻击≥80&lt;BR&gt;· 幸运值≥5&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：装备耐久度检测</div>
+        <div class="code-block"><span class="comment">; 修理工 - 检测装备耐久</span><br>
+[@修理工]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(1,0,10)&gt;</span> &lt; <span class="number">1000</span><br>
+<span class="keyword">#SAY</span><br>
+您的武器耐久度较低！&lt;BR&gt;&lt;BR&gt;当前耐久：&lt;$物品属性(1,0,10)&gt;/10000&lt;BR&gt;修理费用：10000金币&lt;BR&gt;&lt;BR&gt;&lt;修理武器/@修理&gt;&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+您的装备耐久良好，无需修理。&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：多属性综合判断</div>
+        <div class="code-block"><span class="comment">; 极品装备鉴定 - 多属性要求</span><br>
+[@极品鉴定]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(0,0,1)&gt;</span> &gt;= <span class="number">100</span><br>
+<span class="tag">检测变量</span> <span class="string">&lt;$物品属性(0,0,11)&gt;</span> == <span class="number">7</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+════ 极品装备 ════&lt;BR&gt;&lt;BR&gt;恭喜！这是一件极品装备！&lt;BR&gt;&lt;BR&gt;【属性详情】&lt;BR&gt;最大攻击：&lt;$物品属性(0,0,1)&gt;&lt;BR&gt;幸运值：&lt;$物品属性(0,0,11)&gt;&lt;BR&gt;&lt;BR&gt;市场估价：1000万金币&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+该装备未达到极品标准。&lt;BR&gt;&lt;BR&gt;极品要求：&lt;BR&gt;· 最大攻击≥100&lt;BR&gt;· 幸运值=7&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 使用方法</strong><br>
+        • 此命令需要配合<code>&lt;$物品属性()&gt;</code>标签和<code>检测变量</code>命令使用<br>
+        • 先通过标签获取属性值，再通过检测变量进行判断<br>
+        • 格式：检测变量 &lt;$物品属性(类型,位置,属性ID)&gt; 比较符 值<br><br>
+        
+        <strong>2. 属性ID说明</strong><br>
+        • 不同的属性ID对应不同的装备属性<br>
+        • 0-1：物理攻击，2-3：魔法攻击，4-5：道术攻击<br>
+        • 6-7：物理防御，8-9：魔法防御<br>
+        • 10：持久度，11：幸运值<br>
+        • 更多属性ID请查阅服务器配置<br><br>
+        
+        <strong>3. 装备类型</strong><br>
+        • 0=背包，1=装备栏，2=仓库<br>
+        • 装备栏位置：0=武器，1=衣服，2=头盔等<br>
+        • 具体位置索引见装备系统文档<br><br>
+        
+        <strong>4. 物品存在性</strong><br>
+        • 如果指定位置没有物品，属性值返回0<br>
+        • 建议先检测物品是否存在<br>
+        • 或使用#ELSESAY处理异常情况<br><br>
+        
+        <strong>5. 属性值范围</strong><br>
+        • 不同属性有不同的取值范围<br>
+        • 攻击/防御：通常0-999<br>
+        • 幸运值：通常0-7<br>
+        • 持久度：通常0-10000<br><br>
+        
+        <strong>6. 性能考虑</strong><br>
+        • 避免频繁调用属性检测<br>
+        • 可以使用变量缓存检测结果<br>
+        • 多属性判断时注意逻辑顺序
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 装备鉴定系统</strong><br>
+        • 鉴定装备各项属性<br>
+        • 评估装备品质等级<br>
+        • 提供装备改进建议<br><br>
+        
+        <strong>2. 装备回收系统</strong><br>
+        • 根据属性高价回收<br>
+        • 多属性综合评估<br>
+        • 防止低品质装备回收<br><br>
+        
+        <strong>3. 装备交易验证</strong><br>
+        • 交易前属性检查<br>
+        • 防止虚假交易<br>
+        • 确保装备符合要求<br><br>
+        
+        <strong>4. 装备修理系统</strong><br>
+        • 检测装备耐久度<br>
+        • 计算修理费用<br>
+        • 提醒玩家及时修理<br><br>
+        
+        <strong>5. 任务奖励系统</strong><br>
+        • 根据装备属性给予奖励<br>
+        • 极品装备专属任务<br>
+        • 成就系统判定
+    </div>
+
+</body>
+</html>

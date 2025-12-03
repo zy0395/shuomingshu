@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图区域表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .area-name {
+            color: #ff8b8b;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .area-id {
+            color: #6dd881;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗺️ 地图区域表</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">区域类型</th>
+                <th style="width: 20%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="area-name">未知区域</span></td>
+                <td><span class="area-id">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="area-name">复活区域</span></td>
+                <td><span class="area-id">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="area-name">红名区域</span></td>
+                <td><span class="area-id">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="area-name">传送区域</span></td>
+                <td><span class="area-id">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="area-name">随机区域</span></td>
+                <td><span class="area-id">4</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

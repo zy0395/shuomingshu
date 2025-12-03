@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务枚举表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 1.4em;
+            color: #7d8fd0;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #404968;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .enum-name {
+            color: #ff8b8b;
+            font-weight: 600;
+        }
+        
+        .enum-value {
+            color: #6dd881;
+            font-weight: 500;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .category {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>📜 任务枚举表</h1>
+    
+    <div class="category">📋 任务类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">主线任务</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">悬赏任务</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">活动任务</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">紧急任务</span></td>
+                <td><span class="enum-value">11</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">重复任务</span></td>
+                <td><span class="enum-value">12</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🎯 任务目标类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">获得物品</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">回收物品</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">击杀怪物</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">击杀怪物组</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">击毁场景物件</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">装备物品</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">学习技能</span></td>
+                <td><span class="enum-value">6</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">提升声望</span></td>
+                <td><span class="enum-value">7</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">进行训练</span></td>
+                <td><span class="enum-value">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">装备重铸</span></td>
+                <td><span class="enum-value">9</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">典籍回忆</span></td>
+                <td><span class="enum-value">10</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">雇佣佣兵</span></td>
+                <td><span class="enum-value">11</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">拆卸装备</span></td>
+                <td><span class="enum-value">12</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">升级技能</span></td>
+                <td><span class="enum-value">13</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">装备合成</span></td>
+                <td><span class="enum-value">14</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">铭文精炼</span></td>
+                <td><span class="enum-value">15</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">领取游戏奖励</span></td>
+                <td><span class="enum-value">16</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">游戏点数</span></td>
+                <td><span class="enum-value">17</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">学习炼金或石工术</span></td>
+                <td><span class="enum-value">18</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">参与活动</span></td>
+                <td><span class="enum-value">19</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">工会祈祷</span></td>
+                <td><span class="enum-value">20</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">工会温泉活动</span></td>
+                <td><span class="enum-value">21</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">工会捐赠物品</span></td>
+                <td><span class="enum-value">22</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">工会铭文执行</span></td>
+                <td><span class="enum-value">23</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🎁 任务奖励类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">货币奖励</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">物品奖励</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">经验值</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">声望值</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">活跃度</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">特殊称号</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🔄 任务重置类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">不重置</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">每日重置</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">每周重置</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">⚖️ 任务约束类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">需完成任务</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">最低等级</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">最高等级</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">开始时间段</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">结束时间段</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">职业要求</span></td>
+                <td><span class="enum-value">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">性别要求</span></td>
+                <td><span class="enum-value">6</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🔗 任务关联限制</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">无限制</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">师徒限制</span></td>
+                <td><span class="enum-value">7</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,481 @@
+﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.6; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 10px; }
+        h3 { color: #555; margin: 20px 0 10px; }
+        p { margin: 10px 0; }
+        .info { background: #e3f2fd; padding: 15px; margin: 15px 0; border-left: 4px solid #2196f3; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; }
+        .note-title { font-weight: bold; color: #856404; margin-bottom: 8px; }
+        .example { background: #f8f9fa; border-left: 4px solid #3498db; padding: 15px; margin: 15px 0; font-family: Consolas, monospace; white-space: pre-wrap; }
+        .tag { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.9em; white-space: nowrap; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        thead { background: #34495e; color: white; }
+        th { padding: 10px; text-align: left; }
+        td { padding: 8px 10px; border-bottom: 1px solid #ddd; }
+        tbody tr:hover { background: #f5f5f5; }
+        .changelog { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 20px; margin: 20px 0; }
+        .changelog-title { font-size: 1.2em; font-weight: bold; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .changelog-item { margin-bottom: 15px; padding: 10px; background: white; border-left: 3px solid #3498db; }
+        .changelog-date { font-weight: bold; color: #3498db; margin-bottom: 5px; }
+        .changelog-content { line-height: 1.8; color: #555; }
+        .changelog-content li { margin-left: 20px; }
+    </style>
+</head>
+<body>
+<h1>📋 TXT脚本使用说明</h1>
+                <div class="info">
+                    <strong>TXT脚本系统概述</strong><br>
+                    TXT脚本是NwServer中最常用的脚本类型，通过简单的文本格式编写，可以实现丰富的游戏功能。无需编程基础，只要掌握基本语法，就能轻松创建NPC对话、任务系统、自动触发事件等各种游戏功能。
+                </div>
+                
+                <h2>📘 系统特点</h2>
+                <ul>
+                    <li><strong>简单易学</strong>：采用纯文本格式，标签式语法，新手也能快速上手</li>
+                    <li><strong>功能丰富</strong>：支持常量变量、检测命令、执行命令、触发标签等多种功能</li>
+                    <li><strong>即时生效</strong>：修改后保存即可生效，无需重启服务器</li>
+                    <li><strong>调试方便</strong>：错误提示明确，易于排查问题</li>
+                    <li><strong>中文友好</strong>：支持中文命令和变量名，更符合国人习惯</li>
+                </ul>
+                
+                <h2>📁 脚本文件结构</h2>
+                <p>TXT脚本系统主要由以下几个部分组成：</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>组成部分</th>
+                            <th>功能描述</th>
+                            <th>示例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>标签（Label）</td>
+                            <td>脚本的基本组织单位，定义一个功能段落</td>
+                            <td>[@MAIN]、[@_角色登录触发]</td>
+                        </tr>
+                        <tr>
+                            <td>常量变量</td>
+                            <td>用于在脚本中显示动态信息，如玩家姓名、等级等</td>
+                            <td>&lt;$STR(G0)&gt;、&lt;角色名称&gt;、&lt;当前等级&gt;</td>
+                        </tr>
+                        <tr>
+                            <td>检测命令</td>
+                            <td>用于检测玩家状态、物品、任务完成情况等条件</td>
+                            <td>检测角色等级、检测背包物品</td>
+                        </tr>
+                        <tr>
+                            <td>执行命令</td>
+                            <td>用于执行操作，如发送奖励、改变属性、传送地图等</td>
+                            <td>发放物品名称、传送指定地图</td>
+                        </tr>
+                        <tr>
+                            <td>触发标签</td>
+                            <td>定义脚本在特定时机自动执行的条件</td>
+                            <td>[@_角色登录触发]、[@_使用物品触发(1001)]</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2>📖 基本语法入门</h2>
+                
+                <h3>1. 标签（Label）</h3>
+                <p>标签是脚本的基本单位，使用 <strong>[@标签名]</strong> 格式定义：</p>
+                <div class="example">
+; 普通标签（需要手动调用）<br>
+[@MAIN]<br>
+你好，我是NPC！<br>
+<br>
+; 触发标签（系统自动调用，必须以下划线开头）<br>
+[@_角色登录触发]<br>
+#ACT<br>
+发送顶部公告 "欢迎来到游戏世界！" FALSE
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">⚠️ 标签命名规则</div>
+                    <p><strong>普通标签</strong>：用于NPC对话、子功能段落，不以下划线开头，如 [@MAIN]、[@buy]<br>
+                    <strong>触发标签</strong>：用于自动触发事件，必须以下划线开头，如 [@_角色登录触发]、[@_使用物品触发(1001)]</p>
+                </div>
+                
+                <h3>2. 条件判断（#IF）</h3>
+                <p>使用 <strong>#IF</strong> 标签进行条件判断，只有满足所有条件时才执行 <strong>#ACT</strong> 或 <strong>#SAY</strong> 下的内容：</p>
+                <div class="example">
+[@检查等级]<br>
+#IF<br>
+检测角色等级 >= 100<br>
+检测背包金币 >= 1000000<br>
+#SAY<br>
+恭喜！您已达到100级，并拥有充足的金币。<br>
+#ELSESAY<br>
+您还不满足条件。
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">💡 条件判断说明</div>
+                    <p>• #IF 后面可以写多个检测命令，所有条件都满足才执行 #ACT 或 #SAY<br>
+                    • #ELSESAY 或 #ELSEACT：条件不满足时执行<br>
+                    • 条件之间是 <strong>AND（与）</strong>关系，即必须全部满足</p>
+                </div>
+                
+                <h3>3. 执行命令（#ACT）</h3>
+                <p>使用 <strong>#ACT</strong> 标签执行各种操作命令：</p>
+                <div class="example">
+[@发放奖励]<br>
+#ACT<br>
+发放物品名称 金币 10000<br>
+发放物品名称 经验丹 5<br>
+传送指定地图 3 330 330<br>
+发送顶部公告 "奖励已发放！" FALSE
+                </div>
+                
+                <h3>4. 对话显示（#SAY）</h3>
+                <p>使用 <strong>#SAY</strong> 标签显示对话内容，支持HTML标签美化：</p>
+                <div class="example">
+[@MAIN]<br>
+#SAY<br>
+&lt;font color='#FF0000'&gt;欢迎来到商店！&lt;/font&gt;&lt;BR&gt;<br>
+这里有各种物品出售。&lt;BR&gt;<br>
+&lt;select&gt;<br>
+购买物品/@buy&lt;BR&gt;<br>
+出售物品/@sell&lt;BR&gt;<br>
+离开/@exit<br>
+&lt;/select&gt;
+                </div>
+                
+                <h3>5. 变量使用</h3>
+                <p>TXT脚本支持多种变量类型，用于存储和显示动态信息：</p>
+                <div class="example">
+; 显示变量值（使用尖括号）<br>
+#SAY<br>
+您的名字：&lt;角色名称&gt;&lt;BR&gt;<br>
+当前等级：&lt;当前等级&gt;&lt;BR&gt;<br>
+金币数量：&lt;金币数量&gt;&lt;BR&gt;<br>
+全局变量G0：&lt;$STR(G0)&gt;&lt;BR&gt;<br>
+<br>
+; 设置和操作变量（使用方括号）<br>
+#ACT<br>
+Set [G0] 100<br>
+Calc [U0] = [U0] + 1<br>
+<br>
+; 检测变量值（使用方括号）<br>
+#IF<br>
+检测指定变量 [G0] > 50<br>
+检测指定变量 [U0] = 10
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">⚠️ 变量引用格式</div>
+                    <p><strong>显示变量</strong>：使用 &lt;$STR(变量名)&gt; 或 &lt;常量名&gt; 格式，如 &lt;$STR(G0)&gt;、&lt;角色名称&gt;<br>
+                    <strong>操作变量</strong>：使用 [变量名] 格式，如 Set [G0] 100、Calc [U0] = [U0] + 1<br>
+                    <strong>检测变量</strong>：使用 [变量名] 格式，如 检测指定变量 [G0] > 50</p>
+                </div>
+                
+                <h2>🎯 完整示例：新手礼包</h2>
+                <p>下面是一个完整的示例，演示如何创建一个新手礼包功能：</p>
+                <div class="example">
+; 玩家登录时检测是否已领取新手礼包<br>
+[@_角色登录触发]<br>
+#IF<br>
+检测角色等级 = 1<br>
+检测指定变量 [U0] = 0<br>
+#ACT<br>
+Set [U0] 1<br>
+发放物品名称 新手剑 1<br>
+发放物品名称 新手铠甲 1<br>
+发放物品名称 金币 10000<br>
+发送顶部公告 "恭喜获得新手礼包！" FALSE<br>
+#ELSESAY<br>
+欢迎回来！
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">📝 代码说明</div>
+                    <p>1. <strong>[@_角色登录触发]</strong>：这是一个触发标签，玩家登录时自动执行<br>
+                    2. <strong>检测角色等级 = 1</strong>：检测玩家是否为1级新手<br>
+                    3. <strong>检测指定变量 [U0] = 0</strong>：检测U0变量是否为0（未领取状态）<br>
+                    4. <strong>Set [U0] 1</strong>：将U0设置为1，标记已领取<br>
+                    5. <strong>发放物品名称</strong>：发放新手装备和金币<br>
+                    6. <strong>发送顶部公告</strong>：发送提示消息</p>
+                </div>
+                
+                <h2>🎯 完整示例：使用礼包物品</h2>
+                <div class="example">
+; 使用物品ID为1001的礼包<br>
+[@_使用物品触发(1001)]<br>
+#IF<br>
+检测指定变量 [J0] = 0<br>
+#ACT<br>
+Set [J0] 1<br>
+扣除物品编号 1001 1<br>
+发放物品名称 高级武器 1<br>
+发放物品名称 金币 100000<br>
+增加角色经验 1000000<br>
+发送顶部公告 "成功开启礼包！" FALSE<br>
+#ELSEACT<br>
+发送顶部公告 "今日已开启过该礼包！" FALSE
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">📝 代码说明</div>
+                    <p>1. <strong>[@_使用物品触发(1001)]</strong>：玩家使用物品ID为1001时触发<br>
+                    2. <strong>检测指定变量 [J0] = 0</strong>：J变量每日零点自动清零，用于限制每日一次<br>
+                    3. <strong>扣除物品编号 1001 1</strong>：扣除1个礼包物品<br>
+                    4. <strong>#ELSEACT</strong>：如果今日已使用，给出提示</p>
+                </div>
+                
+                <h2>🎯 完整示例：NPC商店对话</h2>
+                <div class="example">
+; NPC主对话<br>
+[@MAIN]<br>
+#SAY<br>
+&lt;font color='#FF0000'&gt;欢迎光临武器商店！&lt;/font&gt;&lt;BR&gt;<br>
+这里出售各种强力武器。&lt;BR&gt;<br>
+&lt;select&gt;<br>
+购买武器/@buyWeapon&lt;BR&gt;<br>
+出售物品/@sellItem&lt;BR&gt;<br>
+离开/@exit<br>
+&lt;/select&gt;<br>
+<br>
+; 购买武器<br>
+[@buyWeapon]<br>
+#IF<br>
+检测角色等级 >= 50<br>
+检测背包金币 >= 1000000<br>
+#ACT<br>
+扣除角色金币 1000000<br>
+发放物品名称 屠龙刀 1<br>
+发送顶部公告 "购买成功！" FALSE<br>
+#ELSESAY<br>
+&lt;font color='#FF0000'&gt;购买失败！&lt;/font&gt;&lt;BR&gt;<br>
+需要等级50级，金币1000000。&lt;BR&gt;<br>
+您当前等级：&lt;当前等级&gt;&lt;BR&gt;<br>
+您当前金币：&lt;金币数量&gt;<br>
+<br>
+; 出售物品<br>
+[@sellItem]<br>
+#SAY<br>
+请选择您要出售的物品。&lt;BR&gt;<br>
+&lt;Sell /&gt;<br>
+<br>
+; 离开<br>
+[@exit]<br>
+#SAY<br>
+欢迎下次光临！&lt;BR&gt;<br>
+&lt;Close/@exit&gt;
+                </div>
+                
+                <h2>💡 脚本编写技巧</h2>
+                
+                <h3>技巧1：使用注释提高可读性</h3>
+                <p>在脚本开头添加注释说明功能，方便后期维护：</p>
+                <div class="example">
+; ==================================<br>
+; 功能：新手村NPC对话脚本<br>
+; 作者：策划组<br>
+; 日期：2025-10-20<br>
+; 说明：提供新手引导和任务接取<br>
+; ==================================<br>
+<br>
+[@MAIN]<br>
+你好，新手冒险者！
+                </div>
+                
+                <h3>技巧2：合理使用变量管理任务进度</h3>
+                <p>不同类型的变量有不同的用途：</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>变量类型</th>
+                            <th>适用场景</th>
+                            <th>示例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>G/A（全局变量）</td>
+                            <td>服务器全局活动、世界BOSS状态</td>
+                            <td>[G0] 记录世界BOSS击杀次数</td>
+                        </tr>
+                        <tr>
+                            <td>U/T（玩家持久变量）</td>
+                            <td>任务进度、成就系统、玩家数据</td>
+                            <td>[U0] 记录任务完成状态</td>
+                        </tr>
+                        <tr>
+                            <td>J（每日重置变量）</td>
+                            <td>每日任务、每日活动次数</td>
+                            <td>[J0] 记录今日是否领取礼包</td>
+                        </tr>
+                        <tr>
+                            <td>N/S（临时变量）</td>
+                            <td>对话中的临时计算、中间结果</td>
+                            <td>[N0] 临时存储对话选项</td>
+                        </tr>
+                        <tr>
+                            <td>Q（对话变量）</td>
+                            <td>对话框内页面跳转、选项记忆</td>
+                            <td>[Q0] 记录对话选择</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>技巧3：使用HTML标签美化对话</h3>
+                <p>TXT脚本支持基本的HTML标签，可以让对话更美观：</p>
+                <div class="example">
+[@MAIN]<br>
+#SAY<br>
+&lt;font color='#FF0000'&gt;【系统公告】&lt;/font&gt;&lt;BR&gt;<br>
+&lt;font color='#00FF00'&gt;恭喜您升级到100级！&lt;/font&gt;&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;font color='#FFFF00'&gt;获得奖励：&lt;/font&gt;&lt;BR&gt;<br>
+• 金币 x 100000&lt;BR&gt;<br>
+• 经验丹 x 10&lt;BR&gt;<br>
+• 高级装备箱 x 1
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">🎨 常用颜色代码</div>
+                    <p>#FF0000 红色 | #00FF00 绿色 | #0000FF 蓝色 | #FFFF00 黄色<br>
+                    #FF00FF 紫色 | #00FFFF 青色 | #FFA500 橙色 | #FFFFFF 白色</p>
+                </div>
+                
+                <h3>技巧4：使用 #CALL 分离复杂逻辑</h3>
+                <p>将复杂的脚本逻辑拆分成多个小段落，提高可维护性：</p>
+                <div class="example">
+; 主触发标签<br>
+[@_角色登录触发]<br>
+#CALL [检查VIP状态] @QFunction.txt<br>
+#CALL [发放每日奖励] @QFunction.txt<br>
+#CALL [检测活动状态] @QFunction.txt<br>
+<br>
+; 在 QFunction.txt 中定义具体逻辑<br>
+[@检查VIP状态]<br>
+{<br>
+    #IF<br>
+    检测VIP等级 >= 5<br>
+    #ACT<br>
+    发送顶部公告 "欢迎VIP玩家！" FALSE<br>
+}
+                </div>
+                
+                <h3>技巧5：使用变量做防重复检测</h3>
+                <p>避免玩家重复领取奖励：</p>
+                <div class="example">
+; 每日登录奖励<br>
+[@_角色登录触发]<br>
+#IF<br>
+检测指定变量 [J0] = 0<br>
+#ACT<br>
+Set [J0] 1<br>
+发放物品名称 每日礼包 1<br>
+发送顶部公告 "获得每日登录奖励！" FALSE<br>
+#ELSESAY<br>
+今日已领取登录奖励！
+                </div>
+                
+                <h3>技巧6：合理使用随机概率检测</h3>
+                <p>增加游戏趣味性和不确定性：</p>
+                <div class="example">
+; 10%概率获得额外奖励<br>
+[@击杀BOSS]<br>
+#ACT<br>
+发放物品名称 普通奖励 1<br>
+<br>
+#IF<br>
+检测随机概率 10<br>
+#ACT<br>
+发放物品名称 稀有装备 1<br>
+发送顶部公告 "幸运！获得稀有奖励！" FALSE
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">💡 随机概率检测说明</div>
+                    <p>检测随机概率 N：概率为 1/N<br>
+                    检测随机概率 10 = 10%概率（1/10）<br>
+                    检测随机概率 100 = 1%概率（1/100）<br>
+                    检测随机概率 2 = 50%概率（1/2）</p>
+                </div>
+                
+                <h2>⚠️ 常见错误与解决</h2>
+                
+                <h3>错误1：变量引用格式错误</h3>
+                <div class="example">
+; ❌ 错误写法<br>
+#IF<br>
+检测指定变量 &lt;$STR(G0)&gt; > 50<br>
+<br>
+; ✅ 正确写法<br>
+#IF<br>
+检测指定变量 [G0] > 50
+                </div>
+                
+                <h3>错误2：触发标签忘记下划线</h3>
+                <div class="example">
+; ❌ 错误写法（不会自动触发）<br>
+[@角色登录触发]<br>
+<br>
+; ✅ 正确写法<br>
+[@_角色登录触发]
+                </div>
+                
+                <h3>错误3：使用了旧的英文命令</h3>
+                <div class="example">
+; ❌ 旧命令（不推荐）<br>
+#ACT<br>
+GIVE 金币 10000<br>
+TAKE 物品 1<br>
+TopMessage "提示" FALSE<br>
+<br>
+; ✅ 新命令（推荐）<br>
+#ACT<br>
+发放物品名称 金币 10000<br>
+扣除物品名称 物品 1<br>
+发送顶部公告 "提示" FALSE
+                </div>
+                
+                <h3>错误4：任务标识和变量混淆</h3>
+                <div class="example">
+; ❌ 错误写法（100是任务标识，不是变量）<br>
+#ACT<br>
+Set [100] 1<br>
+<br>
+; ✅ 正确写法（使用任务标识命令）<br>
+#ACT<br>
+设置任务标识 100 1
+                </div>
+                
+                <h2>📚 学习路径建议</h2>
+                <div class="note">
+                    <div class="note-title">🎓 新手学习建议</div>
+                    <p><strong>第一步：</strong>学习基本语法（标签、#IF、#ACT、#SAY）<br>
+                    <strong>第二步：</strong>掌握常量变量的显示和使用<br>
+                    <strong>第三步：</strong>学习常用检测命令（等级、物品、金币等）<br>
+                    <strong>第四步：</strong>学习常用执行命令（发放物品、传送、公告等）<br>
+                    <strong>第五步：</strong>学习触发标签，实现自动化功能<br>
+                    <strong>第六步：</strong>学习变量操作，实现复杂任务逻辑<br>
+                    <strong>进阶：</strong>结合Lua脚本，实现更复杂的游戏逻辑</p>
+                </div>
+                
+                <h2>🔗 相关资源</h2>
+                <ul>
+                    <li><strong>TXT脚本常量变量</strong>：查看所有可用的常量和变量</li>
+                    <li><strong>TXT脚本检测命令</strong>：学习各种条件检测命令</li>
+                    <li><strong>TXT脚本执行命令</strong>：学习各种操作执行命令</li>
+                    <li><strong>TXT脚本触发标签</strong>：学习自动触发事件的标签</li>
+                </ul>
+                
+                <div class="note">
+                    <div class="note-title">💡 最后提示</div>
+                    <p>1. 所有脚本文件必须保存为 <strong>UTF-8编码</strong>，否则中文会乱码<br>
+                    2. 脚本修改后保存即可生效，无需重启服务器<br>
+                    3. 建议使用专业文本编辑器（如Notepad++、VS Code）编辑脚本<br>
+                    4. 遇到问题时，查看服务器日志可以帮助定位错误<br>
+                    5. 多参考示例脚本，边学边练习，快速掌握</p>
+</body>
+</html>

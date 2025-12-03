@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 40px; background: #0f1419; line-height: 1.8; color: #e2e8f0; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px; font-size: 2.2em; }
+        h2 { color: #f6ad55; margin: 40px 0 20px; padding-left: 15px; border-left: 5px solid #f6ad55; font-size: 1.6em; }
+        p { color: #a0aec0; }
+        
+        .intro { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #e2e8f0; padding: 25px; margin: 25px 0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .intro p { color: #e2e8f0; margin: 8px 0; }
+        .intro strong { color: #fff; }
+        .intro code { background: rgba(255,255,255,0.2); color: #fff; padding: 2px 6px; border-radius: 3px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px; text-align: left; font-weight: 600; border: 1px solid #2d3748; }
+        td { padding: 12px 15px; border: 1px solid #2d3748; background: #1a1f2e; color: #a0aec0; }
+        tbody tr:hover td { background: #1f2633; }
+        tbody tr:last-child td { border-bottom: none; }
+        
+        .cmd-name { font-family: 'Consolas', monospace; color: #fc8181; font-weight: 600; }
+        .cmd-params { font-family: 'Consolas', monospace; color: #68d391; font-size: 0.9em; }
+        .optional { color: #fc8181; font-weight: bold; }
+        .status-grid { margin: 30px 0; }
+        .status-ok { color: #68d391; font-weight: 600; }
+        .status-warn { color: #f6ad55; font-weight: 600; }
+        .status-missing { color: #fc8181; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <h1>✅ 脚本检测命令</h1>
+    
+    <div class="intro">
+        <p><strong>📖 什么是脚本检测命令？</strong></p>
+        <p>脚本检测命令用于在 <code>#IF</code> 条件判断中检测各种游戏状态、玩家属性、物品数量等。</p>
+        <p>检测命令通常在NPC对话或触发脚本的 <code>#IF</code> 部分使用，满足条件时执行 <code>#ACT</code> 中的动作。</p>
+    </div>
+
+    <h2>📊 命令分类总览</h2>
+    <p>共计 <strong>100+</strong> 个检测命令，分为以下 <strong>17</strong> 大类：</p>
+    
+    <h2>👤 基础检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测是否管理</span></td>
+                <td>
+                    检测玩家是否为管理员<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否管理<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测角色等级</span></td>
+                <td>
+                    检测玩家角色等级是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测角色等级 >= 30<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测角色性别</span></td>
+                <td>
+                    检测玩家角色性别是否匹配<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测角色性别 男<br>
+                    • 性别参数：男 或 女<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测角色职业</span></td>
+                <td>
+                    检测玩家角色职业是否匹配<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测角色职业 战士<br>
+                    • 职业参数：使用职业枚举名称（如：战士、法师等）<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测角色PK值</span></td>
+                <td>
+                    检测玩家PK值是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测角色PK值 >= 100<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测是否新人</span></td>
+                <td>
+                    检测玩家是否为新手玩家<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否新人<br>
+                    • 判断标准：角色等级是否为 0（刚创建角色，未升级）<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：新手引导、新人礼包发放
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测转生次数</span></td>
+                <td>
+                    检测玩家转生次数是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测转生次数 >= 1<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎒 物品相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测背包物品</span></td>
+                <td>
+                    检测背包中是否有足够数量的指定物品<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测背包物品 屠龙 1<br>
+                    • 写法2：检测背包物品 1001 1<br>
+                    • 参数1：物品名称或物品编号<br>
+                    • 参数2：数量<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测物品幸运值</span></td>
+                <td>
+                    检测背包中指定物品的幸运值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测物品幸运值 1001 1 7<br>
+                    • 参数1：物品编号<br>
+                    • 参数2：数量<br>
+                    • 参数3：幸运值<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测装备属性</span></td>
+                <td>
+                    检测身上指定装备的属性值是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测装备属性 8 1 >= 100<br>
+                    • 参数1：装备部位（0=衣服, 8=武器, 10=头盔等）<br>
+                    • 参数2：属性类型（1=攻击, 2=防御等）<br>
+                    • 参数3：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数4：目标值<br>
+                    • 检测目标：个人检测<br>
+                    • 装备部位参考：0=衣服, 1=披风, 2=腰带, 3=鞋子, 4=项链, 5=戒指, 6=手镯, 7=护肩, 8=武器, 9=护腕, 10=头盔, 11=勋章, 12=玉佩, 13=战具
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测装备升级次数</span></td>
+                <td>
+                    检测身上指定装备位的升级次数是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测装备升级次数 8 >= 5<br>
+                    • 参数1：装备位置（0=衣服, 8=武器等，使用身上装备格索引）<br>
+                    • 参数2：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数3：目标升级次数<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：若该位置无装备或不是可升级装备则检测失败
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测背包空间</span></td>
+                <td>
+                    检测背包剩余空间是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测背包空间 >= 5<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标数量：需要的空闲格子数<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测随机属性</span></td>
+                <td>
+                    检测身上装备是否有指定的随机属性<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测随机属性 8 101<br>
+                    • 参数1：装备位置（0=衣服, 8=武器等）<br>
+                    • 参数2：属性编号<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：只检测是否拥有该随机属性，不检测属性值大小
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测背包装备随机属性</span></td>
+                <td>
+                    检测背包装备是否有指定的随机属性<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测背包装备随机属性 0 101<br>
+                    • 参数1：背包位置（0-背包格子数）<br>
+                    • 参数2：属性编号<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：只检测是否拥有该随机属性，不检测属性值大小
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测身上装备随机属性数量</span></td>
+                <td>
+                    检测身上所有装备中指定随机属性的总数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测身上装备随机属性数量 101 3<br>
+                    • 参数1：属性编号<br>
+                    • 参数2：目标数量<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：统计身上所有装备中该随机属性出现的总次数<br>
+                    • 示例：检测身上装备随机属性数量 101 3 表示需要至少3件装备有编号101的随机属性
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测背包装备随机属性数量</span></td>
+                <td>
+                    检测背包中指定装备带有指定随机属性的数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测背包装备随机属性数量 屠龙 1010 5<br>
+                    • 写法2：检测背包装备随机属性数量 1001 1010 5<br>
+                    • 参数1：物品名称或物品编号<br>
+                    • 参数2：属性编号<br>
+                    • 参数3：目标数量<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：统计背包中指定装备带有该随机属性的数量<br>
+                    <br>
+                    <span style="color: #ff0000; font-weight: bold;">⚠️ 重要问题待解决：</span><br>
+                    <span style="color: #e53e3e;">当前无法精确收取带指定随机属性的装备！<br>
+                    例如：背包有10件屠龙，5件带1010属性，5件不带。<br>
+                    "收取背包物品 屠龙 5" 会随机收取，可能收错。<br>
+                    <strong>需要在脚本执行命令中实现专门的收取命令：<br>
+                    "收取带属性装备 物品名称 属性编号 数量"</strong></span>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💰 货币相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测金币数量</span></td>
+                <td>
+                    检测玩家金币数量是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测金币数量 >= 10000<br>
+                    • 参数1：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数2：目标数量<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测元宝数量</span></td>
+                <td>
+                    检测玩家元宝数量是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测元宝数量 >= 1000<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标数量：需要的元宝数量<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测银币数量</span></td>
+                <td>
+                    检测玩家银币数量是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测银币数量 >= 5000<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标数量：需要的银币数量<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>⏰ 时间相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测当前星期</span></td>
+                <td>
+                    检测当前是否为指定星期<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测当前星期 Monday<br>
+                    • 参数：英文星期名（Sunday/Monday/Tuesday/Wednesday/Thursday/Friday/Saturday）<br>
+                    • 不区分大小写<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测当前小时</span></td>
+                <td>
+                    检测当前是否为指定小时<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测当前小时 20<br>
+                    • 参数：小时值（0-23）<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测当前分钟</span></td>
+                <td>
+                    检测当前是否为指定分钟<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测当前分钟 30<br>
+                    • 参数：分钟值（0-59）<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测开区天数</span></td>
+                <td>
+                    检测从开服到现在的天数是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测开区天数 >= 7<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标天数：要检测的天数<br>
+                    • 检测目标：全局检测<br>
+                    • 应用场景：开服活动、分阶段开放内容
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测开区模式</span></td>
+                <td>
+                    检测当前开区模式是否为指定模式<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测开区模式 正式开区<br>
+                    • 参数：模式名称（不区分大小写）<br>
+                    • 检测目标：全局检测<br>
+                    • 设置方式：通过<strong>游戏设置窗口</strong>进行设置<br>
+                    • 可选模式：测试开区、正式开区、版本制作、老板包区<br>
+                    • 应用场景：测试服/正式服功能区分、版本调试<br>
+                    • 配置位置：config.ini [基础设置] 开区模式
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🗺️ 地图相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测玩家所在地图</span></td>
+                <td>
+                    检测玩家是否在指定地图<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测玩家所在地图 1001<br>
+                    • 参数：地图编号<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测玩家坐标范围</span></td>
+                <td>
+                    检测玩家与指定坐标的距离是否在范围内<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测玩家坐标范围 100 100 10<br>
+                    • 参数1：X坐标<br>
+                    • 参数2：Y坐标<br>
+                    • 参数3：范围（网格距离）<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测怪物坐标范围</span></td>
+                <td>
+                    检测怪物是否在指定坐标范围内<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测怪物坐标范围 1001 100 100 200 200<br>
+                    • 参数1：怪物ID<br>
+                    • 参数2-5：X1 Y1 X2 Y2（矩形范围）<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测怪物所在地图</span></td>
+                <td>
+                    检测怪物所在地图编号<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测怪物所在地图 1001<br>
+                    • 参数：地图编号<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测地图玩家数量</span></td>
+                <td>
+                    检测指定地图的玩家数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测地图玩家数量 1001 >= 10<br>
+                    • 参数1：地图编号<br>
+                    • 参数2：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数3：目标数量<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测地图怪物数量</span></td>
+                <td>
+                    检测地图怪物数量（可指定怪物名称或检测全部）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测地图怪物数量 1001 >= 50<br>
+                    • 写法2：检测地图怪物数量 1001 祖玛卫士 >= 10<br>
+                    • 参数1：地图编号<br>
+                    • 参数2：怪物名称（可选）<br>
+                    • 参数3：比较符<br>
+                    • 参数4：目标数量<br>
+                    • 检测目标：全局检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测是否安全区</span></td>
+                <td>
+                    检测玩家是否在安全区内<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否安全区<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>👥 组队相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测是否队长</span></td>
+                <td>
+                    检测玩家是否为队伍队长<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否队长<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测组队人数</span></td>
+                <td>
+                    检测队伍人数是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测组队人数 >= 3<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标人数：要检测的人数<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测有无队伍</span></td>
+                <td>
+                    检测玩家是否加入了队伍<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测有无队伍<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测地图队员</span></td>
+                <td>
+                    检测队员是否在指定地图<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测地图队员 1001<br>
+                    • 参数：地图编号<br>
+                    • 检测目标：队伍检测<br>
+                    • 应用场景：副本进入条件、组队任务检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测队员变量</span></td>
+                <td>
+                    检测所有队员的变量值是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>脚本常量写法</strong>：检测队员变量 &lt;$常量名&gt; = 1<br>
+                    • <strong>脚本变量写法</strong>：检测队员变量 &lt;$STR(变量名)&gt; = 1<br>
+                    • <strong>变量比较写法</strong>：检测队员变量 &lt;$STR(变量1)&gt; >= &lt;$STR(变量2)&gt;<br>
+                    • 参数1：脚本常量（&lt;$常量名&gt;）或脚本变量（&lt;$STR(变量名)&gt;）<br>
+                    • 参数2：运算符（=、>、<、>=、<=、!=）<br>
+                    • 参数3：目标值或变量<br>
+                    • 检测目标：队伍检测（所有队员都必须满足条件）<br>
+                    • 说明：所有队员的变量都必须满足条件才通过检测<br>
+                    • 区别：常量直接用&lt;$名称&gt;，变量需要用&lt;$STR(变量名)&gt;
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测队员金币</span></td>
+                <td>
+                    检测所有队员是否都满足金币数量条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测队员金币 >= 10000<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标数量：需要的金币数量<br>
+                    • 检测目标：队伍检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测队员银币</span></td>
+                <td>
+                    检测所有队员是否都满足银币数量条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测队员银币 >= 5000<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标数量：需要的银币数量<br>
+                    • 检测目标：队伍检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测队员元宝</span></td>
+                <td>
+                    检测所有队员是否都满足元宝数量条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测队员元宝 >= 1000<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标数量：需要的元宝数量<br>
+                    • 检测目标：队伍检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测队员物品</span></td>
+                <td>
+                    检测所有队员是否都拥有指定物品及数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测队员物品 1001 1<br>
+                    • 写法2：检测队员物品 副本钥匙 1<br>
+                    • 参数1：物品编号或物品名称<br>
+                    • 参数2：数量<br>
+                    • 检测目标：队伍检测（所有队员都必须满足）<br>
+                    • 说明：检测所有队员背包中的物品，支持编号和名称
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测队员等级</span></td>
+                <td>
+                    检测所有队员是否都满足等级条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测队员等级 >= 30<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标等级：要求的等级<br>
+                    • 检测目标：队伍检测
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🐾 宠物相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测拥有宠物</span></td>
+                <td>
+                    检测玩家是否拥有指定宠物<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测拥有宠物 1001<br>
+                    • 写法2：检测拥有宠物 神兽<br>
+                    • 参数：宠物ID（怪物编号）或宠物名称<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：宠物ID即为怪物编号，支持按ID或名称检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测宠物等级</span></td>
+                <td>
+                    检测宠物等级是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>检测所有宠物</strong>：检测宠物等级 >= 10<br>
+                    • <strong>按ID检测</strong>：检测宠物等级 1001 >= 10<br>
+                    • <strong>按名称检测</strong>：检测宠物等级 神兽 >= 10<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 检测目标：个人检测<br>
+                    • 说明1：2个参数时检测所有宠物，至少一个满足条件即通过<br>
+                    • 说明2：3个参数时检测指定宠物，该宠物必须满足条件
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测宠物数量</span></td>
+                <td>
+                    检测玩家拥有的宠物数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>检测总数量</strong>：检测宠物数量 >= 1<br>
+                    • <strong>按ID检测</strong>：检测宠物数量 1001 >= 3<br>
+                    • <strong>按名称检测</strong>：检测宠物数量 骷髅 >= 5<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 检测目标：个人检测<br>
+                    • 说明1：2个参数时检测所有宠物总数量<br>
+                    • 说明2：3个参数时检测指定种类宠物的数量（支持多只同名宠物）
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>⚔️ 技能相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测拥有技能</span></td>
+                <td>
+                    检测玩家是否择有指定技能<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测拥有技能 1001<br>
+                    • 写法2：检测拥有技能 烈火剑法<br>
+                    • 参数：技能编号或技能名称<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测技能等级</span></td>
+                <td>
+                    检测技能等级是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测技能等级 1001 >= 3<br>
+                    • 写法2：检测技能等级 烈火剑法 >= 3<br>
+                    • 参数1：技能编号或技能名称<br>
+                    • 参数2：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数3：目标等级<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🏰 公会相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测有无行会</span></td>
+                <td>
+                    检测玩家是否加入了行会<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测有无行会<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测行会等级</span></td>
+                <td>
+                    检测玩家当前所加入行会的等级是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测行会等级 >= 5<br>
+                    • 参数1：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数2：目标等级<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：检测玩家所属行会的等级，未加入行会则检测失败
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测是否会长</span></td>
+                <td>
+                    检测玩家是否为行会会长<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否会长<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测行会人数</span></td>
+                <td>
+                    检测玩家所属行会的成员人数是否满足条件<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测行会人数 >= 20<br>
+                    • 参数1：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数2：目标人数<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：检测玩家当前所加入行会的成员人数，未加入行会则检测失败
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎖️ 称号相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测角色称号</span></td>
+                <td>
+                    检测自己是否拥有指定称号<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测角色称号 1001<br>
+                    • 参数：称号ID<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测他人称号</span></td>
+                <td>
+                    检测其他玩家是否拥有指定称号<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测他人称号 张三 1001<br>
+                    • 参数1：玩家名称<br>
+                    • 参数2：称号ID<br>
+                    • 检测目标：指定玩家检测
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💫 状态相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测双倍经验</span></td>
+                <td>
+                    检测玩家是否有双倍经验状态<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测双倍经验<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测拥有BUFF</span></td>
+                <td>
+                    检测玩家是否拥有指定BUFF<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测拥有BUFF 1001<br>
+                    • 参数：BUFF的ID或名称<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测龙卫功能</span></td>
+                <td>
+                    检测玩家是否激活了指定的龙卫功能<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测龙卫功能 1001<br>
+                    • 参数：龙卫编号（功能代码）<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：检测玩家装备的龙卫属性中是否激活了指定编号的龙卫功能<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 限定特定龙卫功能才能接取的任务<br>
+                    &nbsp;&nbsp;- 检测玩家是否具备特定的龙卫加成<br>
+                    &nbsp;&nbsp;- 龙卫系统相关的NPC对话分支
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🔢 脚本变量检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测任务标识</span></td>
+                <td>
+                    检测玩家的任务标识开关状态<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测任务标识 100 1<br>
+                    • 参数1：任务标识ID（0-1999）<br>
+                    • 参数2：标识状态（0=未完成，1=已完成）<br>
+                    • 检测目标：个人检测<br>
+                    • 说明：任务标识是一个布尔开关系统，用于记录任务流程节点<br>
+                    • 配合命令：设置任务标识（用于标记任务进度）<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 多阶段任务的流程控制<br>
+                    &nbsp;&nbsp;- 检测玩家是否完成了某个任务节点<br>
+                    &nbsp;&nbsp;- 任务分支判断<br>
+                    &nbsp;&nbsp;- 连续任务的前置条件检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测脚本爆率</span></td>
+                <td>
+                    检测脚本爆率数据值<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测脚本爆率 50<br>
+                    • 参数：爆率值（0-100）<br>
+                    • 检测目标：全局检测<br>
+                    • 应用场景：动态掉落控制
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测任务状态</span></td>
+                <td>
+                    检测任务完成状态<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测任务状态 1001 已完成<br>
+                    • 参数1：任务ID<br>
+                    • 参数2：状态（未接受、进行中、已完成等）<br>
+                    • 检测目标：个人检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测变量</span></td>
+                <td>
+                    通用变量判断，支持各种运算符<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>脚本常量写法</strong>：检测变量 &lt;$常量名&gt; == 21<br>
+                    • <strong>脚本变量写法</strong>：检测变量 &lt;$STR(变量名)&gt; >= 100<br>
+                    • 参数1：脚本常量（&lt;$常量名&gt;）或脚本变量（&lt;$STR(变量名)&gt;）<br>
+                    • 参数2：运算符（=、>、<、>=、<=、!=、==）<br>
+                    • 参数3：目标值<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：最常用的条件判断命令<br>
+                    • 区别：常量直接用&lt;$名称&gt;，变量需要用&lt;$STR(变量名)&gt;
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📄 文本列表检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测文本字符</span></td>
+                <td>
+                    检测指定文件中是否包含关键字（逐行完全匹配）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>相对路径写法</strong>：检测文本字符 张三 黑名单.txt<br>
+                    • <strong>绝对路径写法</strong>：检测文本字符 李四 D:\GameData\黑名单.txt<br>
+                    • 参数1：关键字（要搜索的字符串）<br>
+                    • 参数2：文件路径（相对或绝对路径）<br>
+                    • 检测目标：全局检测<br>
+                    • <strong>重要说明：相对路径基准目录</strong><br>
+                    &nbsp;&nbsp;相对路径相对于：<code>Database\System\txt\NPCs</code> 目录<br>
+                    &nbsp;&nbsp;（即：00-QFunction.txt 等脚本文件所在的目录）<br>
+                    &nbsp;&nbsp;示例：写 <code>黑名单.txt</code> → 完整路径为 <code>Database\System\txt\NPCs\黑名单.txt</code><br>
+                    &nbsp;&nbsp;示例：写 <code>名单\黑名单.txt</code> → 完整路径为 <code>Database\System\txt\NPCs\名单\黑名单.txt</code><br>
+                    • 说明1：逐行读取文件，检测是否有完全匹配的行<br>
+                    • 说明2：文件不存在则检测失败<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 黑名单/白名单筛选<br>
+                    &nbsp;&nbsp;- VIP名单验证<br>
+                    &nbsp;&nbsp;- 封禁名单检测<br>
+                    &nbsp;&nbsp;- 特权玩家验证
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测角色名单</span></td>
+                <td>
+                    检测当前玩家角色名是否在指定名单文件中（逐行完全匹配）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>相对路径写法</strong>：检测角色名单 VIP名单.txt<br>
+                    • <strong>子目录写法</strong>：检测角色名单 名单\VIP名单.txt<br>
+                    • 参数：名单文件路径（相对路径）<br>
+                    • 检测目标：个人检测<br>
+                    • <strong>重要说明：相对路径基准目录</strong><br>
+                    &nbsp;&nbsp;相对路径相对于：<code>Database\System\txt\NPCs</code> 目录<br>
+                    &nbsp;&nbsp;（与脚本文件同目录，与"检测文本字符"命令相同）<br>
+                    &nbsp;&nbsp;示例：写 <code>VIP名单.txt</code> → 完整路径为 <code>Database\System\txt\NPCs\VIP名单.txt</code><br>
+                    &nbsp;&nbsp;示例：写 <code>名单\VIP名单.txt</code> → 完整路径为 <code>Database\System\txt\NPCs\名单\VIP名单.txt</code><br>
+                    • 说明1：自动检测玩家的角色名，无需写<$USERNAME><br>
+                    • 说明2：逐行读取文件，检测是否有完全匹配玩家名的行<br>
+                    • 说明3：文件不存在则检测失败<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- VIP特权验证<br>
+                    &nbsp;&nbsp;- 白名单/黑名单筛选<br>
+                    &nbsp;&nbsp;- 特殊玩家权限判断<br>
+                    &nbsp;&nbsp;- 活动参与资格验证
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测游戏账号</span></td>
+                <td>
+                    检测当前玩家游戏账号是否在指定名单文件中（逐行完全匹配）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • <strong>相对路径写法</strong>：检测游戏账号 账号白名单.txt<br>
+                    • <strong>子目录写法</strong>：检测游戏账号 名单\账号白名单.txt<br>
+                    • 参数：名单文件路径（相对路径）<br>
+                    • 检测目标：个人检测<br>
+                    • <strong>重要说明：相对路径基准目录</strong><br>
+                    &nbsp;&nbsp;相对路径相对于：<code>Database\System\txt\NPCs</code> 目录<br>
+                    &nbsp;&nbsp;（与脚本文件同目录，与"检测文本字符"命令相同）<br>
+                    &nbsp;&nbsp;示例：写 <code>账号白名单.txt</code> → 完整路径为 <code>Database\System\txt\NPCs\账号白名单.txt</code><br>
+                    &nbsp;&nbsp;示例：写 <code>名单\账号白名单.txt</code> → 完整路径为 <code>Database\System\txt\NPCs\名单\账号白名单.txt</code><br>
+                    • 说明1：自动检测玩家的游戏账号（登录账号）<br>
+                    • 说明2：逐行读取文件，检测是否有完全匹配游戏账号的行<br>
+                    • 说明3：文件不存在则检测失败<br>
+                    • 说明4：与"检测角色名单"的区别：游戏账号是登录账号，角色名是游戏内角色名<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 账号级别的权限控制<br>
+                    &nbsp;&nbsp;- 多角色账号的统一管理<br>
+                    &nbsp;&nbsp;- 账号封禁/白名单<br>
+                    &nbsp;&nbsp;- 测试账号特权验证
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎲 概率判定命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测随机概率</span></td>
+                <td>
+                    随机概率判定（百分比）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测随机概率 30（单位：百分比）<br>
+                    • 参数：1 个整数，系统会自动裁剪到 0-100；≤0 一律视为失败，≥100 必定通过<br>
+                    • 实现：在 1-100 之间掷点，若 roll ≤ 概率值 则 #IF 通过<br>
+                    • 场景：随机事件、概率奖励、失败重试等<br>
+                    • 示例脚本：<br>
+                      <code>#IF 检测随机概率 50<br>#ACT 添加身上物品幸运 0 24017</code>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测区间概率</span></td>
+                <td>
+                    区间概率判定（随机数在区间内）<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测区间概率 1 10（区间端点顺序可互换）<br>
+                    • 参数：两个整数，内部会自动交换大小并裁剪至 0-100；区间无交集时视为失败<br>
+                    • 实现：在 1-100 掷点，若 roll 落入 [下限, 上限] 则条件成立<br>
+                    • 场景：多档奖励、概率分层、阶梯式抽奖<br>
+                    • 示例：<br>
+                      <code>#IF 检测区间概率 1 10  ;10% 触发</code><br>
+                      <code>#ELSEIF 检测区间概率 11 20 ;继续 10%</code>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🏛️ 攻城相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测是否沙城主</span></td>
+                <td>
+                    检测玩家是否为沙巴克城主<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否沙城主<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：城主专属功能、特权判断
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测是否攻城</span></td>
+                <td>
+                    检测当前是否正在进行攻城战<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否攻城<br>
+                    • 检测目标：全局检测<br>
+                    • 应用场景：攻城期间特殊机制
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测报名攻沙</span></td>
+                <td>
+                    检测玩家所在行会是否报名攻沙<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测报名攻沙<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：攻沙报名检测
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测沙城节点</span></td>
+                <td>
+                    检测沙巴克攻城战当前进度节点<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法1：检测沙城节点 = 2<br>
+                    • 写法2：检测沙城节点 >= 1<br>
+                    • 参数1：比较符（支持 =、>、<、>=、<=）<br>
+                    • 参数2：节点值（0-3）<br>
+                    • 检测目标：全局检测<br>
+                    • <strong>节点值说明</strong>：<br>
+                    &nbsp;&nbsp;<strong>0 = 空闲状态</strong>（攻城未开启，日常状态）<br>
+                    &nbsp;&nbsp;<strong>1 = 准备阶段</strong>（攻城即将开始，行会报名中）<br>
+                    &nbsp;&nbsp;<strong>2 = 攻城中</strong>（正在进行攻城战）<br>
+                    &nbsp;&nbsp;<strong>3 = 结束阶段</strong>（攻城战刚结束，八卦坛激活中）<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 节点0：日常NPC功能，非攻城时可用<br>
+                    &nbsp;&nbsp;- 节点1：攻城准备，报名相关NPC<br>
+                    &nbsp;&nbsp;- 节点2：攻城中限制传送、开启战场NPC<br>
+                    &nbsp;&nbsp;- 节点3：攻城结束，八卦坛争夺战
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测是否沙巴克</span></td>
+                <td>
+                    检测玩家是否为沙巴克行会成员<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否沙巴克<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：沙巴克行会成员特权
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测是否攻过沙</span></td>
+                <td>
+                    检测玩家是否参与了当前占领行会的攻城战<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测是否攻过沙<br>
+                    • 检测目标：个人检测<br>
+                    • <strong>检测逻辑说明</strong>：<br>
+                    &nbsp;&nbsp;1. 玩家必须有行会<br>
+                    &nbsp;&nbsp;2. 玩家所在行会必须是当前沙巴克占领行会<br>
+                    &nbsp;&nbsp;3. 玩家的攻沙参与日期 < 当前占领时间<br>
+                    &nbsp;&nbsp;（说明玩家参与了本次攻城，不是攻城后才加入的）<br>
+                    • <strong>重要特性</strong>：<br>
+                    &nbsp;&nbsp;- 玩家退出行会后，记录自动失效<br>
+                    &nbsp;&nbsp;- 重新加入行会需要重新参与攻城<br>
+                    &nbsp;&nbsp;- 只认可当前占领行会的成员<br>
+                    &nbsp;&nbsp;- 攻城战结束时自动记录所有参战成员<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 攻城战奖励发放<br>
+                    &nbsp;&nbsp;- 老成员特权验证<br>
+                    &nbsp;&nbsp;- 防止攻城后加入蹭奖励<br>
+                    &nbsp;&nbsp;- 攻城荣誉记录
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测八卦坛激活</span> <span style="background: #4caf50; color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.85em; margin-left: 8px;">✓ 已优化</span></td>
+                <td>
+                    检测玩家所在行会是否激活了八卦坛<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测八卦坛激活<br>
+                    • 无参数（自动检测玩家行会）<br>
+                    • 检测目标：个人检测<br>
+                    • <strong style="color: #4caf50;">✓ 已优化配置</strong>：<br>
+                    &nbsp;&nbsp;八卦坛坐标已移至配置管理器（<code>配置管理器.cs</code>第136-142行）<br>
+                    &nbsp;&nbsp;可通过修改配置灵活调整坐标和占领时间，无需重新编译<br>
+                    &nbsp;&nbsp;配置项：<code>八卦坛坐标上/下/左/右/中</code>、<code>八卦坛占领时间</code><br>
+                    • <strong>八卦坛系统说明</strong>：<br>
+                    &nbsp;&nbsp;八卦坛争夺战是攻城战的<strong>最终阶段</strong>（沙城节点3）<br>
+                    &nbsp;&nbsp;攻城战2小时结束后，进入5分钟的八卦坛争夺战<br>
+                    &nbsp;&nbsp;激活八卦坛的行会将成为新的沙巴克占领行会<br>
+                    • <strong>激活条件</strong>：<br>
+                    &nbsp;&nbsp;1. 攻城战已结束（节点3）<br>
+                    &nbsp;&nbsp;2. 同一行会的玩家占领八卦坛4个方位点（上下左右）<br>
+                    &nbsp;&nbsp;3. 持续占领指定时间（默认10秒，可配置）后成功激活<br>
+                    &nbsp;&nbsp;4. 必须是已报名的攻城行会<br>
+                    • <strong>激活效果</strong>：<br>
+                    &nbsp;&nbsp;- 该行会成为沙巴克占领行会<br>
+                    &nbsp;&nbsp;- 中心点出现传送法阵<br>
+                    &nbsp;&nbsp;- 全服公告通知<br>
+                    &nbsp;&nbsp;- 所有成员获得攻沙参与标记<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 八卦坛传送法阵控制<br>
+                    &nbsp;&nbsp;- 激活行会特权验证<br>
+                    &nbsp;&nbsp;- 最终胜利判定<br>
+                    &nbsp;&nbsp;- 争夺战奖励发放
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎊 活动相关检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测七天乐状态</span></td>
+                <td>
+                    检测七天乐活动的当前状态<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测七天乐状态 1 开启<br>
+                    • 参数1：天数（1-7）<br>
+                    • 参数2：状态（开启、关闭等）<br>
+                    • 检测目标：全局检测<br>
+                    • 应用场景：七天乐活动系统
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🔧 其他检测命令</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">命令名称</th>
+                <th style="width: 75%;">说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cmd-name">检测守卫BUFF</span></td>
+                <td>
+                    检测当前对话的守卫是否拥有指定BUFF<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测守卫BUFF 22300<br>
+                    • 参数：BUFF编号<br>
+                    • 检测目标：守卫对象检测<br>
+                    • <strong>重要特性：自动识别</strong><br>
+                    &nbsp;&nbsp;✅ 不需要指定地图编号<br>
+                    &nbsp;&nbsp;✅ 不需要指定守卫编号<br>
+                    &nbsp;&nbsp;✅ 自动检测玩家当前正在对话的守卫对象<br>
+                    &nbsp;&nbsp;✅ 只能在守卫NPC的脚本中使用<br>
+                    • 说明：通过 <code>_玩家.NPCObjectID</code> 自动获取当前对话的守卫对象<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- 攻城守卫状态检测（如沙城城门的无敌BUFF）<br>
+                    &nbsp;&nbsp;- 守卫强化状态检测<br>
+                    &nbsp;&nbsp;- 守卫特殊状态控制<br>
+                    &nbsp;&nbsp;- 根据守卫BUFF显示不同对话
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测修罗狩猎场排行</span></td>
+                <td>
+                    检测玩家在修罗狩猎场的排名<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测修罗狩猎场排行 <= 10<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标排名：要检测的排名位置<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：修罗狩猎场排行奖励
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测雪域点</span></td>
+                <td>
+                    检测玩家的雪域威名点数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测雪域点 >= 1000<br>
+                    • 比较符：支持 =、>、<、>=、<=<br>
+                    • 目标点数：要检测的点数<br>
+                    • 检测目标：个人检测<br>
+                    • 应用场景：雪域威名系统
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="cmd-name">检测坐标怪物数</span></td>
+                <td>
+                    检测指定地图指定坐标点上的特定怪物数量<br>
+                    <span style="color: #718096; font-size: 0.9em; margin-top: 8px; display: block;">
+                    • 写法：检测坐标怪物数 152 100 150 150 >= 1<br>
+                    • 参数1：地图编号<br>
+                    • 参数2：怪物模板编号<br>
+                    • 参数3：X坐标<br>
+                    • 参数4：Y坐标<br>
+                    • 参数5：比较符（支持 =、>、<、>=、<=、!=）<br>
+                    • 参数6：目标数量<br>
+                    • 检测目标：全局检测<br>
+                    • 说明：检测指定坐标点（精确坐标）上的怪物数量，不是周围范围<br>
+                    • 应用场景：<br>
+                    &nbsp;&nbsp;- BOSS刷新检测<br>
+                    &nbsp;&nbsp;- 怪物刷新控制<br>
+                    &nbsp;&nbsp;- 清怪任务验证<br>
+                    &nbsp;&nbsp;- 特定位置怪物统计
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 实际使用示例</h2>
+    
+    <div class="category">
+        <h3>💡 示例：武斗场进入条件检测</h3>
+        <p style="color: #666; margin-bottom: 15px;">这个示例展示了如何组合使用多个检测命令来实现复杂的条件判断。</p>
+        
+        <div style="background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', monospace; overflow-x: auto; line-height: 1.8;">
+<span style="color: #5c6370; font-style: italic;">; 检测是否为周一、周三、周五（使用#OR实现"或"逻辑）</span><br>
+<span style="color: #e06c75;">[@进入武斗场]</span><br>
+<span style="color: #c678dd; font-weight: bold;">#OR</span><br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #98c379;">&lt;$星期&gt;</span> == 1<br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #98c379;">&lt;$星期&gt;</span> == 3<br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #98c379;">&lt;$星期&gt;</span> == 5<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #c678dd; font-weight: bold;">#SAY</span><br>
+每周一、三、五的21点，等级达到25级的勇士可进入武斗场。<br>
+<span style="color: #c678dd; font-weight: bold;">#ELSESAY</span><br>
+还未到开放时间，请稍安勿躁。每周一、三、五的晚上21点开放。<br>
+<br>
+<span style="color: #5c6370; font-style: italic;">; 检测等级条件</span><br>
+<span style="color: #e06c75;">[@确认进入]</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #61afef;">检测角色等级</span> &lt; 25<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #e06c75;">BREAK</span><br>
+<span style="color: #c678dd; font-weight: bold;">#SAY</span><br>
+你的等级未满[25]级，暂时无法进入。<br>
+<br>
+<span style="color: #5c6370; font-style: italic;">; 检测金币数量</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #61afef;">检测金币数量</span> &lt; 10000<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #e06c75;">BREAK</span><br>
+<span style="color: #c678dd; font-weight: bold;">#SAY</span><br>
+身上不足[10000]金币，不足以支付报名费用！<br>
+<br>
+<span style="color: #5c6370; font-style: italic;">; 检测时间段（多个条件组合，默认为"且"关系）</span><br>
+<span style="color: #c678dd; font-weight: bold;">#IF</span><br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #98c379;">&lt;$小时&gt;</span> == 21<br>
+<span style="color: #61afef;">检测变量</span> <span style="color: #98c379;">&lt;$分钟&gt;</span> &lt; 30<br>
+<span style="color: #c678dd; font-weight: bold;">#ACT</span><br>
+<span style="color: #e06c75;">调整角色金币</span> - 10000<br>
+<span style="color: #e06c75;">传送指定地图</span> 183 0 0 3<br>
+<span style="color: #c678dd; font-weight: bold;">#ELSESAY</span><br>
+还未到开放时间，每周一、三、五的晚上21点到21点30分开放。
+        </div>
+    </div>
+
+    <div style="background: #1a1f2e; border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 8px; border: 1px solid #2d3748;">
+        <div style="font-weight: bold; color: #667eea; margin-bottom: 15px; font-size: 1.1em;">💡 使用说明与示例</div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong style="color: #f6ad55;">基本用法：</strong><br>
+            <span style="color: #a0aec0;">
+            • 检测命令通常在 <code style="background: #0f1419; color: #667eea; padding: 2px 6px; border-radius: 3px;">#IF</code> 部分使用<br>
+            • 多个检测命令可以组合使用，默认为"且"关系<br>
+            • 使用 <code style="background: #0f1419; color: #667eea; padding: 2px 6px; border-radius: 3px;">#OR</code> 可以实现"或"关系<br>
+            • 检测命令的具体参数格式请参考对应命令的详细文档
+            </span>
+        </div>
+        
+        <div style="background: #0f1419; padding: 12px; border-radius: 6px; border: 1px solid #2d3748;">
+            <strong style="color: #f6ad55;">📌 关键要点：</strong><br>
+            <span style="color: #a0aec0;">
+            <strong style="color: #68d391;">1. #OR 逻辑：</strong>使用 <code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">#OR</code> 可以实现"或"关系，满足任一条件即可<br>
+            <strong style="color: #68d391;">2. 多条件组合：</strong>在 <code style="background: #1a1f2e; color: #667eea; padding: 2px 6px; border-radius: 3px;">#IF</code> 中连续写多个检测命令，默认为"且"关系<br>
+            <strong style="color: #68d391;">3. BREAK 命令：</strong>用于中断执行，不满足条件时终止后续判断<br>
+            <strong style="color: #68d391;">4. #ELSESAY：</strong>条件不满足时显示的内容
+            </span>
+        </div>
+    </div>
+</body>
+</html>

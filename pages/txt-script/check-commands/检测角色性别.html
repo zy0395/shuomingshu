@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测角色性别</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家角色的性别是否为指定值。该命令常用于性别限制的装备、任务、NPC对话等场景。游戏中角色性别通常在创建角色时确定，无法随意更改（除非通过特殊道具或GM命令）。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色性别</span> <span class="string">性别值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 性别匹配时执行的操作</span><br>
+<span class="keyword">#SAY</span><br>
+<span class="comment">; 性别匹配时显示的内容</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：性别值</div>
+            <div class="param-desc">
+                指定要检测的性别，必须使用以下枚举值之一（区分大小写）：<br>
+                • <strong>男性</strong> - 检测角色是否为男性<br>
+                • <strong>女性</strong> - 检测角色是否为女性<br>
+                • <strong>不限</strong> - 不限制性别（一般不使用此值进行检测）<br><br>
+                <strong>⚠️ 注意：</strong>参数必须严格使用中文枚举值，不能使用其他文字或数字。
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>玩家性别</th>
+                <th>检测参数</th>
+                <th>检测结果</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-info">男性</span></td>
+                <td>男性</td>
+                <td>✅ 通过，执行#ACT</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">男性</span></td>
+                <td>女性</td>
+                <td>❌ 不通过，跳过#ACT</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">女性</span></td>
+                <td>女性</td>
+                <td>✅ 通过，执行#ACT</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">女性</span></td>
+                <td>男性</td>
+                <td>❌ 不通过，跳过#ACT</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：性别限定装备购买</div>
+        <div class="code-block"><span class="comment">; NPC出售性别限定装备</span><br>
+[@购买女性装备]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色性别</span> <span class="string">男性</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+抱歉，这件装备只有女性角色才能购买。&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测角色性别</span> <span class="string">女性</span><br>
+<span class="tag">检测金币数量</span> <span class="string">&gt;=</span> <span class="number">50000</span><br>
+<span class="tag">检测背包空间</span> <span class="string">&gt;=</span> <span class="number">1</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">金币数量</span> <span class="string">-</span> <span class="number">50000</span><br>
+<span class="tag">发放物品名称</span> <span class="string">凤凰明珠</span> <span class="number">1</span><br>
+<span class="keyword">#SAY</span><br>
+购买成功！这件装备非常适合您！&lt;BR&gt;<br>
+&lt;#SO:1&gt;谢谢&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+您的金币不足或背包已满。&lt;BR&gt;<br>
+需要：50000金币，1个背包空位&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 参数格式严格</strong><br>
+        • 参数必须使用中文枚举值：<code>男性</code> 或 <code>女性</code><br>
+        • 严格区分大小写，不能写成 <code>男</code>、<code>女</code> 或其他形式<br>
+        • 使用错误的参数值会导致检测失败<br>
+        • 不建议使用 <code>不限</code> 进行检测，因为没有实际意义<br><br>
+        
+        <strong>2. 常见错误示例</strong><br>
+        • ❌ 错误：<code>检测角色性别 男</code>（应使用"男性"）<br>
+        • ❌ 错误：<code>检测角色性别 1</code>（不能使用数字）<br>
+        • ❌ 错误：<code>检测角色性别 Male</code>（不能使用英文）<br>
+        • ✅ 正确：<code>检测角色性别 男性</code><br>
+        • ✅ 正确：<code>检测角色性别 女性</code><br><br>
+        
+        <strong>3. 使用场景</strong><br>
+        • 性别限定装备的购买和穿戴验证<br>
+        • 性别特定的任务线或剧情分支<br>
+        • NPC对不同性别玩家的差异化对话<br>
+        • 特殊活动或副本的性别要求<br><br>
+        
+        <strong>4. 反向检测</strong><br>
+        • 要检测"不是某性别"，可以使用 <code>取反</code> 关键字<br>
+        • 例如：<code>取反 检测角色性别 男性</code> 表示"不是男性"（即女性）<br>
+        • 或者直接检测另一个性别值<br><br>
+        
+        <strong>5. 性能说明</strong><br>
+        • 该检测命令性能消耗极低，直接读取角色属性<br>
+        • 可以在任何场景下频繁使用<br>
+        • 无需担心性能问题<br><br>
+        
+        <strong>6. 与其他命令组合</strong><br>
+        • 常与装备检测、等级检测等命令组合使用<br>
+        • 可以实现复杂的条件判断逻辑<br>
+        • 例如：只允许30级以上的女性角色接取某任务
+    </div>
+
+</body>
+</html>

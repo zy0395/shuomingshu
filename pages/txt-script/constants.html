@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.6; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 10px; }
+        h3 { color: #555; margin: 20px 0 10px; }
+        p { margin: 10px 0; }
+        .info { background: #e3f2fd; padding: 15px; margin: 15px 0; border-left: 4px solid #2196f3; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; }
+        .note-title { font-weight: bold; color: #856404; margin-bottom: 8px; }
+        .example { background: #f8f9fa; border-left: 4px solid #3498db; padding: 15px; margin: 15px 0; font-family: Consolas, monospace; white-space: pre-wrap; }
+        .tag { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.9em; white-space: nowrap; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        thead { background: #34495e; color: white; }
+        th { padding: 10px; text-align: left; }
+        td { padding: 8px 10px; border-bottom: 1px solid #ddd; }
+        tbody tr:hover { background: #f5f5f5; }
+        .changelog { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 20px; margin: 20px 0; }
+        .changelog-title { font-size: 1.2em; font-weight: bold; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .changelog-item { margin-bottom: 15px; padding: 10px; background: white; border-left: 3px solid #3498db; }
+        .changelog-date { font-weight: bold; color: #3498db; margin-bottom: 5px; }
+        .changelog-content { line-height: 1.8; color: #555; }
+        .changelog-content li { margin-left: 20px; }
+    </style>
+</head>
+<body>
+<h1>📋 脚本标签常量</h1>
+                <h2>📋 脚本常量（共计101个）</h2>
+                <div class="info">
+                    <strong>用法：</strong><br>
+                    • 格式：<span class="tag">&lt;$标签名&gt;</span>，示例：欢迎你,&lt;$角色名字&gt;!你当前等级:&lt;$当前等级&gt;,金币:&lt;$金币数量&gt;<br>
+                    • 大部分常量同时支持<strong>玩家脚本</strong>和<strong>NPC/守卫脚本</strong>，但返回的对象不同<br>
+                    • 标注为 👤 的常量：仅用于玩家脚本<br>
+                    • 无特别标注的常量：两种脚本均可使用<br>
+                    <br>
+                    <strong>注意事项：</strong><br>
+                    • 标签不区分大小写，如 &lt;$角色名字&gt;、&lt;$STR(G0)&gt; 都有效<br>
+                    • 部分标签有别名，如 &lt;$坐标X&gt; 和 &lt;$当前坐标X&gt; 等效<br>
+                    • 函数型标签需要参数，如 &lt;$STR(G0)&gt;、&lt;$节点值(100)&gt;<br>
+                    • 某些标签可能返回空值，如玩家没有行会时，&lt;$行会名字&gt; 返回空字符串<br>
+                    • 所有常量均已验证，每个常量都对应代码中的实现，可放心使用
+                </div>
+                <table>
+                    <thead><tr><th>常量</th><th>用法/说明</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag">&lt;$角色名字&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家名字 | NPC脚本：返回NPC名称</td></tr>
+                        <tr><td><span class="tag">&lt;$帐号&gt;</span> 👤</td><td>✅ 已验证 | 仅用于玩家脚本 | 返回所属账号的账号名字</td></tr>
+                        <tr><td><span class="tag">&lt;$职业&gt;</span> 👤</td><td>✅ 已验证 | 仅用于玩家脚本 | 返回职业枚举值</td></tr>
+                        <tr><td><span class="tag">&lt;$当前等级&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家等级 | NPC脚本：返回NPC等级</td></tr>
+                        <tr><td><span class="tag">&lt;$当前经验&gt;</span> 👤</td><td>✅ 已验证 | 仅用于玩家脚本 | 返回玩家当前经验值</td></tr>
+                        <tr><td><span class="tag">&lt;$当前称号&gt;</span> 👤</td><td>✅ 已验证 | 仅用于玩家脚本 | 返回玩家当前称号ID</td></tr>
+                        <tr><td><span class="tag">&lt;$转生次数&gt;</span> 👤</td><td>✅ 已验证 | 仅用于玩家脚本 | 存储在角色变量U900中，默认为0</td></tr>
+                        <tr><td><span class="tag">&lt;$当前坐标X&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家X坐标 | NPC脚本：返回NPCX坐标（别名：&lt;$坐标X&gt;）</td></tr>
+                        <tr><td><span class="tag">&lt;$当前坐标Y&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家Y坐标 | NPC脚本：返回NPCY坐标（别名：&lt;$坐标Y&gt;）</td></tr>
+                        <tr><td><span class="tag">&lt;$地图编号&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家所在地图编号 | NPC脚本：返回NPC所在地图编号</td></tr>
+                        <tr><td><span class="tag">&lt;$地图名字&gt;</span> 👤</td><td>✅ 已验证 | 仅用于玩家脚本 | 返回当前地图的名称</td></tr>
+                        <tr><td><span class="tag">&lt;$当前体力&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家当前HP值 | NPC脚本：返回NPC当前HP值</td></tr>
+                        <tr><td><span class="tag">&lt;$最大体力&gt;</span></td><td>✅ 已验证 | 玩家脚本：返回玩家最大HP值 | NPC脚本：返回NPC最大HP值</td></tr>
+                        <tr><td><span class="tag">&lt;$当前魔力&gt;</span></td><td>✅ 已验证 | 返回玩家当前MP值</td></tr>
+                        <tr><td><span class="tag">&lt;$最大魔力&gt;</span></td><td>✅ 已验证 | 返回玩家最大MP值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$当前战力&gt;</span></td><td>✅ 已验证 | 返回玩家当前战斗力数值</td></tr>
+                        <tr><td><span class="tag">&lt;$PK值&gt;</span></td><td>✅ 已验证 | 返回玩家PK值惩罚数值</td></tr>
+                        <tr><td><span class="tag">&lt;$背包大小&gt;</span></td><td>✅ 已验证 | 返回玩家背包格子数量</td></tr>
+                        <tr><td><span class="tag">&lt;$最小攻击&gt;</span></td><td>✅ 已验证 | 返回玩家最小攻击力（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大攻击&gt;</span></td><td>✅ 已验证 | 返回玩家最大攻击力（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小魔法&gt;</span></td><td>✅ 已验证 | 返回玩家最小魔法攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大魔法&gt;</span></td><td>✅ 已验证 | 返回玩家最大魔法攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小道术&gt;</span></td><td>✅ 已验证 | 返回玩家最小道术攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大道术&gt;</span></td><td>✅ 已验证 | 返回玩家最大道术攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小刺术&gt;</span></td><td>✅ 已验证 | 返回玩家最小刺术攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大刺术&gt;</span></td><td>✅ 已验证 | 返回玩家最大刺术攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小弓术&gt;</span></td><td>✅ 已验证 | 返回玩家最小弓术攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大弓术&gt;</span></td><td>✅ 已验证 | 返回玩家最大弓术攻击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小圣伤&gt;</span></td><td>✅ 已验证 | 返回玩家最小圣伤政击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大圣伤&gt;</span></td><td>✅ 已验证 | 返回玩家最大圣伤政击（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小防御&gt;</span></td><td>✅ 已验证 | 返回玩家最小防御力（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大防御&gt;</span></td><td>✅ 已验证 | 返回玩家最大防御力（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最小魔防&gt;</span></td><td>✅ 已验证 | 返回玩家最小魔法防御（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$最大魔防&gt;</span></td><td>✅ 已验证 | 返回玩家最大魔法防御（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$物理准确&gt;</span></td><td>✅ 已验证 | 返回玩家物理命中值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$魔法命中&gt;</span></td><td>✅ 已验证 | 返回玩家魔法命中值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$物理敏捷&gt;</span></td><td>✅ 已验证 | 返回玩家物理闪避值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$魔法闪避&gt;</span></td><td>✅ 已验证 | 返回玩家魔法闪避值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$中毒躲避&gt;</span></td><td>✅ 已验证 | 返回玩家中毒躲避值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$暴击概率&gt;</span></td><td>✅ 已验证 | 返回玩家暴击概率（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$暴击伤害&gt;</span></td><td>✅ 已验证 | 返回玩家暴击伤害值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$减暴击&gt;</span></td><td>✅ 已验证 | 返回减少被暴击概率（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$减暴伤&gt;</span></td><td>✅ 已验证 | 返回减少暴击伤害值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$破物防&gt;</span></td><td>✅ 已验证 | 返回玩家物理穿透值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$破魔防&gt;</span></td><td>✅ 已验证 | 返回玩家魔法穿透值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$物理击回&gt;</span></td><td>✅ 已验证 | 返回玩家物理吸血值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$魔法击回&gt;</span></td><td>✅ 已验证 | 返回玩家魔法吸血值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$伤害加成&gt;</span></td><td>✅ 已验证 | 返回玩家伤害加成百分比（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$幸运等级&gt;</span></td><td>✅ 已验证 | 返回玩家幸运等级（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$攻击速度&gt;</span></td><td>✅ 已验证 | 返回玩家攻击速度值（含装备加成）</td></tr>
+                        <tr><td><span class="tag">&lt;$金币数量&gt;</span></td><td>✅ 已验证 | 返回玩家当前金币数量</td></tr>
+                        <tr><td><span class="tag">&lt;$元宝数量&gt;</span></td><td>✅ 已验证 | 返回玩家当前元宝数量</td></tr>
+                        <tr><td><span class="tag">&lt;$银币数量&gt;</span></td><td>✅ 已验证 | 返回玩家当前银币数量</td></tr>
+                        <tr><td><span class="tag">&lt;$今日充值&gt;</span></td><td>✅ 已验证 | 返回玩家今日充值总金额</td></tr>
+                        <tr><td><span class="tag">&lt;$累计充值&gt;</span></td><td>✅ 已验证 | 返回玩家累计充值总金额</td></tr>
+                        <tr><td><span class="tag">&lt;$行会名字&gt;</span></td><td>✅ 已验证 | 返回玩家所属行会名称，无行会时返回空字符串</td></tr>
+                        <tr><td><span class="tag">&lt;$行会等级&gt;</span></td><td>✅ 已验证 | 返回玩家所属行会的等级</td></tr>
+                        <tr><td><span class="tag">&lt;$沙巴克行会&gt;</span></td><td>✅ 已验证 | 返回当前占领沙巴克的行会名称，无时返回空字符串</td></tr>
+                        <tr><td><span class="tag">&lt;$沙巴克城主&gt;</span></td><td>✅ 已验证 | 返回占领沙巴克的行会会长名称，无时返回空字符串</td></tr>
+                        <tr><td><span class="tag">&lt;$本期特权&gt;</span></td><td>✅ 已验证 | 返回玩家当前特权类型ID</td></tr>
+                        <tr><td><span class="tag">&lt;$玛法特权剩余天数&gt;</span></td><td>✅ 已验证 | 返回特权时间到当前时间的天数差</td></tr>
+                        <tr><td><span class="tag">&lt;$双倍经验&gt;</span></td><td>✅ 已验证 | 返回玩家双倍经验倍数</td></tr>
+                        <tr><td><span class="tag">&lt;$脚本爆率倍数&gt;</span></td><td>✅ 已验证 | 返回玩家脚本爆率倍数</td></tr>
+                        <tr><td><span class="tag">&lt;$日程进度&gt;</span></td><td>✅ 已验证 | 返回玩家日程任务进度值</td></tr>
+                        <tr><td><span class="tag">&lt;$觉醒面板&gt;</span></td><td>✅ 已验证 | 返回1（已开启）或0（未开启）</td></tr>
+                        <tr><td><span class="tag">&lt;$龙卫觉醒&gt;</span></td><td>✅ 已验证 | 返回1（已开通）或0（未开通）</td></tr>
+                        <tr><td><span class="tag">&lt;$年份&gt;</span></td><td>✅ 已验证 | 返回当前年份（4位数）</td></tr>
+                        <tr><td><span class="tag">&lt;$月份&gt;</span></td><td>✅ 已验证 | 返回当前月份（1-12）</td></tr>
+                        <tr><td><span class="tag">&lt;$日&gt;</span></td><td>✅ 已验证 | 返回当月几号（1-31）</td></tr>
+                        <tr><td><span class="tag">&lt;$星期几&gt;</span></td><td>✅ 已验证 | 返回0=周日,1=周一...6=周六</td></tr>
+                        <tr><td><span class="tag">&lt;$小时&gt;</span></td><td>✅ 已验证 | 返回当前小时（24小时制，0-23）</td></tr>
+                        <tr><td><span class="tag">&lt;$分钟&gt;</span></td><td>✅ 已验证 | 返回当前分钟（0-59）</td></tr>
+                        <tr><td><span class="tag">&lt;$秒&gt;</span></td><td>✅ 已验证 | 返回当前秒数（0-59）</td></tr>
+                        <tr><td><span class="tag">&lt;$日期&gt;</span></td><td>✅ 已验证 | 返回短日期字符串，如：2025/10/23</td></tr>
+                        <tr><td><span class="tag">&lt;$玩家数量&gt;</span></td><td>✅ 已验证 | 返回当前在线玩家总数</td></tr>
+                        <tr><td><span class="tag">&lt;$开区节点&gt;</span></td><td>✅ 已验证 | 返回开区节点值</td></tr>
+                        <tr><td><span class="tag">&lt;$UTC时间戳&gt;</span></td><td>✅ 已验证 | 返回当前时间的UTC时间戳（秒）</td></tr>
+                        <tr><td><span class="tag">&lt;$最后杀死的怪物编号&gt;</span></td><td>✅ 已验证 | 返回最后一次击杀怪物的模板ID</td></tr>
+                        <tr><td><span class="tag">&lt;$全身特修费用&gt;</span></td><td>✅ 已验证 | 返回所有装备特殊修理费用总和</td></tr>
+                        <tr><td><span class="tag">&lt;$最后杀死的玩家名字&gt;</span></td><td>✅ 已验证 | 返回最后一次击杀玩家的名称</td></tr>
+                        <tr><td><span class="tag">&lt;$最后杀死自己的玩家名字&gt;</span></td><td>✅ 已验证 | 返回最后一次被击杀时的凶手名称</td></tr>
+                        <tr><td><span class="tag">&lt;$STR()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$STR(G0)&gt; 获取变量G0的值 | 支持玩家脚本和NPC脚本</td></tr>
+                        <tr><td><span class="tag">&lt;$节点值()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$节点值(100)&gt; 获取玩家节点100的值</td></tr>
+                        <tr><td><span class="tag">&lt;$剩余玛法特权()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$剩余玛法特权(1)&gt; 获取特权类型1的剩余数量</td></tr>
+                        <tr><td><span class="tag">&lt;$天赋等级()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$天赋等级(5)&gt; 获取天赋编号5的等级</td></tr>
+                        <tr><td><span class="tag">&lt;$物品名字()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$物品名字(1001)&gt; 获取ID为1001的物品名称</td></tr>
+                        <tr><td><span class="tag">&lt;$物品属性()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$物品属性(%P1,%P2,%P3)&gt;<br>P1=装备类型,P2=装备位置,P3=属性ID</td></tr>
+                        <tr><td><span class="tag">&lt;$地图怪物数量()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$地图怪物数量(3)&gt; 获取地图3的怪物总数</td></tr>
+                        <tr><td><span class="tag">&lt;$指定怪物数量()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$指定怪物数量(3,鸡)&gt; 获取地图3中名为"鸡"的怪物数量</td></tr>
+                        <tr><td><span class="tag">&lt;$变量按值排序()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$变量按值排序(1,100,1)&gt;<br>参数：类型,变量编号,排名</td></tr>
+                        <tr><td><span class="tag">&lt;$变量按名排序()&gt;</span></td><td>✅ 已验证 | 用法：&lt;$变量按名排序(1,100,1)&gt;<br>参数：类型,变量编号,排名</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>💾 脚本变量</h2>
+                <div class="info">
+                    <strong>用法：</strong><br>
+                    • 脚本变量用于存储临时数据或持久化数据，支持数字型和字符型两种类型<br>
+                    • 显示变量：使用 <strong>&lt;$STR(变量名)&gt;</strong> 格式，例如：你的积分是&lt;$STR(U100)&gt;<br>
+                    • 赋值变量：使用 <strong>变量赋值 变量名 值</strong> 命令，例如：变量赋值 G0 100<br>
+                    • 运算变量：使用 <strong>变量运算 变量1 运算符 变量2</strong> 命令，例如：变量运算 U0 + G0<br>
+                    • 检测变量：使用 <strong>检测变量 &lt;$STR(变量名)&gt; 比较符 值</strong> 命令，例如：检测变量 &lt;$STR(J22)&gt; &gt; 0<br>
+                    <br>
+                    <strong>注意事项：</strong><br>
+                    • 变量编号：可以是 0 到 2,147,483,647 之间的任意整数（int类型范围）<br>
+                    • 编号建议：使用有意义的编号来管理变量，例如 U900存储转生次数，U865存储雪域点等<br>
+                    • 变量名格式：在变量赋值和变量运算命令中，变量名直接写（如 G0、U100），不需要&lt;$STR()&gt;包裹<br>
+                    • 检测变量：在检测变量命令中，需要使用 &lt;$STR(变量名)&gt; 来获取变量的值<br>
+                    • 支持运算符：变量运算支持 +、-、*、/ 等运算符<br>
+                    • 全局变量（G/A）：用于服务器全局活动、世界事件等所有玩家共享的数据<br>
+                    • 持久变量（U/T/J）：用于任务进度、成就系统、玩家数据统计等需要持久化的数据<br>
+                    • 临时变量（N/S）：用于对话中的临时计算、中间结果存储等<br>
+                    • 对话变量（Q）：用于对话框内的页面跳转、选项记忆等<br>
+                    <br>
+                    <strong>完整示例：</strong><br>
+                    <div class="example" style="margin-top: 10px;">
+; 检测变量并进行操作<br>
+#IF<br>
+检测变量 &lt;$STR(J22)&gt; &gt; 0<br>
+#ACT<br>
+变量赋值 U100 50<br>
+变量运算 U100 + G0<br>
+#SAY<br>
+你的积分是&lt;$STR(U100)&gt;
+                    </div>
+                </div>
+                <table>
+                    <thead><tr><th>变量名（作用范围）</th><th>用法/说明</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag">G0-G2147483647</span> 🌐</td><td>全局数字型 | 可保存 | 存放在数据库里，清据数据时清零 | 所有玩家共享</td></tr>
+                        <tr><td><span class="tag">A0-A2147483647</span> 🌐</td><td>全局字符型 | 可保存 | 存放在数据库里，清据数据时清空 | 所有玩家共享</td></tr>
+                        <tr><td><span class="tag">U0-U2147483647</span> 👤</td><td>私人数字型 | 可保存 | 存放在人物数据里面 | 个人独立持久化 | 示例：U900存储转生次数</td></tr>
+                        <tr><td><span class="tag">T0-T2147483647</span> 👤</td><td>私人字符型 | 可保存 | 存放在人物数据里面 | 个人独立持久化</td></tr>
+                        <tr><td><span class="tag">J0-J2147483647</span> 👤⏰</td><td>私人数字型 | 可保存 | 存放在人物数据里面，每天0点自动清零 | 用于每日任务</td></tr>
+                        <tr><td><span class="tag">N0-N2147483647</span> ⏱️</td><td>临时数字型 | 不保存 | 下线不保存，小退归0 | 用于临时计算</td></tr>
+                        <tr><td><span class="tag">S0-S2147483647</span> ⏱️</td><td>临时字符型 | 不保存 | 下线不保存，小退清空 | 用于临时存储</td></tr>
+                        <tr><td><span class="tag">Q0-Q2147483647</span> 💬</td><td>对话数字型 | 不保存 | 关闭对话框重置为0 | 用于对话框页面跳转</td></tr>
+                    </tbody>
+                </table>
+</body>
+</html>

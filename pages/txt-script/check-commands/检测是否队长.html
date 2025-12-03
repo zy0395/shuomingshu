@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>👑 检测是否队长</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测当前对话玩家是否为其所在队伍的队长。此命令无需参数，主要用于限制某些操作只能由队长执行，如组队副本进入、队伍任务接取、队伍物品分配等场景。通过此命令可以实现队伍权限管理，确保重要决策由队长做出。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式（无参数）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否队长</span><br>
+<span class="keyword">#ACT</span><br>
+执行仅队长可进行的操作<br>
+<span class="keyword">#SAY</span><br>
+显示给队长的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">无参数</div>
+            <div class="param-desc">此命令不需要任何参数，直接使用即可。<br>
+            • 自动检测当前玩家是否为队长<br>
+            • 未组队的玩家不是队长，检测失败<br>
+            • 队员身份的玩家检测失败</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>玩家状态</th>
+                <th>检测结果</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">队长</span></td>
+                <td>检测通过</td>
+                <td>玩家已组队且为队长，执行#ACT和#SAY</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">队员</span></td>
+                <td>检测失败</td>
+                <td>玩家已组队但不是队长，显示#ELSESAY</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">未组队</span></td>
+                <td>检测失败</td>
+                <td>玩家未加入任何队伍，显示#ELSESAY</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：组队副本进入</div>
+        <div class="code-block"><span class="comment">; 组队副本传送员 - 只有队长可以带队进入副本</span><br>
+[@组队副本传送员]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 组队副本 ═══════════&lt;BR&gt;<br>
+欢迎来到组队副本入口！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+组队副本需要队长带领进入。&lt;BR&gt;<br>
+进入副本后，全体队员将一起传送。&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;进入【恶魔城堡】副本/@进入副本&gt;&lt;BR&gt;<br>
+&lt;查看副本说明/@副本说明&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<br>
+[@进入副本]<br>
+<span class="keyword">#IF</span><br>
+检测是否队长<br>
+检测组队人数 &gt;= 3<br>
+检测地图队员 3<br>
+检测金币数量 &gt;= 50000<br>
+<span class="keyword">#ACT</span><br>
+调整金币数量 - 50000<br>
+队伍传送 D001 100 100<br>
+<span class="keyword">#SAY</span><br>
+═══════════ 传送成功 ═══════════&lt;BR&gt;<br>
+您已带领队伍进入【恶魔城堡】副本！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+副本时间：60分钟&lt;BR&gt;<br>
+副本难度：困难&lt;BR&gt;<br>
+推荐人数：3-5人&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+祝您游戏愉快！<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 进入失败 ═══════════&lt;BR&gt;<br>
+进入副本需要满足以下条件：&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+✓ 您必须是 &lt;队长/fcolor=255&gt;&lt;BR&gt;<br>
+✓ 队伍人数至少 &lt;3人/fcolor=255&gt;&lt;BR&gt;<br>
+✓ 队员在附近（3格范围内）&lt;BR&gt;<br>
+✓ 支付入场费 &lt;50,000金币/fcolor=255&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+请满足条件后再来！&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 检测逻辑</strong><br>
+        • 检测时会判断玩家是否已组队（所属队伍不为空）<br>
+        • 同时判断玩家的地图编号是否等于队伍的队长编号<br>
+        • 未组队的玩家检测会失败（因为没有队伍）<br>
+        • 队员身份的玩家检测会失败（因为不是队长）<br><br>
+        
+        <strong>2. 常见应用场景</strong><br>
+        • <strong>组队副本</strong>：队长带领队伍进入副本地图<br>
+        • <strong>队伍任务</strong>：队长接取队伍共享任务<br>
+        • <strong>物品分配</strong>：队长决定BOSS掉落物品的分配方式<br>
+        • <strong>队伍设置</strong>：队长调整队伍的各项设置<br>
+        • <strong>队伍活动</strong>：队长报名参加队伍活动或比赛<br>
+        • <strong>权限控制</strong>：限制某些操作只能由队长执行<br><br>
+        
+        <strong>3. 与其他队伍检测命令配合</strong><br>
+        • <strong>检测有无队伍</strong>：先检测是否组队，再检测是否队长<br>
+        • <strong>检测组队人数</strong>：确保队伍人数满足副本要求<br>
+        • <strong>检测地图队员</strong>：确保队员在附近，一起进入副本<br>
+        • <strong>检测队员变量</strong>：检测队员是否完成前置任务<br>
+        • 建议按顺序检测：有无队伍 → 是否队长 → 队伍人数 → 其他条件<br><br>
+        
+        <strong>4. 队长权限设计</strong><br>
+        • 合理设置哪些操作需要队长权限<br>
+        • 过多的队长限制可能影响队员体验<br>
+        • 重要决策（如副本进入、物品分配）应由队长决定<br>
+        • 一般操作（如NPC对话、物品购买）无需限制队长<br>
+        • 提供队长转让功能，方便队伍管理<br><br>
+        
+        <strong>5. 玩家体验优化</strong><br>
+        • 在#ELSESAY中明确提示"需要队长权限"<br>
+        • 告知非队长玩家应该由队长来操作<br>
+        • 提供队长查看命令，方便玩家确认谁是队长<br>
+        • 未组队的玩家应提示"请先组队"<br>
+        • 队员应提示"请让队长操作"或"您不是队长"<br><br>
+        
+        <strong>6. 队伍传送功能</strong><br>
+        • 使用"队伍传送"命令可以将整个队伍传送到指定地图<br>
+        • 格式：队伍传送 地图编号 X坐标 Y坐标<br>
+        • 队伍传送会传送所有在线队员（包括队长）<br>
+        • 离线队员不会被传送<br>
+        • 建议配合"检测地图队员"确保队员在附近<br><br>
+        
+        <strong>7. 安全性考虑</strong><br>
+        • 队长权限涉及整个队伍的利益，应谨慎设计<br>
+        • 避免队长滥用权限损害队员利益<br>
+        • 重要操作可以提供二次确认<br>
+        • 记录队长的重要操作日志，便于追溯<br>
+        • 提供队员举报机制，防止恶意队长<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 忘记检测是否组队，导致未组队玩家也能操作<br>
+        • ❌ 队长检测失败提示不明确，玩家不知道原因<br>
+        • ❌ 过度限制队长权限，影响队伍协作效率<br>
+        • ❌ 队伍传送前未检测队员是否在附近<br>
+        • ✅ 正确做法：合理设置队长权限，提供清晰的权限提示，确保队伍操作的公平性
+    </div>
+
+</body>
+</html>

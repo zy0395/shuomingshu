@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>👑 检测是否会长</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测当前玩家是否为其所在行会的会长。此命令无需参数，用于限制某些操作只能由会长执行，如行会管理、行会资源分配、攻城战报名等。通过此命令可以实现行会权限管理，确保重要决策由会长做出。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式（无参数）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测是否会长</span><br>
+<span class="keyword">#ACT</span><br>
+执行会长专属操作<br>
+<span class="keyword">#SAY</span><br>
+显示给会长的文本</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">无参数</div>
+            <div class="param-desc">此命令不需要任何参数，直接使用即可。<br>
+            • 自动检测当前玩家是否为会长<br>
+            • 未加入行会的玩家检测失败<br>
+            • 普通成员、副会长等非会长身份检测失败</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>玩家状态</th>
+                <th>检测结果</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">会长</span></td>
+                <td>检测通过</td>
+                <td>玩家已加入行会且为会长，执行#ACT和#SAY</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">副会长/成员</span></td>
+                <td>检测失败</td>
+                <td>玩家已加入行会但不是会长，显示#ELSESAY</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">未加入行会</span></td>
+                <td>检测失败</td>
+                <td>玩家未加入任何行会，显示#ELSESAY</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：行会资源管理</div>
+        <div class="code-block"><span class="comment">; 行会管理NPC - 只有会长可以管理行会资源</span><br>
+[@行会管理员]<br>
+<span class="keyword">#IF</span><br>
+检测是否会长<br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 行会管理 ═══════════&lt;BR&gt;<br>
+会长您好！欢迎来到行会管理中心。&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+行会名称：&lt;$行会名称&gt;&lt;BR&gt;<br>
+行会等级：&lt;$行会等级&gt;级&lt;BR&gt;<br>
+成员人数：&lt;$行会人数&gt;人&lt;BR&gt;<br>
+行会资金：&lt;$行会资金&gt;金币&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+会长功能：&lt;BR&gt;<br>
+&lt;行会升级/@行会升级&gt;&lt;BR&gt;<br>
+&lt;成员管理/@成员管理&gt;&lt;BR&gt;<br>
+&lt;行会捐献/@行会捐献&gt;&lt;BR&gt;<br>
+&lt;行会仓库/@行会仓库&gt;&lt;BR&gt;<br>
+&lt;攻城战报名/@攻城报名&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 行会管理 ═══════════&lt;BR&gt;<br>
+抱歉，只有行会会长才能使用此功能！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+您当前状态：&lt;BR&gt;<br>
+• 行会：&lt;$行会名称&gt;&lt;BR&gt;<br>
+• 职位：&lt;$行会职位&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+请让您的会长来操作此功能。&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br>
+<br>
+[@行会升级]<br>
+<span class="keyword">#IF</span><br>
+检测行会等级 &lt; 5<br>
+检测金币数量 &gt;= 1000000<br>
+<span class="keyword">#ACT</span><br>
+调整金币数量 - 1000000<br>
+改变行会等级 + 1<br>
+<span class="keyword">#SAY</span><br>
+═══════════ 行会升级成功 ═══════════&lt;BR&gt;<br>
+恭喜！行会等级提升成功！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+升级前等级：&lt;$行会等级-1&gt;级&lt;BR&gt;<br>
+升级后等级：&lt;$行会等级&gt;级&lt;BR&gt;<br>
+消耗金币：1,000,000&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+行会等级提升后将获得：&lt;BR&gt;<br>
+• 增加行会成员上限&lt;BR&gt;<br>
+• 提升行会BUFF效果&lt;BR&gt;<br>
+• 解锁新的行会功能&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;#SO:1&gt;确定&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 行会升级失败 ═══════════&lt;BR&gt;<br>
+升级条件不满足！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+需要条件：&lt;BR&gt;<br>
+• 行会等级未达到上限（最高5级）&lt;BR&gt;<br>
+• 需要 &lt;1,000,000金币/fcolor=255&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+当前金币：&lt;$金币数量&gt;&lt;BR&gt;<br>
+&lt;返回/@行会管理员&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 检测逻辑</strong><br>
+        • 检测时会判断玩家是否加入行会（所属行会不为空）<br>
+        • 同时判断玩家的行会职位是否为会长<br>
+        • 未加入行会的玩家检测会失败（因为没有行会）<br>
+        • 副会长、精英、普通成员等非会长身份检测会失败<br><br>
+        
+        <strong>2. 常见应用场景</strong><br>
+        • <strong>行会管理</strong>：会长管理行会设置、成员权限<br>
+        • <strong>行会升级</strong>：会长决定行会升级、扩建等<br>
+        • <strong>资源分配</strong>：会长分配行会资源、发放福利<br>
+        • <strong>攻城战报名</strong>：会长代表行会报名参加攻城战<br>
+        • <strong>联盟管理</strong>：会长建立或解除行会联盟<br>
+        • <strong>重要决策</strong>：会长决定行会的重大事项<br><br>
+        
+        <strong>3. 与其他行会检测命令配合</strong><br>
+        • <strong>检测角色行会</strong>：先检测是否加入行会<br>
+        • <strong>检测行会等级</strong>：限制某些功能需要行会达到一定等级<br>
+        • <strong>检测行会人数</strong>：确保行会人数满足要求<br>
+        • 建议按顺序检测：是否加入行会 → 是否会长 → 其他行会条件<br><br>
+        
+        <strong>4. 会长权限设计</strong><br>
+        • 合理设置哪些操作需要会长权限<br>
+        • 重要决策（如行会升级、成员管理）应由会长决定<br>
+        • 日常操作（如行会捐献、任务接取）无需限制会长<br>
+        • 可以设置副会长权限，分担会长工作<br>
+        • 提供会长转让功能，方便行会管理<br><br>
+        
+        <strong>5. 玩家体验优化</strong><br>
+        • 在#ELSESAY中明确提示"需要会长权限"<br>
+        • 告知非会长玩家应该由会长来操作<br>
+        • 未加入行会的玩家应提示"请先加入行会"<br>
+        • 普通成员应提示"请让会长操作"或"您不是会长"<br>
+        • 显示玩家当前的行会和职位信息<br><br>
+        
+        <strong>6. 会长变更处理</strong><br>
+        • 会长可以转让给其他成员<br>
+        • 会长长期不在线可能被系统弹劾<br>
+        • 会长退出行会时需要先转让或解散行会<br>
+        • 建议提供会长转让确认机制，防止误操作<br><br>
+        
+        <strong>7. 安全性考虑</strong><br>
+        • 会长权限涉及整个行会的利益，应谨慎设计<br>
+        • 重要操作可以提供二次确认<br>
+        • 记录会长的重要操作日志，便于追溯<br>
+        • 避免会长滥用权限损害行会成员利益<br>
+        • 提供成员举报机制，防止恶意会长<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 忘记检测是否加入行会，导致未加入行会的玩家也能操作<br>
+        • ❌ 会长检测失败提示不明确，玩家不知道原因<br>
+        • ❌ 过度限制会长权限，影响行会管理效率<br>
+        • ❌ 未提供副会长权限，会长工作量过大<br>
+        • ✅ 正确做法：合理设置会长权限，提供清晰的权限提示，确保行会管理的公平性
+    </div>
+
+</body>
+</html>

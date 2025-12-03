@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测物品幸运值 - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测物品幸运值</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家背包或装备栏中指定位置物品的幸运属性值。幸运值是装备的特殊属性之一，影响暴击、掉落等游戏机制。此命令常用于装备鉴定、交易验证、强化系统等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">装备类型</span> <span class="number">装备位置</span> <span class="string">比较符</span> <span class="number">幸运值</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 条件满足时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：装备类型</div>
+            <div class="param-desc">
+                指定检测的物品来源类型。<br>
+                • <strong>0</strong> - 背包物品<br>
+                • <strong>1</strong> - 装备栏物品<br>
+                • <strong>2</strong> - 仓库物品
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数2：装备位置</div>
+            <div class="param-desc">
+                物品在对应类型中的位置索引。<br>
+                • 背包：0-99（根据背包大小）<br>
+                • 装备栏：0-12（武器、衣服、头盔等）<br>
+                • 仓库：0-仓库上限
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数3：比较符</div>
+            <div class="param-desc">
+                用于比较幸运值的运算符。<br>
+                • <strong>==</strong> - 等于<br>
+                • <strong>&gt;</strong> - 大于<br>
+                • <strong>&lt;</strong> - 小于<br>
+                • <strong>&gt;=</strong> - 大于等于<br>
+                • <strong>&lt;=</strong> - 小于等于<br>
+                • <strong>!=</strong> - 不等于
+            </div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">参数4：幸运值</div>
+            <div class="param-desc">
+                要比较的幸运值数值。<br>
+                • 类型：整数<br>
+                • 范围：通常为0-7<br>
+                • 0表示无幸运，7为最高幸运等级
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>物品存在且幸运值满足条件</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>物品不存在或幸运值不满足条件</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">位置无效</span></td>
+                <td>指定位置没有物品</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">参数错误</span></td>
+                <td>装备类型或位置参数错误</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：幸运装备鉴定</div>
+        <div class="code-block"><span class="comment">; 装备鉴定师 - 检测装备幸运值</span><br>
+[@装备鉴定师]<br>
+<span class="keyword">#SAY</span><br>
+请将需要鉴定的装备放入背包第1格。&lt;BR&gt;&lt;BR&gt;&lt;开始鉴定/@鉴定幸运&gt;&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<br>
+[@鉴定幸运]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">0</span> <span class="number">0</span> &gt;= <span class="number">7</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+【鉴定结果】&lt;BR&gt;&lt;BR&gt;★★★ 极品装备 ★★★&lt;BR&gt;幸运值：+7（满幸运）&lt;BR&gt;&lt;BR&gt;这是一件幸运满值的极品装备！&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">0</span> <span class="number">0</span> &gt;= <span class="number">5</span><br>
+<span class="keyword">#ELSESAY</span><br>
+【鉴定结果】&lt;BR&gt;&lt;BR&gt;★★ 优质装备 ★★&lt;BR&gt;幸运值：+5~6&lt;BR&gt;&lt;BR&gt;这是一件高幸运的优质装备。&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+【鉴定结果】&lt;BR&gt;&lt;BR&gt;★ 普通装备 ★&lt;BR&gt;幸运值较低，建议继续强化。&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：幸运装备回收</div>
+        <div class="code-block"><span class="comment">; 装备回收NPC - 高价回收高幸运装备</span><br>
+[@装备回收商]<br>
+<span class="keyword">#SAY</span><br>
+高价回收幸运装备！&lt;BR&gt;&lt;BR&gt;回收价格：&lt;BR&gt;· 幸运+7：100万金币&lt;BR&gt;· 幸运+5~6：50万金币&lt;BR&gt;· 幸运+3~4：20万金币&lt;BR&gt;&lt;BR&gt;请将装备放入背包第1格。&lt;BR&gt;&lt;回收装备/@回收&gt;&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<br>
+[@回收]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">0</span> <span class="number">0</span> == <span class="number">7</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">删除背包物品</span> <span class="number">0</span><br>
+<span class="tag">调整角色金币</span> <span class="number">1000000</span><br>
+<span class="keyword">#SAY</span><br>
+回收成功！获得100万金币。<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">0</span> <span class="number">0</span> &gt;= <span class="number">5</span><br>
+<span class="keyword">#ELSEACT</span><br>
+<span class="tag">删除背包物品</span> <span class="number">0</span><br>
+<span class="tag">调整角色金币</span> <span class="number">500000</span><br>
+<span class="keyword">#ELSESAY</span><br>
+回收成功！获得50万金币。<br>
+<span class="keyword">#ELSESAY</span><br>
+该装备幸运值不足，无法回收。&lt;BR&gt;最低要求：幸运+3&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：装备强化验证</div>
+        <div class="code-block"><span class="comment">; 强化大师 - 只能强化低幸运装备</span><br>
+[@强化大师]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">0</span> <span class="number">0</span> &lt; <span class="number">7</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 执行强化逻辑</span><br>
+<span class="keyword">#SAY</span><br>
+装备可以强化！&lt;BR&gt;消耗：10000金币&lt;BR&gt;&lt;确认强化/@强化&gt;&lt;BR&gt;&lt;取消/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+该装备已达幸运上限，无需强化。&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：装备栏幸运检测</div>
+        <div class="code-block"><span class="comment">; 检测玩家当前装备的武器幸运</span><br>
+[@幸运查询]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测物品幸运值</span> <span class="number">1</span> <span class="number">0</span> &gt;= <span class="number">5</span><br>
+<span class="keyword">#SAY</span><br>
+您的武器幸运值很高！&lt;BR&gt;当前战力加成+20%&lt;BR&gt;&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+您的武器幸运值较低。&lt;BR&gt;建议前往强化提升幸运。&lt;BR&gt;&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 装备类型说明</strong><br>
+        • <code>0</code> - 背包（检测背包中的物品）<br>
+        • <code>1</code> - 装备栏（检测当前穿戴的装备）<br>
+        • <code>2</code> - 仓库（检测仓库中的物品）<br><br>
+        
+        <strong>2. 装备位置索引</strong><br>
+        • 背包位置：从0开始，范围取决于背包大小<br>
+        • 装备栏位置：0=武器, 1=衣服, 2=头盔等（具体见装备系统定义）<br>
+        • 位置索引从0开始计数<br><br>
+        
+        <strong>3. 幸运值范围</strong><br>
+        • 通常幸运值范围：0-7<br>
+        • 0表示无幸运属性<br>
+        • 7为满幸运（最高等级）<br>
+        • 不同服务器可能有不同的幸运值上限<br><br>
+        
+        <strong>4. 物品存在性检测</strong><br>
+        • 如果指定位置没有物品，检测会失败<br>
+        • 建议先使用<code>检测背包物品</code>确认物品存在<br>
+        • 或使用<code>#ELSESAY</code>提供友好的错误提示<br><br>
+        
+        <strong>5. 比较运算符支持</strong><br>
+        • 支持所有常见比较符（==、&gt;、&lt;、&gt;=、&lt;=、!=）<br>
+        • 可以检测精确值：== 7（满幸运）<br>
+        • 可以检测范围：&gt;= 5（高幸运）<br><br>
+        
+        <strong>6. 与其他检测配合</strong><br>
+        • 通常配合<code>检测背包物品</code>确认物品存在<br>
+        • 可配合<code>检测装备属性</code>进行综合判断<br>
+        • 配合<code>删除背包物品</code>实现回收系统
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 装备鉴定系统</strong><br>
+        • 鉴定装备幸运等级<br>
+        • 评估装备价值<br>
+        • 提供装备品质建议<br><br>
+        
+        <strong>2. 装备回收系统</strong><br>
+        • 高价回收高幸运装备<br>
+        • 根据幸运值给予不同报酬<br>
+        • 防止低品质装备回收<br><br>
+        
+        <strong>3. 装备强化系统</strong><br>
+        • 限制强化次数（幸运已满停止强化）<br>
+        • 验证强化资格<br>
+        • 计算强化成功率<br><br>
+        
+        <strong>4. 装备交易验证</strong><br>
+        • 交易前检测装备品质<br>
+        • 防止虚假交易<br>
+        • 确保装备符合要求<br><br>
+        
+        <strong>5. 任务奖励系统</strong><br>
+        • 根据幸运值给予奖励<br>
+        • 幸运装备专属任务<br>
+        • 成就系统判定
+    </div>
+
+</body>
+</html>

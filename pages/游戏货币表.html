@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏货币表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .currency-name {
+            color: #ff8b8b;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .currency-id {
+            color: #6dd881;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>💰 游戏货币表</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">货币名称</th>
+                <th style="width: 20%;">货币ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="currency-name">银币</span></td>
+                <td><span class="currency-id">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">金币</span></td>
+                <td><span class="currency-id">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">声威</span></td>
+                <td><span class="currency-id">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">元宝</span></td>
+                <td><span class="currency-id">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">未知</span></td>
+                <td><span class="currency-id">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">魂值</span></td>
+                <td><span class="currency-id">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">师门声望</span></td>
+                <td><span class="currency-id">6</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">万法之气</span></td>
+                <td><span class="currency-id">7</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">战场点数</span></td>
+                <td><span class="currency-id">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">公会贡献</span></td>
+                <td><span class="currency-id">9</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">修炼点数</span></td>
+                <td><span class="currency-id">10</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">道义点数</span></td>
+                <td><span class="currency-id">11</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">擂台积分</span></td>
+                <td><span class="currency-id">12</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">成就点数</span></td>
+                <td><span class="currency-id">13</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">未知2</span></td>
+                <td><span class="currency-id">14</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">绑定元宝</span></td>
+                <td><span class="currency-id">15</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">武道荣誉</span></td>
+                <td><span class="currency-id">16</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">勇者金币</span></td>
+                <td><span class="currency-id">17</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">跨服秘宝</span></td>
+                <td><span class="currency-id">18</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">修罗声威</span></td>
+                <td><span class="currency-id">19</span></td>
+            </tr>
+            <tr>
+                <td><span class="currency-name">疲劳值</span></td>
+                <td><span class="currency-id">20</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "name": "nwserver-docs-viewer",
+  "version": "1.0.0",
+  "description": "NwServer游戏服务器使用说明书 - 离线查看器",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win --x64 --config.compression=normal --config.npmRebuild=false",
+    "build:win32": "electron-builder --win --ia32 --config.compression=normal --config.npmRebuild=false",
+    "build:all": "electron-builder --win --x64 --ia32 --config.compression=normal --config.npmRebuild=false",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": [
+    "NwServer",
+    "游戏服务器",
+    "使用说明书",
+    "文档查看器"
+  ],
+  "author": "NwServer Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.nwserver.docs",
+    "productName": "NwServer使用说明书",
+    "directories": {
+      "output": "打包输出"
+    },
+    "files": [
+      "electron/**/*",
+      "pages/**/*",
+      "css/**/*",
+      "js/**/*",
+      "videos/**/*",
+      "index.html",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "electron/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "NwServer使用说明书",
+      "installerIcon": "electron/icon.ico",
+      "uninstallerIcon": "electron/icon.ico",
+      "installerHeaderIcon": "electron/icon.ico",
+      "language": "2052"
+    },
+    "portable": {
+      "artifactName": "NwServer使用说明书-绿色版-${arch}.exe"
+    }
+  }
+}

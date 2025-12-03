@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: #0f1419; line-height: 1.8; color: #e2e8f0; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #f6ad55; margin: 30px 0 15px; border-left: 4px solid #f6ad55; padding-left: 15px; font-size: 1.5em; }
+        p { margin: 10px 0; color: #a0aec0; }
+        
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #e2e8f0; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        .info code { background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 3px; font-family: 'Consolas', monospace; }
+        
+        .constant-section { margin-bottom: 40px; }
+        .constant-section h2 { color: #667eea; }
+        .constant-section p { color: #a0aec0; margin-bottom: 15px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px; text-align: left; font-weight: 600; }
+        td { padding: 12px 15px; border-bottom: 1px solid #2d3748; background: #1a1f2e; color: #a0aec0; }
+        tbody tr:hover td { background: #1f2633; }
+        tbody tr:last-child td { border-bottom: none; }
+        
+        .const-name { font-family: 'Consolas', 'Courier New', monospace; color: #fc8181; font-weight: 600; white-space: nowrap; }
+        .const-value { font-family: 'Consolas', 'Courier New', monospace; color: #667eea; }
+        
+        .code-block { background: #1a1f2e; border-left: 4px solid #667eea; padding: 15px; border-radius: 5px; margin: 20px 0; font-family: 'Consolas', 'Courier New', monospace; overflow-x: auto; line-height: 1.8; border: 1px solid #2d3748; }
+        .code-block strong { color: #667eea; font-family: "Microsoft YaHei"; }
+    </style>
+</head>
+<body>
+    <h1>📝 脚本常量</h1>
+    
+    <div class="info">
+        <strong>📖 使用说明</strong><br>
+        本页面列出了 NwServer 脚本系统中可用的所有常量定义。<br>
+        这些常量在脚本中使用 <code>&lt;$常量名&gt;</code> 的格式调用。<br>
+        常量分为两类：<strong>全局常量</strong>（不依赖玩家实例）和<strong>玩家常量</strong>（需要玩家实例）。
+    </div>
+
+    <div class="constant-section">
+        <h2>⏰ 时间相关常量</h2>
+        <p>获取当前服务器时间信息（全局常量）</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>示例值</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$日期&gt;</span></td>
+                    <td><span class="const-value">2025/10/30</span></td>
+                    <td>当前日期（短格式）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$年份&gt;</span></td>
+                    <td><span class="const-value">2025</span></td>
+                    <td>当前年份</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$月份&gt;</span></td>
+                    <td><span class="const-value">10</span></td>
+                    <td>当前月份</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$日&gt;</span></td>
+                    <td><span class="const-value">30</span></td>
+                    <td>当前日期（天）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$小时&gt;</span></td>
+                    <td><span class="const-value">14</span></td>
+                    <td>当前小时（24小时制）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$分钟&gt;</span></td>
+                    <td><span class="const-value">30</span></td>
+                    <td>当前分钟</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$秒&gt;</span></td>
+                    <td><span class="const-value">45</span></td>
+                    <td>当前秒数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$星期&gt;</span></td>
+                    <td><span class="const-value">3</span></td>
+                    <td>星期几（0=周日，1=周一...6=周六）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$UTC时间戳&gt;</span></td>
+                    <td><span class="const-value">1730270400</span></td>
+                    <td>UTC时间戳（秒）</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>🎮 服务器相关常量</h2>
+        <p>获取服务器状态和配置信息（全局常量）</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>示例值</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$开区天数&gt;</span></td>
+                    <td><span class="const-value">15</span></td>
+                    <td>服务器开区至今天数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$开区模式&gt;</span></td>
+                    <td><span class="const-value">正式服</span></td>
+                    <td>服务器开区模式</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$区服名称&gt;</span></td>
+                    <td><span class="const-value">一区</span></td>
+                    <td>服务器区服名称</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$在线人数&gt;</span></td>
+                    <td><span class="const-value">256</span></td>
+                    <td>当前在线连接数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$玩家总数&gt;</span></td>
+                    <td><span class="const-value">200</span></td>
+                    <td>数据库中已创建的角色总数（排除假人/机器人）</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>⚔️ 沙巴克相关常量</h2>
+        <p>沙巴克攻城战相关信息（全局常量）</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>示例值</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$沙城节点&gt;</span></td>
+                    <td><span class="const-value">0</span></td>
+                    <td>沙巴克当前节点状态</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$沙巴克状态&gt;</span></td>
+                    <td><span class="const-value">未开启</span></td>
+                    <td>沙巴克状态（未开启/正在进行）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$沙巴克行会&gt;</span></td>
+                    <td><span class="const-value">天下行会</span></td>
+                    <td>占领沙巴克的行会名字</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$沙巴克城主&gt;</span></td>
+                    <td><span class="const-value">会长名字</span></td>
+                    <td>沙巴克城主名字</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>👤 角色基础属性</h2>
+        <p>获取玩家角色的基础属性信息（需要玩家实例）</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$角色名称&gt;</span></td>
+                    <td>角色名字</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$角色账号&gt;</span></td>
+                    <td>所属账号名</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$角色职业&gt;</span></td>
+                    <td>职业类型</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前等级&gt;</span></td>
+                    <td>角色等级</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前经验&gt;</span></td>
+                    <td>当前经验值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$转生次数&gt;</span></td>
+                    <td>转生次数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前战力&gt;</span></td>
+                    <td>综合战斗力</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$角色PK值&gt;</span></td>
+                    <td>PK值惩罚</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$行会名字&gt;</span></td>
+                    <td>所属行会名称</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$行会等级&gt;</span></td>
+                    <td>行会等级</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>💰 货币与资源</h2>
+        <p>获取玩家的货币和资源信息</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$元宝数量&gt;</span></td>
+                    <td>玩家元宝数量</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$金币数量&gt;</span></td>
+                    <td>玩家金币数量</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$银币数量&gt;</span></td>
+                    <td>玩家银币数量</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$历练点&gt;</span></td>
+                    <td>历练点数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$雪域点&gt;</span></td>
+                    <td>雪域威名点</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$累计充值&gt;</span></td>
+                    <td>累计充值金额</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$今日充值&gt;</span></td>
+                    <td>今日充值金额</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$捐赠元宝&gt;</span></td>
+                    <td>捐赠的元宝数量</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$捐赠排行&gt;</span></td>
+                    <td>捐赠排行榜排名</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>⚔️ 战斗属性</h2>
+        <p>获取玩家的战斗相关属性</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$当前体力&gt;</span></td>
+                    <td>当前生命值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大体力&gt;</span></td>
+                    <td>最大生命值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前魔力&gt;</span></td>
+                    <td>当前魔法值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大魔力&gt;</span></td>
+                    <td>最大魔法值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小攻击&gt;</span></td>
+                    <td>最小物理攻击力</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大攻击&gt;</span></td>
+                    <td>最大物理攻击力</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小防御&gt;</span></td>
+                    <td>最小物理防御</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大防御&gt;</span></td>
+                    <td>最大物理防御</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小魔法&gt;</span></td>
+                    <td>最小魔法攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大魔法&gt;</span></td>
+                    <td>最大魔法攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小魔防&gt;</span></td>
+                    <td>最小魔法防御</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大魔防&gt;</span></td>
+                    <td>最大魔法防御</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小道术&gt;</span></td>
+                    <td>最小道术攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大道术&gt;</span></td>
+                    <td>最大道术攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$暴击概率&gt;</span></td>
+                    <td>暴击几率</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$暴击伤害&gt;</span></td>
+                    <td>暴击伤害加成</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$幸运等级&gt;</span></td>
+                    <td>幸运值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$攻击速度&gt;</span></td>
+                    <td>攻击速度</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$物理准确&gt;</span></td>
+                    <td>物理命中准确度</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$物理敏捷&gt;</span></td>
+                    <td>物理敏捷（闪避）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$魔法命中&gt;</span></td>
+                    <td>魔法命中率</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$魔法闪避&gt;</span></td>
+                    <td>魔法闪避率</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>🗺️ 地图与位置</h2>
+        <p>获取地图和位置相关信息</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$地图编号&gt;</span></td>
+                    <td>当前所在地图编号</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$地图名字&gt;</span></td>
+                    <td>当前所在地图名称</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前坐标X&gt;</span></td>
+                    <td>当前X坐标</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前坐标Y&gt;</span></td>
+                    <td>当前Y坐标</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>🔧 高级功能常量</h2>
+        <p>带参数的高级功能常量（需要玩家实例）</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$节点值(编号)&gt;</span></td>
+                    <td>获取指定编号的节点值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$物品名字(物品ID)&gt;</span></td>
+                    <td>获取指定ID的物品名称</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$地图怪物数量(地图ID)&gt;</span></td>
+                    <td>获取指定地图的怪物总数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$指定怪物数量(地图ID,怪物名)&gt;</span></td>
+                    <td>获取指定地图指定名称的怪物数量</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$天赋等级(天赋ID)&gt;</span></td>
+                    <td>获取指定天赋的等级</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$捐赠名字(排名)&gt;</span></td>
+                    <td>获取捐赠排行榜指定排名的玩家名字</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$捐赠元宝(排名)&gt;</span></td>
+                    <td>获取捐赠排行榜指定排名的元宝数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$变量按IDX排序(类型,变量ID)&gt;</span></td>
+                    <td>获取玩家在指定变量排序中的排名</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$变量按名排序(类型,变量ID,排名)&gt;</span></td>
+                    <td>获取排行榜指定排名的玩家名字</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$变量按值排序(类型,变量ID,排名)&gt;</span></td>
+                    <td>获取排行榜指定排名的变量值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$物品属性(容器IDX,格子IDX,属性ID)&gt;</span></td>
+                    <td>获取指定容器及格子上的物品属性值（属性ID=51 返回物品名）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$佩戴装备名称(部位编号)&gt;</span></td>
+                    <td>获取角色身上指定装备栏位置已穿戴装备的名称（容器固定为0，部位编号为装备格子索引）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$STR(%变量ID)&gt;</span></td>
+                    <td>读取脚本变量占位符的当前值，常用于通用脚本</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$剩余玛法特权(类型ID)&gt;</span></td>
+                    <td>获取指定类型特权剩余天数（未开启时为 0）</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="info">
+            <strong>排名参数说明</strong><br>
+            &lt;$变量按名排序&gt; 与 &lt;$变量按值排序&gt; 的“排名”参数从 1 开始计数；&lt;$捐赠名字(排名)&gt; 与 &lt;$捐赠元宝(排名)&gt; 目前沿用 0 代表第一名的旧逻辑，若传入 1 则代表第二名，请在脚本中注意换算。
+        </div>
+    </div>
+    
+    <div class="constant-section">
+        <h2>🎯 战斗扩展属性</h2>
+        <p>更细粒度的战斗属性常量，可用于打造更精细的属性展示或判定</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$最小弓术&gt;</span></td>
+                    <td>弓术职业的最小攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大弓术&gt;</span></td>
+                    <td>弓术职业的最大攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小刺术&gt;</span></td>
+                    <td>刺客职业的最小攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大刺术&gt;</span></td>
+                    <td>刺客职业的最大攻击</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最小圣伤&gt;</span></td>
+                    <td>圣属性最小伤害</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$最大圣伤&gt;</span></td>
+                    <td>圣属性最大伤害</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$破物防&gt;</span></td>
+                    <td>破物理防御数值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$破魔防&gt;</span></td>
+                    <td>破魔法防御数值</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$物理击回&gt;</span></td>
+                    <td>物理击中回复</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$魔法击回&gt;</span></td>
+                    <td>魔法击中回复</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$中毒躲避&gt;</span></td>
+                    <td>中毒躲避几率</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$减暴击&gt;</span></td>
+                    <td>减免暴击几率</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$减暴伤&gt;</span></td>
+                    <td>减免暴击伤害</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$伤害加成&gt;</span></td>
+                    <td>技能/装备带来的额外伤害加成</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>📦 角色与系统状态</h2>
+        <p>用于展示角色当前系统开关、版本信息或服务器内计数</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$觉醒面板&gt;</span></td>
+                    <td>角色是否开启觉醒面板（开启=1，关闭=0）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$龙卫觉醒&gt;</span></td>
+                    <td>是否开通龙卫觉醒（1/0）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$本期特权&gt;</span></td>
+                    <td>当前周/月特权编号</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$玛法特权剩余天数&gt;</span></td>
+                    <td>全局玛法特权剩余天数（负值代表已过期）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$双倍经验&gt;</span></td>
+                    <td>当前角色可用的双倍经验次数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$日程进度&gt;</span></td>
+                    <td>角色每日任务完成进度</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$脚本爆率倍数&gt;</span></td>
+                    <td>脚本掉落倍率（可用于动态掉落展示）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$玩家数量&gt;</span></td>
+                    <td>当前服务器内在线玩家对象数</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前时间&gt;</span></td>
+                    <td>服务器当前时间（整型时间戳格式）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前短日期&gt;</span></td>
+                    <td>yyyy-MM-dd 格式的日期字符串</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$当前地图&gt;</span></td>
+                    <td>与 &lt;$地图编号&gt; 相同，表示所在地图编号</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$开区节点&gt;</span></td>
+                    <td>当前开区阶段/节点编号</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$游戏版本&gt;</span></td>
+                    <td>当前服务器的版本节点（与开区节点同步）</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>⚙️ 自动分解与拾取开关</h2>
+        <p>玩家可在客户端面板中设置的自动处理开关，返回“是/否”</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$普通分解开关&gt;</span></td>
+                    <td>普通装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$沃玛分解开关&gt;</span></td>
+                    <td>沃玛装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$祖玛分解开关&gt;</span></td>
+                    <td>祖玛装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$赤月分解开关&gt;</span></td>
+                    <td>赤月装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$苍月分解开关&gt;</span></td>
+                    <td>苍月装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$魔龙分解开关&gt;</span></td>
+                    <td>魔龙装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$星王分解开关&gt;</span></td>
+                    <td>星王装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$神秘分解开关&gt;</span></td>
+                    <td>神秘装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$技能分解开关&gt;</span></td>
+                    <td>技能书分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$极品分解开关&gt;</span></td>
+                    <td>极品装备分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$装备分解开关&gt;</span></td>
+                    <td>全局装备分解总开关</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$自动分解开关&gt;</span></td>
+                    <td>一键自动分解是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$自动拾取开关&gt;</span></td>
+                    <td>自动拾取是否开启</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$极品自动入包开关&gt;</span></td>
+                    <td>极品掉落是否自动放入背包</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="constant-section">
+        <h2>🧪 试炼系统占位常量</h2>
+        <p>以下常量已在脚本中预留，目前尚未接入试炼玩法逻辑，统一返回 0。</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>常量名称</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="const-name">&lt;$试炼倒计时&gt;</span></td>
+                    <td>试炼剩余时间占位（未实装）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$试炼传送门(地图ID)&gt;</span></td>
+                    <td>指定试炼地图的传送门数量（未实装，地图ID 需为 0-255 的 byte 值）</td>
+                </tr>
+                <tr>
+                    <td><span class="const-name">&lt;$试炼进入人数&gt;</span></td>
+                    <td>当前进入试炼的玩家数量占位（未实装）</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>📝 使用示例</h2>
+    
+    <div class="code-block">
+        <strong>💡 TXT脚本使用示例：</strong><br><br>
+; 显示玩家当前等级和金币<br>
+你好&lt;$角色名称&gt;，你当前等级是&lt;$当前等级&gt;，金币：&lt;$金币数量&gt;<br><br>
+; 显示服务器信息<br>
+欢迎来到&lt;$区服名称&gt;，开区第&lt;$开区天数&gt;天<br>
+当前在线人数：&lt;$在线人数&gt;<br><br>
+; 检查时间条件<br>
+#IF<br>
+检测变量 &lt;$小时&gt; &gt; 20<br>
+#ACT<br>
+发送系统消息 现在是晚上&lt;$小时&gt;点，活动时间已开启！ FALSE<br><br>
+; 显示战斗属性<br>
+你的攻击力：&lt;$最小攻击&gt;-&lt;$最大攻击&gt;<br>
+你的防御力：&lt;$最小防御&gt;-&lt;$最大防御&gt;
+    </div>
+</body>
+</html>

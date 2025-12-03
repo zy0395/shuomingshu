@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>💰 检测金币数量</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家当前拥有的金币数量是否满足指定条件。金币是游戏中最基础的货币，用于购买物品、修理装备、技能学习等各种消费。此命令支持个人检测和队伍检测两种模式，广泛应用于商店系统、任务系统、交易系统等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 个人检测模式（默认）</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测金币数量</span> <span class="string">比较符</span> <span class="number">金币数量</span><br>
+<br>
+<span class="comment">; 队伍检测模式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测金币数量</span> <span class="string">比较符</span> <span class="number">金币数量</span> <span class="number">1</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">比较符</div>
+            <div class="param-desc">用于比较金币数量的运算符，支持以下选项：<br>
+            • <strong>==</strong>：等于指定金币数量<br>
+            • <strong>&gt;</strong>：大于指定金币数量<br>
+            • <strong>&lt;</strong>：小于指定金币数量<br>
+            • <strong>&gt;=</strong>：大于等于指定金币数量<br>
+            • <strong>&lt;=</strong>：小于等于指定金币数量<br>
+            • <strong>!=</strong>：不等于指定金币数量</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">金币数量</div>
+            <div class="param-desc">要检测的金币数量值。<br>
+            • 类型：无符号整数（uint）<br>
+            • 范围：0 - 4,294,967,295<br>
+            • 示例：检测玩家是否有至少10万金币，则填写 100000</div>
+        </div>
+        <div class="param-item">
+            <div class="param-name">检测模式（可选）</div>
+            <div class="param-desc">指定检测模式，决定检测范围：<br>
+            • <strong>0</strong>（默认）：个人检测模式，只检测当前玩家的金币数量<br>
+            • <strong>1</strong>：队伍检测模式，检测队伍中所有在线队员是否都满足条件<br>
+            • 省略此参数时默认为个人检测模式（0）</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测模式</th>
+                <th>检测通过条件</th>
+                <th>检测失败条件</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">个人模式</span></td>
+                <td>当前玩家的金币数量符合比较条件</td>
+                <td>当前玩家的金币数量不符合比较条件</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">队伍模式</span></td>
+                <td>队伍中所有在线队员的金币数量都符合比较条件</td>
+                <td>未组队、或任意在线队员的金币数量不符合条件</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-info">参数错误</span></td>
+                <td>-</td>
+                <td>比较符错误、金币数量格式错误</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：商店购买物品</div>
+        <div class="code-block"><span class="comment">; 高级药水商人（购买需要5万金币）</span><br>
+[@高级药水商人]<br>
+<span class="keyword">#IF</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+欢迎光临！我这里有最好的恢复药水。&lt;BR&gt;<br>
+&lt;高级生命药水（50,000金币）/@购买生命药水&gt;&lt;BR&gt;<br>
+&lt;高级魔法药水（50,000金币）/@购买魔法药水&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<br>
+[@购买生命药水]<br>
+<span class="keyword">#IF</span><br>
+检测金币数量 &gt;= 50000<br>
+检测背包空间 &gt;= 1<br>
+<span class="keyword">#ACT</span><br>
+调整金币数量 - 50000<br>
+给予物品 "高级生命药水" 1<br>
+<span class="keyword">#SAY</span><br>
+购买成功！您获得了 &lt;高级生命药水/fcolor=255&gt;！&lt;BR&gt;<br>
+&lt;继续购买/@高级药水商人&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+抱歉，您的金币不足或背包已满！&lt;BR&gt;<br>
+需要：&lt;50,000金币/fcolor=255&gt; + &lt;1个背包空位/fcolor=255&gt;&lt;BR&gt;<br>
+当前金币：&lt;$金币数量&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;返回&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 队伍检测模式的使用</strong><br>
+        • 队伍模式要求所有在线队员都满足金币条件<br>
+        • 离线队员会被自动忽略，不参与检测<br>
+        • 如果玩家未组队，队伍模式检测会直接失败<br>
+        • 常用于组队副本入场费、团队任务费用等场景<br><br>
+        
+        <strong>2. 比较符的选择建议</strong><br>
+        • 购买物品或消费时，通常使用 &gt;= 确保玩家有足够的金币<br>
+        • 使用 == 检测精确金币数量时，要避免因金币波动导致检测失败<br>
+        • 使用 &lt; 或 &lt;= 可以检测"穷人"身份，用于慈善任务或新手福利<br><br>
+        
+        <strong>3. 金币数量的范围</strong><br>
+        • 金币数量为无符号整数，最大值为 4,294,967,295（约42亿）<br>
+        • 服务器可能对单个角色的金币持有量设置上限<br>
+        • 超过上限的金币可能无法继续获得，建议存入仓库<br><br>
+        
+        <strong>4. 常见应用场景</strong><br>
+        • <strong>商店购买</strong>：检测玩家是否有足够金币购买物品<br>
+        • <strong>技能学习</strong>：学习技能前检测金币是否充足<br>
+        • <strong>装备修理</strong>：修理装备前确认有足够的维修费用<br>
+        • <strong>传送费用</strong>：传送到指定地图需要支付金币<br>
+        • <strong>任务接取</strong>：某些任务需要金币作为启动资金<br>
+        • <strong>行会捐献</strong>：向行会捐献金币提升行会等级<br><br>
+        
+        <strong>5. 与调整金币命令配合</strong><br>
+        • 检测金币后，使用"调整金币数量"命令进行扣除或增加<br>
+        • 格式：调整金币数量 + 数量（增加）或 - 数量（减少）<br>
+        • 建议在#ACT段先扣除金币，再发放物品，避免物品发放失败但金币已扣除的情况<br><br>
+        
+        <strong>6. 玩家体验优化</strong><br>
+        • 在#ELSESAY中使用变量 &lt;$金币数量&gt; 显示玩家当前金币<br>
+        • 明确提示需要的金币数量，避免玩家困惑<br>
+        • 对于大额消费，可以提供二次确认选项<br>
+        • 建议在重要消费前提示玩家保留足够的备用金<br><br>
+        
+        <strong>7. 性能考虑</strong><br>
+        • 金币检测性能开销极小，可以频繁使用<br>
+        • 队伍模式会遍历所有队员，但开销依然很低<br>
+        • 建议在脚本开始阶段进行检测，减少无谓的后续操作<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 使用错误的比较符导致检测逻辑错误<br>
+        • ❌ 队伍模式下未判断玩家是否组队<br>
+        • ❌ 扣除金币后未检测是否成功<br>
+        • ❌ 金币数量填写为负数或非数字<br>
+        • ✅ 正确做法：先检测金币是否充足，再执行扣除操作，提供清晰的反馈信息
+    </div>
+
+</body>
+</html>

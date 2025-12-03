@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUFF枚举表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 1.4em;
+            color: #7d8fd0;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #404968;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .enum-name {
+            color: #ff8b8b;
+            font-weight: 600;
+        }
+        
+        .enum-value {
+            color: #6dd881;
+            font-weight: 500;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .category {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>🛡️ BUFF枚举表</h1>
+    
+    <div class="category">✨ BUFF效果类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">技能标志</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">状态标志</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">造成伤害</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">属性增减</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">伤害增减</span></td>
+                <td><span class="enum-value">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">创建陷阱</span></td>
+                <td><span class="enum-value">16</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">生命回复</span></td>
+                <td><span class="enum-value">32</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">诱惑提升</span></td>
+                <td><span class="enum-value">64</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">添加BUFF</span></td>
+                <td><span class="enum-value">128</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">释放技能</span></td>
+                <td><span class="enum-value">256</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">坐骑BUFF</span></td>
+                <td><span class="enum-value">512</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">获得奖励</span></td>
+                <td><span class="enum-value">1024</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🔄 BUFF叠加类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">禁止叠加</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">同类替换</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">同类叠加</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">同类延时</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🎯 BUFF判定类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">所有技能伤害</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">所有物理伤害</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">所有魔法伤害</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">所有特定伤害</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">来源技能伤害</span></td>
+                <td><span class="enum-value">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">来源物理伤害</span></td>
+                <td><span class="enum-value">16</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">来源魔法伤害</span></td>
+                <td><span class="enum-value">32</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">来源特定伤害</span></td>
+                <td><span class="enum-value">64</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">检测对象BUFF</span></td>
+                <td><span class="enum-value">128</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">⚖️ BUFF判定方式</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">主动攻击增伤</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">主动攻击减伤</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">被动受伤增伤</span></td>
+                <td><span class="enum-value">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">被动受伤减伤</span></td>
+                <td><span class="enum-value">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">主增基被减系</span></td>
+                <td><span class="enum-value">4</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="category">🎭 BUFF作用类型</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">枚举名称</th>
+                <th style="width: 50%;">枚举值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="enum-name">增益类型</span></td>
+                <td><span class="enum-value">0</span></td>
+            </tr>
+            <tr>
+                <td><span class="enum-name">减益类型</span></td>
+                <td><span class="enum-value">1</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

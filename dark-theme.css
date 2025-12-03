@@ -1,0 +1,22 @@
+/* 深色主题 - 快速加载版本 */
+body {
+    background: #1a1d2e !important;
+    color: #e0e0e0 !important;
+}
+
+/* 快速隐藏白色元素，避免闪烁 */
+* {
+    transition: none !important;
+}
+
+div, section, article, main {
+    background-color: transparent !important;
+}
+
+/* 白色背景强制转换 */
+[style*="background: white"],
+[style*="background: #fff"],
+[style*="background-color: white"],
+[style*="background-color: #fff"] {
+    background: #1f2544 !important;
+}

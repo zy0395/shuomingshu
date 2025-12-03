@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测拥有BUFF - NwServer脚本命令</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📋 检测拥有BUFF</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测玩家是否拥有指定编号的BUFF效果。BUFF是游戏中的增益或减益状态，可以临时改变角色的属性或能力。此命令广泛应用于验证特定增益效果、检测特殊状态、控制BUFF相关功能、防止重复添加等场景。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">BUFF编号</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="comment">; 拥有BUFF时执行的操作</span></div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">参数1：BUFF编号</div>
+            <div class="param-desc">
+                要检测的BUFF编号。<br>
+                • 类型：无符号短整数<br>
+                • 范围：0-65535<br>
+                • BUFF编号需要在BUFF配置文件中预先定义<br>
+                • 示例：1001（双倍经验）、1002（攻击增强）、2001（中毒）等
+            </div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>检测结果</th>
+                <th>说明</th>
+                <th>后续执行</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-success">检测通过</span></td>
+                <td>玩家当前拥有该BUFF</td>
+                <td>执行#ACT中的操作命令</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">检测失败</span></td>
+                <td>玩家当前没有该BUFF</td>
+                <td>跳过#ACT，显示#ELSESAY中的提示</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag">参数错误</span></td>
+                <td>BUFF编号格式错误</td>
+                <td>检测失败，按条件不满足处理</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例1：双倍经验BUFF管理</div>
+        <div class="code-block"><span class="comment">; 经验导师 - 根据是否拥有BUFF显示不同选项</span><br>
+[@经验导师]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">1001</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════ 双倍经验状态 ═══════&lt;BR&gt;<br>
+您当前拥有双倍经验状态！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+状态效果：经验获得 +100%&lt;BR&gt;<br>
+剩余时间：&lt;&lt;S$双倍经验时间&gt;/fcolor=255&gt; 分钟&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+抓紧时间升级吧！&lt;BR&gt;<br>
+&lt;续费双倍经验/@续费经验&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════ 双倍经验服务 ═══════&lt;BR&gt;<br>
+您当前没有双倍经验状态。&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+开启双倍经验效果：&lt;BR&gt;<br>
+· 经验获得 +100%&lt;BR&gt;<br>
+· 持续时间：60分钟&lt;BR&gt;<br>
+· 所需费用：500元宝&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+&lt;开启双倍经验/@开启经验&gt;&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例2：防止重复添加BUFF</div>
+        <div class="code-block"><span class="comment">; BUFF商人 - 购买前检测是否已有BUFF</span><br>
+[@BUFF商人]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">2001</span><br>
+<span class="keyword">#SAY</span><br>
+您已经拥有攻击增强状态！&lt;BR&gt;<br>
+无需重复购买。&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSEIF</span><br>
+<span class="tag">检测元宝数量</span> &gt;= <span class="number">1000</span><br>
+<span class="keyword">#ELSEACT</span><br>
+<span class="tag">调整角色元宝</span> - <span class="number">1000</span><br>
+<span class="tag">添加指定BUFF</span> <span class="number">2001</span> <span class="number">3600</span><br>
+<span class="keyword">#ELSESAY</span><br>
+购买成功！&lt;BR&gt;<br>
+获得：攻击增强BUFF&lt;BR&gt;<br>
+持续时间：60分钟&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+元宝不足！需要1000元宝。</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例3：活动入场检测</div>
+        <div class="code-block"><span class="comment">; 活动传送员 - 检测玩家是否有活动参与BUFF</span><br>
+[@活动传送员]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">3001</span><br>
+<span class="keyword">#ACT</span><br>
+<span class="tag">角色随机传送</span> <span class="number">100</span><br>
+<span class="keyword">#SAY</span><br>
+传送成功！&lt;BR&gt;<br>
+欢迎参加限时活动！<br>
+<span class="keyword">#ELSESAY</span><br>
+抱歉，您没有活动参与资格。&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+活动参与条件：&lt;BR&gt;<br>
+· 需要购买活动通行证&lt;BR&gt;<br>
+· 或完成前置任务获得参与资格&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;</div>
+    </div>
+
+    <div class="example-container">
+        <div class="example-title">📌 示例4：多BUFF组合检测</div>
+        <div class="code-block"><span class="comment">; 祝福祭坛 - 检测多个BUFF状态</span><br>
+[@祝福祭坛]<br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">5001</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">5002</span><br>
+<span class="tag">检测拥有BUFF</span> <span class="number">5003</span><br>
+<span class="keyword">#SAY</span><br>
+【满级祝福】&lt;BR&gt;<br>
+您已拥有全部三重祝福！&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+· 力量祝福 ✓&lt;BR&gt;<br>
+· 敏捷祝福 ✓&lt;BR&gt;<br>
+· 智慧祝福 ✓&lt;BR&gt;<br>
+&lt;BR&gt;<br>
+祝福效果已达到最大！&lt;BR&gt;<br>
+&lt;关闭/@退出&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+请选择您需要的祝福：&lt;BR&gt;<br>
+&lt;力量祝福/@添加力量&gt;&lt;BR&gt;<br>
+&lt;敏捷祝福/@添加敏捷&gt;&lt;BR&gt;<br>
+&lt;智慧祝福/@添加智慧&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 编号范围</strong><br>
+        • BUFF编号为无符号短整数，有效范围：<strong>0-65535</strong><br>
+        • 超出范围的编号会导致检测失败<br>
+        • 建议使用有意义的编号段划分不同类型的BUFF<br><br>
+        
+        <strong>2. BUFF配置</strong><br>
+        • BUFF编号需要在BUFF配置文件中预先定义<br>
+        • 使用未定义的编号不会报错，但检测永远为false<br>
+        • 配置文件中需要定义BUFF的效果、持续时间等属性<br><br>
+        
+        <strong>3. 添加BUFF</strong><br>
+        • BUFF通过<code>添加指定BUFF</code>执行命令添加<br>
+        • 也可以通过技能系统自动添加<br>
+        • 添加时需要指定持续时间（秒）<br><br>
+        
+        <strong>4. BUFF时效性</strong><br>
+        • BUFF通常有持续时间限制<br>
+        • 时间到期后会自动从玩家身上移除<br>
+        • 可以使用<code>移除指定BUFF</code>命令提前移除<br><br>
+        
+        <strong>5. BUFF叠加</strong><br>
+        • 玩家可以同时拥有多个不同的BUFF<br>
+        • 相同编号的BUFF不会叠加，会刷新持续时间<br>
+        • 可以通过多个检测命令检测多个BUFF<br><br>
+        
+        <strong>6. 防重复添加</strong><br>
+        • 添加BUFF前应该先检测是否已有<br>
+        • 避免玩家通过BUG重复获得BUFF<br>
+        • 建议配合元宝或物品扣除使用
+    </div>
+
+    <h2>🎯 应用场景</h2>
+    <div class="scenario">
+        <div class="scenario-title">💡 典型应用场景</div>
+        <strong>1. 双倍经验系统</strong><br>
+        • 检测玩家是否已有双倍经验<br>
+        • 显示剩余时间和续费选项<br>
+        • 防止重复购买浪费<br><br>
+        
+        <strong>2. BUFF商城</strong><br>
+        • 购买前检测是否已有相同BUFF<br>
+        • 避免重复购买<br>
+        • 提示已有BUFF的剩余时间<br><br>
+        
+        <strong>3. 活动权限控制</strong><br>
+        • 使用BUFF作为活动参与凭证<br>
+        • 检测BUFF来控制传送权限<br>
+        • 实现限时活动机制<br><br>
+        
+        <strong>4. 祝福系统</strong><br>
+        • 检测玩家拥有哪些祝福<br>
+        • 根据祝福状态提供不同服务<br>
+        • 实现多重祝福组合效果<br><br>
+        
+        <strong>5. 状态异常检测</strong><br>
+        • 检测玩家是否中毒<br>
+        • 检测是否处于虚弱状态<br>
+        • 提供相应的治疗服务
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; padding: 30px; background: white; line-height: 1.8; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; font-size: 2em; }
+        h2 { color: #34495e; margin: 30px 0 15px; border-left: 4px solid #3498db; padding-left: 15px; font-size: 1.5em; }
+        h3 { color: #555; margin: 20px 0 10px; font-size: 1.2em; }
+        p { margin: 10px 0; color: #333; }
+        
+        /* 信息框样式 */
+        .info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info strong { color: #fff; font-size: 1.1em; }
+        
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-title { font-weight: bold; color: #856404; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-title { font-weight: bold; color: #155724; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .implementation { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .implementation-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; font-size: 1.1em; }
+        
+        .scenario { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .scenario-title { font-weight: bold; color: #4a148c; margin-bottom: 8px; font-size: 1.1em; }
+        
+        /* 代码示例样式 */
+        .code-block { background: #282c34; color: #abb2bf; padding: 20px; margin: 15px 0; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+        .code-block .keyword { color: #c678dd; font-weight: bold; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .tag { color: #e06c75; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 15px 10px; text-align: left; font-weight: bold; font-size: 1.05em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; }
+        tbody tr:hover { background: #f5f7fa; transition: background 0.3s; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        
+        /* 标签样式 */
+        .label-tag { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; white-space: nowrap; font-weight: bold; }
+        .label-tag-success { background: #28a745; }
+        .label-tag-warning { background: #ffc107; color: #333; }
+        .label-tag-info { background: #17a2b8; }
+        
+        /* 参数列表样式 */
+        .param-list { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
+        .param-item { margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #3498db; border-radius: 3px; }
+        .param-name { font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+        .param-desc { color: #555; margin-top: 5px; }
+        
+        /* 示例容器 */
+        .example-container { margin: 20px 0; }
+        .example-title { background: #34495e; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 1.05em; }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>📅 检测星期几</h1>
+    
+    <div class="info">
+        <strong>📖 命令说明</strong><br>
+        检测当前是星期几，用于实现基于每周特定日期的活动开放、定时任务、周常副本等功能。此命令支持英文星期名称（大小写不敏感），可以灵活控制不同日期的游戏内容，是周期性活动系统的核心命令。
+    </div>
+
+    <h2>📋 命令格式</h2>
+    <div class="code-block"><span class="comment">; 基本格式</span><br>
+<span class="keyword">#IF</span><br>
+<span class="tag">检测星期几</span> <span class="string">星期名称</span><br>
+<span class="keyword">#ACT</span><br>
+执行该星期的操作<br>
+<span class="keyword">#SAY</span><br>
+显示的文本<br>
+<br>
+<span class="comment">; 使用#OR实现多个星期检测</span><br>
+<span class="keyword">#OR</span><br>
+<span class="tag">检测星期几</span> <span class="string">MONDAY</span><br>
+<span class="tag">检测星期几</span> <span class="string">WEDNESDAY</span><br>
+<span class="tag">检测星期几</span> <span class="string">FRIDAY</span><br>
+<span class="keyword">#ACT</span><br>
+执行满足任一星期的操作</div>
+
+    <h2>🔧 参数说明</h2>
+    <div class="param-list">
+        <div class="param-item">
+            <div class="param-name">星期名称</div>
+            <div class="param-desc">要检测的星期名称，使用英文表示（大小写不敏感）：<br>
+            • <strong>SUNDAY</strong>：星期日（对应数字0）<br>
+            • <strong>MONDAY</strong>：星期一（对应数字1）<br>
+            • <strong>TUESDAY</strong>：星期二（对应数字2）<br>
+            • <strong>WEDNESDAY</strong>：星期三（对应数字3）<br>
+            • <strong>THURSDAY</strong>：星期四（对应数字4）<br>
+            • <strong>FRIDAY</strong>：星期五（对应数字5）<br>
+            • <strong>SATURDAY</strong>：星期六（对应数字6）<br>
+            • 支持大小写混合，如：Monday、monday、MONDAY 都有效</div>
+        </div>
+    </div>
+
+    <h2>✅ 检测结果</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>星期值</th>
+                <th>英文名称</th>
+                <th>检测通过条件</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="label-tag label-tag-info">0</span></td>
+                <td>SUNDAY（星期日）</td>
+                <td>当前是星期日时检测通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">1</span></td>
+                <td>MONDAY（星期一）</td>
+                <td>当前是星期一时检测通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">2</span></td>
+                <td>TUESDAY（星期二）</td>
+                <td>当前是星期二时检测通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">3</span></td>
+                <td>WEDNESDAY（星期三）</td>
+                <td>当前是星期三时检测通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">4</span></td>
+                <td>THURSDAY（星期四）</td>
+                <td>当前是星期四时检测通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-success">5</span></td>
+                <td>FRIDAY（星期五）</td>
+                <td>当前是星期五时检测通过</td>
+            </tr>
+            <tr>
+                <td><span class="label-tag label-tag-warning">6</span></td>
+                <td>SATURDAY（星期六）</td>
+                <td>当前是星期六时检测通过</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📝 完整示例</h2>
+    
+    <div class="example-container">
+        <div class="example-title">📌 示例：周末双倍经验活动</div>
+        <div class="code-block"><span class="comment">; 周末双倍经验NPC</span><br>
+[@周末活动NPC]<br>
+<span class="keyword">#OR</span><br>
+检测星期几 SATURDAY<br>
+检测星期几 SUNDAY<br>
+<span class="keyword">#ACT</span><br>
+<span class="keyword">#SAY</span><br>
+═══════════ 周末双倍经验 ═══════════&lt;BR&gt;<br>
+欢迎参加周末双倍经验活动！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+活动时间：每周六、周日 全天&lt;BR&gt;<br>
+活动内容：&lt;BR&gt;<br>
+• 击杀怪物经验 &lt;x2/fcolor=255&gt;&lt;BR&gt;<br>
+• 任务奖励经验 &lt;x2/fcolor=255&gt;&lt;BR&gt;<br>
+• BOSS经验 &lt;x2/fcolor=255&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+当前星期：&lt;$星期几&gt; （0=周日，6=周六）&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+&lt;领取双倍经验BUFF/@领取BUFF&gt;&lt;BR&gt;<br>
+&lt;查看活动说明/@活动说明&gt;&lt;BR&gt;<br>
+&lt;#SO:1&gt;离开&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+═══════════ 周末双倍经验 ═══════════&lt;BR&gt;<br>
+抱歉，双倍经验活动仅在周末开放！&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+活动时间：每周六、周日 全天&lt;BR&gt;<br>
+当前星期：&lt;$星期几&gt;&lt;BR&gt;<br>
+─────────────────────────&lt;BR&gt;<br>
+请在周末再来参加活动！&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;<br>
+<br>
+[@领取BUFF]<br>
+<span class="keyword">#IF</span><br>
+检测任务标识 500 0<br>
+<span class="keyword">#ACT</span><br>
+任务标识 500 1<br>
+添加BUFF 100 7200<br>
+<span class="keyword">#SAY</span><br>
+恭喜您获得 &lt;双倍经验BUFF/fcolor=255&gt;！&lt;BR&gt;<br>
+持续时间：2小时&lt;BR&gt;<br>
+祝您游戏愉快！&lt;BR&gt;<br>
+&lt;#SO:1&gt;确定&lt;#SO/&gt;<br>
+<span class="keyword">#ELSESAY</span><br>
+您今天已经领取过双倍经验BUFF了！&lt;BR&gt;<br>
+每天只能领取一次哦。&lt;BR&gt;<br>
+&lt;#SO:1&gt;知道了&lt;#SO/&gt;</div>
+    </div>
+
+    <h2>⚠️ 注意事项</h2>
+    <div class="warning">
+        <div class="warning-title">⚠️ 重要提示</div>
+        <strong>1. 参数格式要求</strong><br>
+        • 必须使用英文星期名称（SUNDAY、MONDAY等）<br>
+        • 支持大小写混合，Sunday、SUNDAY、sunday 都有效<br>
+        • 不支持中文星期名称（如"星期一"、"周一"）<br>
+        • 不支持数字格式（不能直接填写0-6）<br><br>
+        
+        <strong>2. 星期值对应关系</strong><br>
+        • 星期日 = 0 = SUNDAY（注意：星期日是0，不是7）<br>
+        • 星期一 = 1 = MONDAY<br>
+        • 星期二 = 2 = TUESDAY<br>
+        • 星期三 = 3 = WEDNESDAY<br>
+        • 星期四 = 4 = THURSDAY<br>
+        • 星期五 = 5 = FRIDAY<br>
+        • 星期六 = 6 = SATURDAY<br>
+        • 可以使用变量 &lt;$星期几&gt; 显示数字值（0-6）<br><br>
+        
+        <strong>3. 常见应用场景</strong><br>
+        • <strong>周末活动</strong>：周六、周日开放特殊活动或双倍奖励<br>
+        • <strong>每日活动</strong>：特定星期开放特定副本或BOSS<br>
+        • <strong>周常任务</strong>：每周固定日期刷新任务<br>
+        • <strong>攻城战</strong>：每周固定日期开启攻城活动<br>
+        • <strong>限时商店</strong>：特定星期开放特殊商品<br>
+        • <strong>轮换副本</strong>：不同星期开放不同副本<br><br>
+        
+        <strong>4. 多星期检测的实现</strong><br>
+        • 使用#OR段可以检测多个星期（满足任一即可）<br>
+        • 例如：周一、三、五开放，使用#OR检测这三天<br>
+        • #OR中每个检测星期几命令独占一行<br>
+        • 满足任意一个星期条件即执行#ACT和#SAY<br><br>
+        
+        <strong>5. 与其他时间检测命令配合</strong><br>
+        • <strong>检测当前小时</strong>：限制活动在特定星期的特定时间段<br>
+        • <strong>检测当前分钟</strong>：精确控制活动开启和关闭时间<br>
+        • 例如：每周六20:00-21:00开放攻城战<br>
+        • 建议检测顺序：星期 → 小时 → 分钟<br><br>
+        
+        <strong>6. 玩家体验优化</strong><br>
+        • 使用 &lt;$星期几&gt; 变量显示当前是星期几（数字0-6）<br>
+        • 在提示中明确说明活动开放的星期<br>
+        • 提供活动日程表，让玩家了解每周活动安排<br>
+        • 活动开始前可以提前公告，提醒玩家准备<br><br>
+        
+        <strong>7. 服务器时间同步</strong><br>
+        • 检测使用的是服务器当前时间，不是玩家本地时间<br>
+        • 确保服务器时间设置正确，避免活动时间错乱<br>
+        • 跨时区服务器需要注意时差问题<br>
+        • 建议在游戏中显示服务器时间，方便玩家参考<br><br>
+        
+        <strong>8. 常见错误</strong><br>
+        • ❌ 使用中文星期名称（如"星期一"）<br>
+        • ❌ 使用数字代替英文名称（如直接填1代表星期一）<br>
+        • ❌ 拼写错误（如MONADY而不是MONDAY）<br>
+        • ❌ 星期日使用7而不是0（正确应该是SUNDAY或0）<br>
+        • ❌ 多星期检测时未使用#OR段<br>
+        • ✅ 正确做法：使用正确的英文星期名称，配合#OR实现多星期检测
+    </div>
+
+</body>
+</html>

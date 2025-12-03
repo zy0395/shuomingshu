@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人物属性表 - NwServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1d2e;
+            color: #e0e0e0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 2em;
+            color: #8e9ff5;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #5d6fa6;
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 1.3em;
+            color: #8e9ff5;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #5d6fa6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: #252b48;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #8e9ff5;
+            font-weight: 600;
+            border-bottom: 2px solid #404968;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #404968;
+            color: #b8c1ec;
+        }
+        
+        tbody tr {
+            background: #1f2544;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #252b48;
+            box-shadow: 0 2px 8px rgba(142, 159, 245, 0.2);
+        }
+        
+        .attr-name {
+            color: #ff8b8b;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .attr-id {
+            color: #6dd881;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>👤 人物属性表</h1>
+    
+    <h2>⚔️ 基础攻击属性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">最小攻击</span></td>
+                <td><span class="attr-id">6</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大攻击</span></td>
+                <td><span class="attr-id">7</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小魔法</span></td>
+                <td><span class="attr-id">8</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大魔法</span></td>
+                <td><span class="attr-id">9</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小道术</span></td>
+                <td><span class="attr-id">10</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大道术</span></td>
+                <td><span class="attr-id">11</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小刺术</span></td>
+                <td><span class="attr-id">12</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大刺术</span></td>
+                <td><span class="attr-id">13</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小弓术</span></td>
+                <td><span class="attr-id">14</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大弓术</span></td>
+                <td><span class="attr-id">15</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小圣伤</span></td>
+                <td><span class="attr-id">67</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大圣伤</span></td>
+                <td><span class="attr-id">68</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>🛡️ 基础防御属性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">最小防御</span></td>
+                <td><span class="attr-id">2</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大防御</span></td>
+                <td><span class="attr-id">3</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小魔防</span></td>
+                <td><span class="attr-id">4</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大魔防</span></td>
+                <td><span class="attr-id">5</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">破物防</span></td>
+                <td><span class="attr-id">69</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">破魔防</span></td>
+                <td><span class="attr-id">70</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>💪 生命与魔力</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">最大体力</span></td>
+                <td><span class="attr-id">16</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大魔力</span></td>
+                <td><span class="attr-id">17</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">体力恢复</span></td>
+                <td><span class="attr-id">37</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔力恢复</span></td>
+                <td><span class="attr-id">38</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">药品回血</span></td>
+                <td><span class="attr-id">29</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">药品回魔</span></td>
+                <td><span class="attr-id">30</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>⚡ 速度与敏捷</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">行走速度</span></td>
+                <td><span class="attr-id">18</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">奔跑速度</span></td>
+                <td><span class="attr-id">19</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">攻击速度</span></td>
+                <td><span class="attr-id">36</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">物理准确</span></td>
+                <td><span class="attr-id">20</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">物理敏捷</span></td>
+                <td><span class="attr-id">21</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔法闪避</span></td>
+                <td><span class="attr-id">22</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔法命中</span></td>
+                <td><span class="attr-id">102</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>💥 暴击属性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">暴击概率</span></td>
+                <td><span class="attr-id">23</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">暴击伤害</span></td>
+                <td><span class="attr-id">24</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">减暴击</span></td>
+                <td><span class="attr-id">25</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">减暴伤</span></td>
+                <td><span class="attr-id">26</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>🔥 状态强化</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">减速强化</span></td>
+                <td><span class="attr-id">77</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">定身强化</span></td>
+                <td><span class="attr-id">78</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">流血强化</span></td>
+                <td><span class="attr-id">79</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">灼烧强化</span></td>
+                <td><span class="attr-id">80</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>🛡️ 抗性属性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">减速抗性</span></td>
+                <td><span class="attr-id">81</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">定身抗性</span></td>
+                <td><span class="attr-id">82</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">物理抗性</span></td>
+                <td><span class="attr-id">85</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔法抗性</span></td>
+                <td><span class="attr-id">86</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">中毒躲避</span></td>
+                <td><span class="attr-id">45</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">物理击回</span></td>
+                <td><span class="attr-id">87</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔法击回</span></td>
+                <td><span class="attr-id">88</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>🎯 怪物专属属性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">怪物伤害</span></td>
+                <td><span class="attr-id">112</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">怪物闪避</span></td>
+                <td><span class="attr-id">113</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">怪物破防</span></td>
+                <td><span class="attr-id">114</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">怪物命中</span></td>
+                <td><span class="attr-id">115</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>📦 其他属性</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">伤害加成</span></td>
+                <td><span class="attr-id">35</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">幸运等级</span></td>
+                <td><span class="attr-id">31</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大腕力</span></td>
+                <td><span class="attr-id">50</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大穿戴</span></td>
+                <td><span class="attr-id">51</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大负重</span></td>
+                <td><span class="attr-id">52</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">技能标志</span></td>
+                <td><span class="attr-id">56</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">攻杀标志</span></td>
+                <td><span class="attr-id">57</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">装备免修</span></td>
+                <td><span class="attr-id">1000</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>📊 属性系数</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">属性名称</th>
+                <th style="width: 20%;">属性ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="attr-name">最小防御系数</span></td>
+                <td><span class="attr-id">202</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大防御系数</span></td>
+                <td><span class="attr-id">203</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小魔防系数</span></td>
+                <td><span class="attr-id">204</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大魔防系数</span></td>
+                <td><span class="attr-id">205</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小攻击系数</span></td>
+                <td><span class="attr-id">206</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大攻击系数</span></td>
+                <td><span class="attr-id">207</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小魔法系数</span></td>
+                <td><span class="attr-id">208</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大魔法系数</span></td>
+                <td><span class="attr-id">209</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小道术系数</span></td>
+                <td><span class="attr-id">210</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大道术系数</span></td>
+                <td><span class="attr-id">211</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小刺术系数</span></td>
+                <td><span class="attr-id">212</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大刺术系数</span></td>
+                <td><span class="attr-id">213</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小弓术系数</span></td>
+                <td><span class="attr-id">214</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大弓术系数</span></td>
+                <td><span class="attr-id">215</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大体力系数</span></td>
+                <td><span class="attr-id">216</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大魔力系数</span></td>
+                <td><span class="attr-id">217</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">行走速度系数</span></td>
+                <td><span class="attr-id">218</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">奔跑速度系数</span></td>
+                <td><span class="attr-id">219</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">物理准确系数</span></td>
+                <td><span class="attr-id">220</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">物理敏捷系数</span></td>
+                <td><span class="attr-id">221</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔法闪避系数</span></td>
+                <td><span class="attr-id">222</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">暴击概率系数</span></td>
+                <td><span class="attr-id">223</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">暴击伤害系数</span></td>
+                <td><span class="attr-id">224</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">药品回血系数</span></td>
+                <td><span class="attr-id">229</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">药品回魔系数</span></td>
+                <td><span class="attr-id">230</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">幸运等级系数</span></td>
+                <td><span class="attr-id">231</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">攻击速度系数</span></td>
+                <td><span class="attr-id">236</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">体力恢复系数</span></td>
+                <td><span class="attr-id">237</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">魔力恢复系数</span></td>
+                <td><span class="attr-id">238</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">中毒躲避系数</span></td>
+                <td><span class="attr-id">245</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大腕力系数</span></td>
+                <td><span class="attr-id">250</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大穿戴系数</span></td>
+                <td><span class="attr-id">251</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大负重系数</span></td>
+                <td><span class="attr-id">252</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">技能标志系数</span></td>
+                <td><span class="attr-id">256</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">攻杀标志系数</span></td>
+                <td><span class="attr-id">257</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最小圣伤系数</span></td>
+                <td><span class="attr-id">267</span></td>
+            </tr>
+            <tr>
+                <td><span class="attr-name">最大圣伤系数</span></td>
+                <td><span class="attr-id">268</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
